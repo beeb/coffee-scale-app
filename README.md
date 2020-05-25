@@ -25,8 +25,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 # Colors
 
-#DD545C - pink
-#9C5865 - burgundy
-#6C5662 - purple
-#7C6D68 - warm grey
-#9D7D6E - washed out brown
+- #DD545C - pink
+- #9C5865 - burgundy
+- #6C5662 - purple
+- #7C6D68 - warm grey
+- #9D7D6E - washed out brown
