@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "yarn run prettier ."
   },
   "dependencies": {
     "bootstrap": "^4.5.0",
@@ -61,7 +61,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,vue}": [
-      "vue-cli-service lint",
+      "yarn run prettier",
       "git add"
     ]
   }
