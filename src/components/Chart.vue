@@ -1,17 +1,15 @@
 <script>
-import { Scatter, mixins } from 'vue-chartjs'
-
-const { reactiveProp } = mixins
+import { Scatter } from 'vue-chartjs'
 
 export default {
   name: 'Chart',
   extends: Scatter,
-  mixins: [reactiveProp],
+  //mixins: [reactiveProp],
   props: {
-    chartData: {
-      type: Object,
+    currentData: {
+      type: Array,
       default() {
-        return {}
+        return [{ x: 0, y: 0 }]
       }
     }
   },
@@ -39,6 +37,50 @@ export default {
           duration: 50
         }
       }
+    }
+  },
+  computed: {
+    chartData() {
+      return {
+        datasets: [
+          {
+            label: 'Current Weight',
+            backgroundColor: '#528078',
+            borderColor: '#528078',
+            fill: false,
+            showLine: true,
+            lineTension: 0,
+            pointRadius: 0,
+            borderCapStyle: 'round',
+            data: this.currentData
+          },
+          {
+            label: 'Target Weight',
+            backgroundColor: '#eee',
+            borderColor: '#eee',
+            fill: true,
+            showLine: true,
+            cubicInterpolationMode: 'monotone',
+            data: [
+              { x: 0, y: 0 },
+              { x: 5, y: 0 },
+              { x: 30, y: 38 },
+              { x: 35, y: 38 }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  watch: {
+    chartData(newChartData) {
+      let chart = this.$data._chart
+      if (chart === undefined || chart.data.datasets.length < 2) {
+        return
+      }
+      chart.data.datasets[0]['data'] = newChartData.datasets[0]['data']
+      chart.update()
+      this.$emit('chart:update')
     }
   },
   mounted() {
