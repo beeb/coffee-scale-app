@@ -1,25 +1,33 @@
 <template>
-  <b-container fluid="lg" id="app">
+  <b-container id="app" fluid="lg">
     <h1>Brew</h1>
-    <chart :chart-data="datacollection" :styles="chartStyles"></chart>
+    <Chart :chart-data="datacollection" :styles="chartStyles"></Chart>
   </b-container>
 </template>
 
 <script>
-import Chart from "./components/Chart.vue";
+import Chart from './components/Chart.vue'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     Chart
   },
   data() {
     return {
       datacollection: null
-    };
+    }
+  },
+  computed: {
+    chartStyles() {
+      return {
+        height: 'calc(100vh - 4rem)',
+        position: 'relative'
+      }
+    }
   },
   mounted() {
-    this.fillData();
+    this.fillData()
   },
   methods: {
     fillData() {
@@ -27,43 +35,26 @@ export default {
         // labels: [this.getRandomInt(), this.getRandomInt()],
         datasets: [
           {
-            label: "Data One",
-            backgroundColor: "#eee",
+            label: 'Target',
+            backgroundColor: '#eee',
+            borderColor: '#eee',
             fill: true,
+            showLine: true,
             lineTension: 0,
             data: [
-              { x: 0, y: this.getRandomInt() },
-              { x: 1, y: this.getRandomInt() },
-              { x: 3, y: this.getRandomInt() }
-            ]
-          },
-          {
-            label: "Data Two",
-            backgroundColor: "#528078",
-            borderColor: "#528078",
-            fill: false,
-            lineTension: 0,
-            data: [
-              { x: 0, y: this.getRandomInt() },
-              { x: 1, y: this.getRandomInt() }
+              { x: 0, y: 0 },
+              { x: 5, y: 0 },
+              { x: 30, y: 38 }
             ]
           }
         ]
-      };
+      }
     },
     getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
-    }
-  },
-  computed: {
-    chartStyles() {
-      return {
-        height: "calc(100vh - 4rem)",
-        position: "relative"
-      };
+      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
     }
   }
-};
+}
 </script>
 
 <style lang="scss"></style>

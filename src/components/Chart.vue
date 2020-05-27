@@ -1,33 +1,29 @@
 <script>
-import { Line, mixins } from "vue-chartjs";
+import { Scatter, mixins } from 'vue-chartjs'
 
-const { reactiveProp } = mixins;
+const { reactiveProp } = mixins
 
 export default {
-  name: "Chart",
-  extends: Line,
+  name: 'Chart',
+  extends: Scatter,
   mixins: [reactiveProp],
   data() {
     return {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        showLines: true,
         scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true
-              }
-            }
-          ]
+          xAxes: [{ ticks: { beginAtZero: true, stepSize: 5 } }],
+          yAxes: [{ ticks: { beginAtZero: true } }]
         }
       }
-    };
+    }
   },
   mounted() {
-    this.renderChart(this.chartData, this.options);
+    this.renderChart(this.chartData, this.options)
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
