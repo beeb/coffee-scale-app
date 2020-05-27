@@ -21,13 +21,23 @@ export default {
   computed: {
     chartStyles() {
       return {
-        height: 'calc(100vh - 4rem)',
+        height: 'calc(100vh - 5rem)',
         position: 'relative'
       }
     }
   },
   mounted() {
     this.fillData()
+    this.counter = 7
+    this.interval = setInterval(() => {
+      let datacollection = { ...this.datacollection }
+      let data = this.datacollection.datasets[0].data
+      let lastElem = data[data.length - 1].y
+      let newY = lastElem + Math.random()
+      datacollection.datasets[0].data.push({ x: this.counter, y: newY })
+      this.counter += 1
+      this.datacollection = datacollection
+    }, 1000)
   },
   methods: {
     fillData() {
@@ -35,26 +45,43 @@ export default {
         // labels: [this.getRandomInt(), this.getRandomInt()],
         datasets: [
           {
-            label: 'Target',
+            label: 'Current Weight',
+            backgroundColor: '#528078',
+            borderColor: '#528078',
+            fill: false,
+            showLine: true,
+            lineTension: 0,
+            pointRadius: 0,
+            borderCapStyle: 'round',
+            data: [
+              { x: 0, y: 0 },
+              { x: 5, y: 0.2 },
+              { x: 6, y: 1.2 }
+            ]
+          },
+          {
+            label: 'Target Weight',
             backgroundColor: '#eee',
             borderColor: '#eee',
             fill: true,
             showLine: true,
-            lineTension: 0,
+            cubicInterpolationMode: 'monotone',
             data: [
               { x: 0, y: 0 },
               { x: 5, y: 0 },
-              { x: 30, y: 38 }
+              { x: 30, y: 38 },
+              { x: 35, y: 38 }
             ]
           }
         ]
       }
-    },
-    getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
     }
   }
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+#app {
+  margin-top: 1rem;
+}
+</style>

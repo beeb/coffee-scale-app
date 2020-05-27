@@ -7,15 +7,36 @@ export default {
   name: 'Chart',
   extends: Scatter,
   mixins: [reactiveProp],
+  props: {
+    chartData: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
+  },
   data() {
     return {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        showLines: true,
+        events: [],
         scales: {
-          xAxes: [{ ticks: { beginAtZero: true, stepSize: 5 } }],
-          yAxes: [{ ticks: { beginAtZero: true } }]
+          xAxes: [
+            {
+              scaleLabel: { display: true, labelString: 'Time (s)' },
+              ticks: { beginAtZero: true, stepSize: 5 }
+            }
+          ],
+          yAxes: [
+            {
+              scaleLabel: { display: true, labelString: 'Weight (g)' },
+              ticks: { beginAtZero: true }
+            }
+          ]
+        },
+        animation: {
+          duration: 50
         }
       }
     }
