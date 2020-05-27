@@ -1,7 +1,14 @@
 <template>
   <b-container id="app" fluid="lg">
     <h1>Brew</h1>
-    <Chart :current-data="currentData" :styles="chartStyles"></Chart>
+    <Chart
+      :coffee-weight="17"
+      :pre-infusion="5"
+      :total-time="30"
+      :target-ratio="2.5"
+      :current-data="currentData"
+      :styles="chartStyles"
+    ></Chart>
   </b-container>
 </template>
 
@@ -24,13 +31,13 @@ export default {
   },
   mounted() {
     this.fillData()
-    this.counter = 7
+    this.counter = 6.1
     this.interval = setInterval(() => {
       let lastElem = this.currentData[this.currentData.length - 1].y
-      let newY = lastElem + Math.random()
+      let newY = lastElem + Math.random() * 0.2
       this.currentData.push({ x: this.counter, y: newY })
-      this.counter += 1
-    }, 1000)
+      this.counter += 0.1
+    }, 100)
   },
   methods: {
     fillData() {

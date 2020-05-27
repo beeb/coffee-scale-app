@@ -6,6 +6,22 @@ export default {
   extends: Scatter,
   //mixins: [reactiveProp],
   props: {
+    coffeeWeight: {
+      type: Number,
+      default: 17
+    },
+    preInfusion: {
+      type: Number,
+      default: 5
+    },
+    totalTime: {
+      type: Number,
+      default: 30
+    },
+    targetRatio: {
+      type: Number,
+      default: 2.5
+    },
     currentData: {
       type: Array,
       default() {
@@ -41,12 +57,13 @@ export default {
   },
   computed: {
     chartData() {
+      let targetWeight = this.targetRatio * this.coffeeWeight
       return {
         datasets: [
           {
             label: 'Current Weight',
-            backgroundColor: '#528078',
-            borderColor: '#528078',
+            backgroundColor: '#63e792',
+            borderColor: '#63e792',
             fill: false,
             showLine: true,
             lineTension: 0,
@@ -56,16 +73,17 @@ export default {
           },
           {
             label: 'Target Weight',
-            backgroundColor: '#eee',
-            borderColor: '#eee',
+            backgroundColor: '#fdfbf788',
+            borderColor: '#703b3b',
             fill: true,
             showLine: true,
             cubicInterpolationMode: 'monotone',
+            pointRadius: 0,
             data: [
               { x: 0, y: 0 },
-              { x: 5, y: 0 },
-              { x: 30, y: 38 },
-              { x: 35, y: 38 }
+              { x: this.preInfusion, y: 0 },
+              { x: this.totalTime, y: targetWeight },
+              { x: this.totalTime + 5, y: targetWeight }
             ]
           }
         ]
@@ -79,6 +97,7 @@ export default {
         return
       }
       chart.data.datasets[0]['data'] = newChartData.datasets[0]['data']
+      chart.data.datasets[1]['data'] = newChartData.datasets[1]['data']
       chart.update()
       this.$emit('chart:update')
     }
