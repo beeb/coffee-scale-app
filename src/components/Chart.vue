@@ -74,7 +74,7 @@ export default {
           {
             label: 'Target Weight',
             backgroundColor: '#fdfbf788',
-            borderColor: '#703b3b',
+            borderColor: '#555555',
             fill: true,
             showLine: true,
             cubicInterpolationMode: 'monotone',
