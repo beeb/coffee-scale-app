@@ -2,10 +2,10 @@
   <b-container id="app" fluid="lg" @click="enableNoSleep">
     <Settings></Settings>
     <Chart
-      :coffee-weight="17"
-      :pre-infusion="5"
-      :total-time="30"
-      :target-ratio="2.5"
+      :coffee-weight="referenceCurve.coffeeWeight"
+      :pre-infusion="referenceCurve.preInfusion"
+      :total-time="referenceCurve.totalTime"
+      :target-ratio="referenceCurve.targetRatio"
       :current-data="currentData"
       :styles="chartStyles"
     ></Chart>
@@ -26,6 +26,12 @@ export default {
   data() {
     return {
       currentData: [{ x: 0, y: 0 }],
+      referenceCurve: {
+        coffeeWeight: 16.8,
+        targetRatio: 2.5,
+        preInfusion: 5.0,
+        totalTime: 30.0
+      },
       chartStyles: {
         height: 'calc(100vh - 15rem)',
         minHeight: '300px',
