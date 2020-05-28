@@ -86,7 +86,7 @@ export default {
               { x: 0, y: 0 },
               { x: this.preInfusion, y: 0 },
               { x: this.totalTime, y: targetWeight },
-              { x: this.totalTime + 5, y: targetWeight }
+              { x: this.totalTime + 10, y: targetWeight }
             ]
           }
         ]

@@ -37,7 +37,8 @@
                   id="input-coffee-weight"
                   v-model="coffeeWeight"
                   type="number"
-                  min="0"
+                  lazy-formatter
+                  :formatter="formatter"
                   number
                 ></b-form-input>
               </b-input-group>
@@ -55,7 +56,8 @@
                 id="input-target-ratio"
                 v-model="targetRatio"
                 type="number"
-                min="1"
+                lazy-formatter
+                :formatter="formatter"
                 number
               ></b-form-input>
             </b-form-group>
@@ -73,8 +75,8 @@
                   id="input-pre-infusion"
                   v-model="preInfusion"
                   type="number"
-                  min="0"
-                  step="1"
+                  lazy-formatter
+                  :formatter="formatter"
                   number
                 ></b-form-input>
               </b-input-group>
@@ -93,8 +95,8 @@
                   id="input-total-time"
                   v-model="totalTime"
                   type="number"
-                  min="0"
-                  step="1"
+                  lazy-formatter
+                  :formatter="formatter"
                   number
                 ></b-form-input>
               </b-input-group>
@@ -112,8 +114,20 @@ export default {
     return {
       coffeeWeight: 16.8,
       targetRatio: 2.5,
-      preInfusion: 5,
-      totalTime: 30
+      preInfusion: 5.0,
+      totalTime: 30.0
+    }
+  },
+  methods: {
+    formatter(value) {
+      let val = Number.parseFloat(value)
+      if (isNaN(val)) {
+        return String((1).toFixed(2))
+      }
+      if (val < 0) {
+        return String(-val.toFixed(2))
+      }
+      return val.toFixed(2)
     }
   }
 }
