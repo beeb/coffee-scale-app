@@ -1,8 +1,11 @@
 <template>
   <b-form>
     <b-row align-v="center">
-      <b-col sm="2" md="1" lg="2" xl="4" class="d-none d-sm-block">
-        <h1>Brew</h1>
+      <b-col cols="2" sm="4" md="2" lg="2" xl="3">
+        <h1 :style="{ whiteSpace: 'nowrap' }">
+          <b-icon-hexagon-fill variant="danger"></b-icon-hexagon-fill>&nbsp;
+          <span class="d-none d-sm-inline">Brew</span>
+        </h1>
       </b-col>
       <b-col>
         <b-row align-v="center" cols="1" cols-md="2">
