@@ -119,13 +119,14 @@ export default {
     }
   },
   methods: {
-    formatter(value) {
+    formatter(value, event) {
       let val = Number.parseFloat(value)
       if (isNaN(val)) {
         return String((1).toFixed(2))
       }
-      if (val < 0) {
-        return String(-val.toFixed(2))
+      let min = event.target.id === 'input-target-ratio' ? 1 : 0
+      if (val < min) {
+        return String(min.toFixed(2))
       }
       return val.toFixed(2)
     }
