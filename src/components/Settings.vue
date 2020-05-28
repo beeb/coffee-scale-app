@@ -3,7 +3,12 @@
     <b-row align-v="center">
       <b-col cols="2" sm="4" md="2" lg="2" xl="3">
         <h1 :style="{ whiteSpace: 'nowrap' }">
-          <b-icon-hexagon-fill variant="danger"></b-icon-hexagon-fill>&nbsp;
+          <b-icon-hexagon-fill
+            v-b-tooltip.hover
+            variant="danger"
+            title="Scale is not connected"
+          ></b-icon-hexagon-fill
+          >&nbsp;
           <span class="d-none d-sm-inline">Brew</span>
         </h1>
       </b-col>
@@ -24,13 +29,15 @@
                     v-b-tooltip.hover
                     variant="outline-primary"
                     title="Insert the value that the scale currently reads"
-                    >Read</b-button
                   >
+                    Read
+                  </b-button>
                 </b-input-group-prepend>
                 <b-form-input
                   id="input-coffee-weight"
                   v-model="coffeeWeight"
                   type="number"
+                  min="0"
                   number
                 ></b-form-input>
               </b-input-group>
@@ -48,6 +55,7 @@
                 id="input-target-ratio"
                 v-model="targetRatio"
                 type="number"
+                min="1"
                 number
               ></b-form-input>
             </b-form-group>
@@ -65,6 +73,8 @@
                   id="input-pre-infusion"
                   v-model="preInfusion"
                   type="number"
+                  min="0"
+                  step="1"
                   number
                 ></b-form-input>
               </b-input-group>
@@ -83,6 +93,8 @@
                   id="input-total-time"
                   v-model="totalTime"
                   type="number"
+                  min="0"
+                  step="1"
                   number
                 ></b-form-input>
               </b-input-group>
