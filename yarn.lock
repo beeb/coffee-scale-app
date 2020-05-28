@@ -8323,6 +8323,11 @@ static-extend@^0.1.1:
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
 
+stayawake.js@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/stayawake.js/-/stayawake.js-1.0.2.tgz#9a1925cbacb8b5e7eab2f68c9a88066324acc8c0"
+  integrity sha512-SsuAuefs07UhPP0XpFP55+Knk+wMYHxyaicUzGh1N+lEGKzhU0WaQdQ4XLD3541YG2khJ4ZvZMy3H+TGsU8zTA==
+
 stdout-stream@^1.4.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/stdout-stream/-/stdout-stream-1.4.1.tgz#5ac174cdd5cd726104aa0c0b2bd83815d8d535de"

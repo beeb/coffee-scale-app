@@ -1,5 +1,5 @@
 <template>
-  <b-container id="app" fluid="lg">
+  <b-container id="app" fluid="lg" @click="enableNoSleep">
     <Settings></Settings>
     <Chart
       :coffee-weight="17"
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import StayAwake from 'stayawake.js'
 import Settings from './components/Settings.vue'
 import Chart from './components/Chart.vue'
 
@@ -26,12 +27,14 @@ export default {
     return {
       currentData: [{ x: 0, y: 0 }],
       chartStyles: {
-        height: 'calc(100vh - 5rem)',
+        height: 'calc(100vh - 15rem)',
+        minHeight: '300px',
         position: 'relative'
       }
     }
   },
   mounted() {
+    StayAwake.init()
     this.fillData()
     this.counter = 6.1
     this.interval = setInterval(() => {
@@ -48,6 +51,12 @@ export default {
         { x: 5, y: 0.2 },
         { x: 6, y: 1.2 }
       ]
+    },
+    enableNoSleep() {
+      StayAwake.enable()
+    },
+    disableNoSleep() {
+      StayAwake.disable()
     }
   }
 }

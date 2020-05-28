@@ -35,6 +35,9 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
         events: [],
+        legend: {
+          position: 'bottom'
+        },
         scales: {
           xAxes: [
             {
@@ -61,7 +64,7 @@ export default {
       return {
         datasets: [
           {
-            label: 'Current Weight',
+            label: 'Current',
             backgroundColor: '#63e792',
             borderColor: '#63e792',
             fill: false,
@@ -72,7 +75,7 @@ export default {
             data: this.currentData
           },
           {
-            label: 'Target Weight',
+            label: 'Target',
             backgroundColor: '#fdfbf788',
             borderColor: '#555555',
             fill: true,
