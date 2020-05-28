@@ -121,14 +121,15 @@ export default {
   methods: {
     formatter(value, event) {
       let val = Number.parseFloat(value)
+      let precision =
+        event.target.id === 'input-total-time' || event.target.id === 'input-pre-infusion' ? 0 : 2
       if (isNaN(val)) {
-        return String((1).toFixed(2))
+        return String((1).toFixed(precision))
       }
-      let min = event.target.id === 'input-target-ratio' ? 1 : 0
-      if (val < min) {
-        return String(min.toFixed(2))
+      if (val < 0) {
+        return String((0).toFixed(precision))
       }
-      return val.toFixed(2)
+      return val.toFixed(precision)
     }
   }
 }
