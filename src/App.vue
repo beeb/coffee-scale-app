@@ -1,6 +1,6 @@
 <template>
   <b-container id="app" fluid="lg">
-    <h1>Brew</h1>
+    <Settings></Settings>
     <Chart
       :coffee-weight="17"
       :pre-infusion="5"
@@ -13,11 +13,13 @@
 </template>
 
 <script>
+import Settings from './components/Settings.vue'
 import Chart from './components/Chart.vue'
 
 export default {
   name: 'App',
   components: {
+    Settings,
     Chart
   },
   data() {
