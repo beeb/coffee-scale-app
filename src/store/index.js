@@ -1,9 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VuexPersist from 'vuex-persist'
 
 Vue.use(Vuex)
 
+let keepMutations = ['setCoffeeWeight', 'setTargetRatio', 'setPreInfusion', 'setTotalTime']
+
+const vuexLocalStorage = new VuexPersist({
+  key: 'vuex',
+  storage: window.localStorage,
+  reducer: (state) => ({
+    coffeeWeight: state.coffeeWeight,
+    targetRatio: state.targetRatio,
+    preInfusion: state.preInfusion,
+    totalTime: state.totalTime
+  }),
+  filter: (mutation) => keepMutations.indexOf(mutation.type) > -1
+})
+
 export default new Vuex.Store({
+  plugins: [vuexLocalStorage.plugin],
   state: {
     connected: false,
     coffeeWeight: 16,
