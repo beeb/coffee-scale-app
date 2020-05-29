@@ -21,12 +21,14 @@ const vuexLocalStorage = new VuexPersist({
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
+    btEnabled: false,
     connected: false,
     coffeeWeight: 16,
     targetRatio: 2.5,
     preInfusion: 5.0,
     totalTime: 30.0,
     currentWeight: 30.0,
+    currentTime: 0.0,
     currentData: [{ x: 0, y: 0 }]
   },
   getters: {
@@ -35,6 +37,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setBtEnabled(state, payload) {
+      state.btEnabled = payload.enabled
+    },
     setConnected(state, payload) {
       state.connected = payload.connected
     },
@@ -54,22 +59,63 @@ export default new Vuex.Store({
     setCurrentWeight(state, payload) {
       state.currentWeight = payload.weight
     },
+    setCurrentTime(state, payload) {
+      state.currentTime = payload.time
+    },
+    addCurrentPoint(state) {
+      if (state.currentData[state.currentData.length - 1].x !== state.currentTime) {
+        state.currentData.push({ x: state.currentTime, y: state.currentWeight })
+      }
+    },
     addDataPoint(state, payload) {
-      state.currentData.push({ x: payload.x, y: payload.y })
+      state.currentData.push({ x: payload.time, y: payload.weight })
     },
     clearCurrentData(state) {
       state.currentData = [{ x: 0, y: 0 }]
     }
   },
   actions: {
-    connect({ commit }) {
-      return new Promise((resolve) => {
-        // do something async
-        setTimeout(() => {
-          commit({ type: 'setConnected', connected: true })
-          resolve()
-        }, 2000)
+    checkBtStatus({ commit, state }) {
+      return navigator.bluetooth.getAvailability().then((isBluetoothAvailable) => {
+        commit({ type: 'setBtEnabled', enabled: isBluetoothAvailable })
+        if (state.connected && !isBluetoothAvailable) {
+          commit({ type: 'setConnected', connected: false })
+        }
       })
+    },
+    connect({ commit }) {
+      return navigator.bluetooth
+        .requestDevice({ filters: [{ name: 'mpy-coffee' }, { services: [parseInt('0x1815')] }] })
+        .then((device) => {
+          return device.gatt.connect()
+        })
+        .then((server) => {
+          commit({ type: 'setConnected', connected: true })
+          return server.getPrimaryService(parseInt('0x1815'))
+        })
+        .then((service) => {
+          service.getCharacteristic(parseInt('0x2A58')).then((characteristic) => {
+            let time = characteristic
+            time.startNotifications().then(() => {
+              time.addEventListener('characteristicvaluechanged', (ev) => {
+                let bytes = ev.target.value
+                let value = bytes.getUint16(0, false)
+                commit({ type: 'setCurrentTime', time: value / 100 })
+                commit({ type: 'addCurrentPoint' })
+              })
+            })
+          })
+          service.getCharacteristic(parseInt('0x2A59')).then((characteristic) => {
+            let weight = characteristic
+            weight.startNotifications().then(() => {
+              weight.addEventListener('characteristicvaluechanged', (ev) => {
+                let bytes = ev.target.value
+                let value = bytes.getInt16(0, false)
+                commit({ type: 'setCurrentWeight', weight: value / 100 })
+              })
+            })
+          })
+        })
     }
   },
   modules: {}

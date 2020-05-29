@@ -8,20 +8,21 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'Logo',
-  props: {
-    connected: {
-      type: Boolean,
-      default: false
-    }
-  },
   computed: {
+    ...mapState(['btEnabled', 'connected']),
     iconVariant() {
-      return this.connected ? 'primary' : 'danger'
+      return this.connected ? 'primary' : this.btEnabled ? 'warning' : 'danger'
     },
     tooltipMessage() {
-      return this.connected ? 'Scale is connected' : 'Scale is NOT connected'
+      return this.connected
+        ? 'Scale is connected'
+        : this.btEnabled
+        ? 'Scale is NOT connected'
+        : 'Bluetooth not available'
     }
   }
 }

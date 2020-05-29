@@ -1,9 +1,10 @@
 <template>
   <b-container id="app" fluid="lg" :style="{ position: 'relative' }" @click="enableNoSleep">
-    <Logo :connected="connected"></Logo>
+    <Logo></Logo>
     <Settings></Settings>
     <Chart :styles="chartStyles"></Chart>
     <Gauge></Gauge>
+    <ConnectButton></ConnectButton>
   </b-container>
 </template>
 
@@ -13,8 +14,9 @@ import Settings from './components/Settings.vue'
 import Chart from './components/Chart.vue'
 import Logo from './components/Logo.vue'
 import Gauge from './components/Gauge.vue'
+import ConnectButton from './components/ConnectButton.vue'
 
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'App',
@@ -22,7 +24,8 @@ export default {
     Logo,
     Settings,
     Chart,
-    Gauge
+    Gauge,
+    ConnectButton
   },
   data() {
     return {
@@ -36,15 +39,22 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapState(['connected'])
-  },
   mounted() {
     StayAwake.init()
-    this.connect()
+    this.checkBtStatus().catch((error) => {
+      console.log(error)
+      this.$bvToast.toast(error.message, {
+        title: 'Bluetooth Error'
+      })
+    })
+    if ('onavailabilitychanged' in navigator.bluetooth) {
+      navigator.bluetooth.addEventListener('availabilitychanged', () => {
+        this.checkBtStatus()
+      })
+    }
   },
   methods: {
-    ...mapActions(['connect']),
+    ...mapActions(['checkBtStatus']),
     enableNoSleep() {
       StayAwake.enable()
     },
