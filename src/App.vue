@@ -1,15 +1,8 @@
 <template>
   <b-container id="app" fluid="lg" :style="{ position: 'relative' }" @click="enableNoSleep">
-    <Logo></Logo>
+    <Logo :connected="connected"></Logo>
     <Settings></Settings>
-    <Chart
-      :coffee-weight="referenceCurve.coffeeWeight"
-      :pre-infusion="referenceCurve.preInfusion"
-      :total-time="referenceCurve.totalTime"
-      :target-ratio="referenceCurve.targetRatio"
-      :current-data="currentData"
-      :styles="chartStyles"
-    ></Chart>
+    <Chart :styles="chartStyles"></Chart>
   </b-container>
 </template>
 
@@ -18,6 +11,8 @@ import StayAwake from 'stayawake.js'
 import Settings from './components/Settings.vue'
 import Chart from './components/Chart.vue'
 import Logo from './components/Logo.vue'
+
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'App',
@@ -28,13 +23,6 @@ export default {
   },
   data() {
     return {
-      currentData: [{ x: 0, y: 0 }],
-      referenceCurve: {
-        coffeeWeight: 16.8,
-        targetRatio: 2.5,
-        preInfusion: 5.0,
-        totalTime: 30.0
-      },
       chartStyles: {
         height: 'calc(100vh - 2rem)',
         width: 'calc(100% - 2rem)',
@@ -45,6 +33,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState(['connected'])
+  },
   mounted() {
     StayAwake.init()
     this.fillData()
@@ -54,9 +45,14 @@ export default {
       let newY = lastElem + Math.random() * 0.2
       this.currentData.push({ x: this.counter, y: newY })
       this.counter += 0.1
+      if (this.counter > 40) {
+        clearInterval(this.interval)
+      }
     }, 100)
+    this.connect()
   },
   methods: {
+    ...mapActions(['connect']),
     fillData() {
       this.currentData = [
         { x: 0, y: 0 },

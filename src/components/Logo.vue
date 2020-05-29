@@ -1,11 +1,31 @@
 <template>
   <div id="logo-status">
     <h1>
-      <b-icon-hexagon-fill v-b-tooltip.hover variant="danger" title="Scale is not connected"></b-icon-hexagon-fill
+      <b-icon-hexagon-fill v-b-tooltip.hover :variant="iconVariant" :title="tooltipMessage"></b-icon-hexagon-fill
       >&nbsp;Brew
     </h1>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'Logo',
+  props: {
+    connected: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    iconVariant() {
+      return this.connected ? 'primary' : 'danger'
+    },
+    tooltipMessage() {
+      return this.connected ? 'Scale is connected' : 'Scale is NOT connected'
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 #logo-status {

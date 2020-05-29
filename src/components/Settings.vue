@@ -17,17 +17,19 @@
                 variant="outline-primary"
                 title="Insert the value that the scale currently reads"
                 :style="{ backgroundColor: '#fff' }"
+                :disabled="!connected"
               >
                 Read
               </b-button>
             </b-input-group-prepend>
             <b-form-input
               id="input-coffee-weight"
-              v-model="coffeeWeight"
+              :value="coffeeWeight"
               type="number"
               lazy-formatter
               :formatter="formatter"
               number
+              @input="setCoffeeWeight"
             ></b-form-input>
           </b-input-group>
         </b-form-group>
@@ -42,12 +44,13 @@
         >
           <b-form-input
             id="input-target-ratio"
-            v-model="targetRatio"
+            :value="targetRatio"
             size="sm"
             type="number"
             lazy-formatter
             :formatter="formatter"
             number
+            @input="setTargetRatio"
           ></b-form-input>
         </b-form-group>
       </b-col>
@@ -62,11 +65,12 @@
           <b-input-group append="s" size="sm">
             <b-form-input
               id="input-pre-infusion"
-              v-model="preInfusion"
+              :value="preInfusion"
               type="number"
               lazy-formatter
               :formatter="formatter"
               number
+              @input="setPreInfusion"
             ></b-form-input>
           </b-input-group>
         </b-form-group>
@@ -82,11 +86,12 @@
           <b-input-group append="s" size="sm">
             <b-form-input
               id="input-total-time"
-              v-model="totalTime"
+              :value="totalTime"
               type="number"
               lazy-formatter
               :formatter="formatter"
               number
+              @input="setTotalTime"
             ></b-form-input>
           </b-input-group>
         </b-form-group>
@@ -96,16 +101,17 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
+
 export default {
   data() {
     return {
-      coffeeWeight: 16.8,
-      targetRatio: 2.5,
-      preInfusion: 5.0,
-      totalTime: 30.0,
       cols: 1,
       width: '11rem'
     }
+  },
+  computed: {
+    ...mapState(['connected', 'coffeeWeight', 'targetRatio', 'preInfusion', 'totalTime'])
   },
   mounted() {
     this.checkOrientation()
@@ -114,6 +120,7 @@ export default {
     })
   },
   methods: {
+    ...mapMutations(['setCoffeeWeight', 'setTargetRatio', 'setPreInfusion', 'setTotalTime']),
     checkOrientation() {
       let aspectRatio = window.innerWidth / window.innerHeight
       if (aspectRatio > 3) {
