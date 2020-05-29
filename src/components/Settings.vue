@@ -126,8 +126,7 @@ export default {
     },
     formatter(value, event) {
       let val = Number.parseFloat(value)
-      let precision =
-        event.target.id === 'input-total-time' || event.target.id === 'input-pre-infusion' ? 0 : 2
+      let precision = event.target.id === 'input-total-time' || event.target.id === 'input-pre-infusion' ? 0 : 2
       if (isNaN(val)) {
         return String((1).toFixed(precision))
       }

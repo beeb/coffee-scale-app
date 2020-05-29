@@ -1,11 +1,7 @@
 <template>
   <div id="logo-status">
     <h1>
-      <b-icon-hexagon-fill
-        v-b-tooltip.hover
-        variant="danger"
-        title="Scale is not connected"
-      ></b-icon-hexagon-fill
+      <b-icon-hexagon-fill v-b-tooltip.hover variant="danger" title="Scale is not connected"></b-icon-hexagon-fill
       >&nbsp;Brew
     </h1>
   </div>
