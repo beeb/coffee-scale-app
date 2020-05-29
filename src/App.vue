@@ -38,28 +38,10 @@ export default {
   },
   mounted() {
     StayAwake.init()
-    this.fillData()
-    this.counter = 6.1
-    this.interval = setInterval(() => {
-      let lastElem = this.currentData[this.currentData.length - 1].y
-      let newY = lastElem + Math.random() * 0.2
-      this.currentData.push({ x: this.counter, y: newY })
-      this.counter += 0.1
-      if (this.counter > 40) {
-        clearInterval(this.interval)
-      }
-    }, 100)
     this.connect()
   },
   methods: {
     ...mapActions(['connect']),
-    fillData() {
-      this.currentData = [
-        { x: 0, y: 0 },
-        { x: 5, y: 0.2 },
-        { x: 6, y: 1.2 }
-      ]
-    },
     enableNoSleep() {
       StayAwake.enable()
     },

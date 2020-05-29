@@ -24,12 +24,11 @@
             </b-input-group-prepend>
             <b-form-input
               id="input-coffee-weight"
-              :value="coffeeWeight"
+              v-model="coffeeWeightBind"
               type="number"
               lazy-formatter
               :formatter="formatter"
               number
-              @input="setCoffeeWeight"
             ></b-form-input>
           </b-input-group>
         </b-form-group>
@@ -44,13 +43,12 @@
         >
           <b-form-input
             id="input-target-ratio"
-            :value="targetRatio"
+            v-model="targetRatioBind"
             size="sm"
             type="number"
             lazy-formatter
             :formatter="formatter"
             number
-            @input="setTargetRatio"
           ></b-form-input>
         </b-form-group>
       </b-col>
@@ -65,12 +63,11 @@
           <b-input-group append="s" size="sm">
             <b-form-input
               id="input-pre-infusion"
-              :value="preInfusion"
+              v-model="preInfusionBind"
               type="number"
               lazy-formatter
               :formatter="formatter"
               number
-              @input="setPreInfusion"
             ></b-form-input>
           </b-input-group>
         </b-form-group>
@@ -86,12 +83,11 @@
           <b-input-group append="s" size="sm">
             <b-form-input
               id="input-total-time"
-              :value="totalTime"
+              v-model="totalTimeBind"
               type="number"
               lazy-formatter
               :formatter="formatter"
               number
-              @input="setTotalTime"
             ></b-form-input>
           </b-input-group>
         </b-form-group>
@@ -111,7 +107,39 @@ export default {
     }
   },
   computed: {
-    ...mapState(['connected', 'coffeeWeight', 'targetRatio', 'preInfusion', 'totalTime'])
+    ...mapState(['connected', 'coffeeWeight', 'targetRatio', 'preInfusion', 'totalTime']),
+    coffeeWeightBind: {
+      get() {
+        return this.coffeeWeight
+      },
+      set(value) {
+        this.setCoffeeWeight({ weight: value })
+      }
+    },
+    targetRatioBind: {
+      get() {
+        return this.targetRatio
+      },
+      set(value) {
+        this.setTargetRatio({ ratio: value })
+      }
+    },
+    preInfusionBind: {
+      get() {
+        return this.preInfusion
+      },
+      set(value) {
+        this.setPreInfusion({ time: value })
+      }
+    },
+    totalTimeBind: {
+      get() {
+        return this.totalTime
+      },
+      set(value) {
+        this.setTotalTime({ time: value })
+      }
+    }
   },
   mounted() {
     this.checkOrientation()

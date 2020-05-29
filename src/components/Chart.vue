@@ -1,34 +1,11 @@
 <script>
 import { Scatter } from 'vue-chartjs'
 
+import { mapState } from 'vuex'
+
 export default {
   name: 'Chart',
   extends: Scatter,
-  //mixins: [reactiveProp],
-  props: {
-    coffeeWeight: {
-      type: Number,
-      default: 17
-    },
-    preInfusion: {
-      type: Number,
-      default: 5
-    },
-    totalTime: {
-      type: Number,
-      default: 30
-    },
-    targetRatio: {
-      type: Number,
-      default: 2.5
-    },
-    currentData: {
-      type: Array,
-      default() {
-        return [{ x: 0, y: 0 }]
-      }
-    }
-  },
   data() {
     return {
       options: {
@@ -60,6 +37,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['coffeeWeight', 'targetRatio', 'preInfusion', 'totalTime', 'currentData']),
     chartData() {
       let targetWeight = this.targetRatio * this.coffeeWeight
       return {
