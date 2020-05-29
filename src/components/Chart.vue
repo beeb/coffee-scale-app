@@ -1,7 +1,7 @@
 <script>
 import { Scatter } from 'vue-chartjs'
 
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Chart',
@@ -37,9 +37,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['coffeeWeight', 'targetRatio', 'preInfusion', 'totalTime', 'currentData']),
+    ...mapState(['preInfusion', 'totalTime', 'currentData']),
+    ...mapGetters(['targetWeight']),
     chartData() {
-      let targetWeight = this.targetRatio * this.coffeeWeight
       return {
         datasets: [
           {
@@ -64,8 +64,8 @@ export default {
             data: [
               { x: 0, y: 0 },
               { x: this.preInfusion, y: 0 },
-              { x: this.totalTime, y: targetWeight },
-              { x: this.totalTime + 10, y: targetWeight }
+              { x: this.totalTime, y: this.targetWeight },
+              { x: this.totalTime + 10, y: this.targetWeight }
             ]
           }
         ]

@@ -3,6 +3,7 @@
     <Logo :connected="connected"></Logo>
     <Settings></Settings>
     <Chart :styles="chartStyles"></Chart>
+    <Gauge></Gauge>
   </b-container>
 </template>
 
@@ -11,6 +12,7 @@ import StayAwake from 'stayawake.js'
 import Settings from './components/Settings.vue'
 import Chart from './components/Chart.vue'
 import Logo from './components/Logo.vue'
+import Gauge from './components/Gauge.vue'
 
 import { mapState, mapActions } from 'vuex'
 
@@ -19,7 +21,8 @@ export default {
   components: {
     Logo,
     Settings,
-    Chart
+    Chart,
+    Gauge
   },
   data() {
     return {

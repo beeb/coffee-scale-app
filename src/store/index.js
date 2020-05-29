@@ -10,8 +10,13 @@ export default new Vuex.Store({
     targetRatio: 2.5,
     preInfusion: 5.0,
     totalTime: 30.0,
-    currentWeight: 0.0,
+    currentWeight: 30.0,
     currentData: [{ x: 0, y: 0 }]
+  },
+  getters: {
+    targetWeight: (state) => {
+      return state.coffeeWeight * state.targetRatio
+    }
   },
   mutations: {
     setConnected(state, payload) {
@@ -35,6 +40,9 @@ export default new Vuex.Store({
     },
     addDataPoint(state, payload) {
       state.currentData.push({ x: payload.x, y: payload.y })
+    },
+    clearCurrentData(state) {
+      state.currentData = [{ x: 0, y: 0 }]
     }
   },
   actions: {
