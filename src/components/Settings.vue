@@ -1,12 +1,11 @@
 <template>
-  <b-form id="params-form" :style="{ width: width }">
+  <b-form id="params-form" :style="{ width: width }" :class="{ 'white-bg': cols == 4 }">
     <b-row align-v="center" :cols="cols">
       <b-col>
         <b-form-group
           id="coffee-weight"
-          description="Coffee weight"
+          label="Coffee weight"
           label-for="input-coffee-weight"
-          label-align="right"
           label-size="sm"
           md="auto"
         >
@@ -33,13 +32,7 @@
         </b-form-group>
       </b-col>
       <b-col>
-        <b-form-group
-          id="target-ratio"
-          description="Target ratio"
-          label-for="input-target-ratio"
-          label-align="right"
-          label-size="sm"
-        >
+        <b-form-group id="target-ratio" label="Target ratio" label-for="input-target-ratio" label-size="sm">
           <b-form-input
             id="input-target-ratio"
             v-model="targetRatioBind"
@@ -52,13 +45,7 @@
         </b-form-group>
       </b-col>
       <b-col>
-        <b-form-group
-          id="pre-infusion-time"
-          description="Pre-infusion time"
-          label-for="input-pre-infusion"
-          label-align="right"
-          label-size="sm"
-        >
+        <b-form-group id="pre-infusion-time" label="Pre-infusion time" label-for="input-pre-infusion" label-size="sm">
           <b-input-group append="s" size="sm">
             <b-form-input
               id="input-pre-infusion"
@@ -72,13 +59,7 @@
         </b-form-group>
       </b-col>
       <b-col>
-        <b-form-group
-          id="total-time"
-          description="Total time"
-          label-for="input-total-time"
-          label-align="right"
-          label-size="sm"
-        >
+        <b-form-group id="total-time" label="Total time" label-for="input-total-time" label-size="sm">
           <b-input-group append="s" size="sm">
             <b-form-input
               id="input-total-time"
@@ -174,15 +155,25 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 #params-form {
   position: absolute;
-  right: 3rem;
+  right: 2.5rem;
   bottom: 4rem;
   z-index: 200;
   padding: 1rem;
+  border-radius: 0.5rem;
+
+  .form-group {
+    margin-bottom: 0;
+
+    .col-form-label-sm {
+      font-size: 0.7rem;
+      margin-bottom: 0;
+    }
+  }
 }
-.form-group {
-  margin-bottom: 0.2rem;
+.white-bg {
+  background-color: #ffffff;
 }
 </style>
