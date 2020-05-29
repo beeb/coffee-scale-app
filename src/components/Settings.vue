@@ -10,13 +10,12 @@
           label-size="sm"
           md="auto"
         >
-          <b-input-group append="g" size="sm">
+          <b-input-group append="g" size="sm" :style="{ backgroundColor: '#fff' }">
             <b-input-group-prepend>
               <b-button
                 v-b-tooltip.hover
                 variant="outline-primary"
                 title="Insert the value that the scale currently reads"
-                :style="{ backgroundColor: '#fff' }"
                 :disabled="!connected"
               >
                 Read
@@ -150,7 +149,7 @@ export default {
   methods: {
     ...mapMutations(['setCoffeeWeight', 'setTargetRatio', 'setPreInfusion', 'setTotalTime']),
     checkOrientation() {
-      let aspectRatio = window.innerWidth / window.innerHeight
+      let aspectRatio = document.getElementById('app').offsetWidth / window.innerHeight
       if (aspectRatio > 3) {
         this.cols = 4
         this.width = '80%'

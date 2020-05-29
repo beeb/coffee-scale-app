@@ -17,16 +17,16 @@ export default new Vuex.Store({
       state.connected = payload.connected
     },
     setCoffeeWeight(state, payload) {
-      state.coffeeWeight = Number.parseFloat(payload.weight)
+      state.coffeeWeight = payload.weight
     },
     setTargetRatio(state, payload) {
-      state.targetRatio = Number.parseFloat(payload.ratio)
+      state.targetRatio = payload.ratio
     },
     setPreInfusion(state, payload) {
-      state.preInfusion = Number.parseFloat(payload.time)
+      state.preInfusion = payload.time
     },
     setTotalTime(state, payload) {
-      state.totalTime = Number.parseFloat(payload.time)
+      state.totalTime = payload.time
     }
   },
   actions: {
