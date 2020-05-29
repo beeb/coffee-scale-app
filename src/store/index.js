@@ -10,6 +10,7 @@ export default new Vuex.Store({
     targetRatio: 2.5,
     preInfusion: 5.0,
     totalTime: 30.0,
+    currentWeight: 0.0,
     currentData: [{ x: 0, y: 0 }]
   },
   mutations: {
@@ -28,6 +29,12 @@ export default new Vuex.Store({
     setTotalTime(state, payload) {
       let val = Math.max(state.preInfusion, payload.time)
       state.totalTime = val
+    },
+    setCurrentWeight(state, payload) {
+      state.currentWeight = payload.weight
+    },
+    addDataPoint(state, payload) {
+      state.currentData.push({ x: payload.x, y: payload.y })
     }
   },
   actions: {
