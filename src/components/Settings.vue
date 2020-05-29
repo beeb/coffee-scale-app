@@ -16,6 +16,7 @@
                 variant="outline-primary"
                 title="Insert the value that the scale currently reads"
                 :disabled="!connected"
+                @click="readWeight"
               >
                 Read
               </b-button>
@@ -78,7 +79,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -130,6 +131,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setCoffeeWeight', 'setTargetRatio', 'setPreInfusion', 'setTotalTime']),
+    ...mapActions(['readWeight']),
     checkOrientation() {
       let aspectRatio = document.getElementById('app').offsetWidth / window.innerHeight
       if (aspectRatio > 3) {

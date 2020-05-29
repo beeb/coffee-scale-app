@@ -87,6 +87,10 @@ export default new Vuex.Store({
       return navigator.bluetooth
         .requestDevice({ filters: [{ name: 'mpy-coffee' }, { services: [parseInt('0x1815')] }] })
         .then((device) => {
+          let bluetoothDevice = device
+          bluetoothDevice.addEventListener('gattserverdisconnected', () => {
+            commit({ type: 'setConnected', connected: false })
+          })
           return device.gatt.connect()
         })
         .then((server) => {
@@ -116,6 +120,9 @@ export default new Vuex.Store({
             })
           })
         })
+    },
+    readWeight({ commit, state }) {
+      commit({ type: 'setCoffeeWeight', weight: state.currentWeight })
     }
   },
   modules: {}
