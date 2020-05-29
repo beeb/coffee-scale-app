@@ -9,6 +9,9 @@ module.exports = {
       orientation: 'landscape'
     }
   },
+  devServer: {
+    https: true
+  },
   pages: {
     index: {
       entry: 'src/main.js',

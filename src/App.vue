@@ -41,15 +41,15 @@ export default {
   },
   mounted() {
     StayAwake.init()
-    /*this.checkBtStatus().catch((error) => {
+    this.checkBtStatus().catch((error) => {
       console.log(error)
       this.$bvToast.toast(error.message, {
         title: 'Bluetooth Error'
       })
-    })*/
+    })
     if ('onavailabilitychanged' in navigator.bluetooth) {
       navigator.bluetooth.addEventListener('availabilitychanged', () => {
-        //this.checkBtStatus()
+        this.checkBtStatus()
       })
     }
   },

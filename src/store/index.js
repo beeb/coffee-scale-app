@@ -21,7 +21,7 @@ const vuexLocalStorage = new VuexPersist({
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
-    btEnabled: true,
+    btEnabled: false,
     connected: false,
     coffeeWeight: 16,
     targetRatio: 2.5,
@@ -72,6 +72,12 @@ export default new Vuex.Store({
     },
     clearCurrentData(state) {
       state.currentData = [{ x: 0, y: 0 }]
+    },
+    resetAppStatus(state) {
+      state.connected = false
+      state.currentWeight = 0.0
+      state.currentTime = 0.0
+      state.currentTime = [{ x: 0, y: 0 }]
     }
   },
   actions: {
@@ -89,7 +95,7 @@ export default new Vuex.Store({
         .then((device) => {
           let bluetoothDevice = device
           bluetoothDevice.addEventListener('gattserverdisconnected', () => {
-            commit({ type: 'setConnected', connected: false })
+            commit({ type: 'resetAppStatus' })
           })
           return device.gatt.connect()
         })
