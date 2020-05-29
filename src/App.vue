@@ -1,5 +1,6 @@
 <template>
-  <b-container id="app" fluid="lg" @click="enableNoSleep">
+  <b-container id="app" fluid="lg" :style="{ position: 'relative' }" @click="enableNoSleep">
+    <Logo></Logo>
     <Settings></Settings>
     <Chart
       :coffee-weight="referenceCurve.coffeeWeight"
@@ -16,10 +17,12 @@
 import StayAwake from 'stayawake.js'
 import Settings from './components/Settings.vue'
 import Chart from './components/Chart.vue'
+import Logo from './components/Logo.vue'
 
 export default {
   name: 'App',
   components: {
+    Logo,
     Settings,
     Chart
   },
@@ -33,9 +36,12 @@ export default {
         totalTime: 30.0
       },
       chartStyles: {
-        height: 'calc(100vh - 15rem)',
+        height: 'calc(100vh - 2rem)',
+        width: 'calc(100% - 2rem)',
         minHeight: '300px',
-        position: 'relative'
+        position: 'absolute',
+        top: '1rem',
+        left: '0'
       }
     }
   },
@@ -70,6 +76,6 @@ export default {
 
 <style lang="scss">
 #app {
-  margin-top: 1rem;
+  min-height: 100vh;
 }
 </style>

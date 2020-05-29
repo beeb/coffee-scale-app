@@ -36,6 +36,7 @@ export default {
         maintainAspectRatio: false,
         events: [],
         legend: {
+          display: false,
           position: 'bottom'
         },
         scales: {
