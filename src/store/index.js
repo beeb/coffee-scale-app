@@ -26,7 +26,8 @@ export default new Vuex.Store({
       state.preInfusion = payload.time
     },
     setTotalTime(state, payload) {
-      state.totalTime = payload.time
+      let val = Math.max(state.preInfusion, payload.time)
+      state.totalTime = val
     }
   },
   actions: {

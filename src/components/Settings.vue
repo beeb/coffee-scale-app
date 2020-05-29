@@ -84,6 +84,7 @@
               id="input-total-time"
               v-model="totalTimeBind"
               type="number"
+              :min="preInfusion"
               lazy-formatter
               :formatter="formatter"
               number
