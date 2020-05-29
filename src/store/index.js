@@ -21,7 +21,7 @@ const vuexLocalStorage = new VuexPersist({
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
-    btEnabled: false,
+    btEnabled: true,
     connected: false,
     coffeeWeight: 16,
     targetRatio: 2.5,
