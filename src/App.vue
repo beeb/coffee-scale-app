@@ -1,5 +1,5 @@
 <template>
-  <b-container id="app" fluid="lg" :style="{ position: 'relative' }" @click="enableNoSleep">
+  <b-container id="app" fluid="lg" :style="{ position: 'relative' }">
     <Logo></Logo>
     <Settings></Settings>
     <Chart :styles="chartStyles"></Chart>
@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import StayAwake from 'stayawake.js'
 import Settings from './components/Settings.vue'
 import Chart from './components/Chart.vue'
 import Logo from './components/Logo.vue'
@@ -40,7 +39,6 @@ export default {
     }
   },
   mounted() {
-    StayAwake.init()
     this.checkBtStatus().catch((error) => {
       console.log(error)
       this.$bvToast.toast(error.message, {
@@ -54,13 +52,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['checkBtStatus']),
-    enableNoSleep() {
-      StayAwake.enable()
-    },
-    disableNoSleep() {
-      StayAwake.disable()
-    }
+    ...mapActions(['checkBtStatus'])
   }
 }
 </script>

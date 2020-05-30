@@ -20,15 +20,20 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import StayAwake from 'stayawake.js'
 
 export default {
   name: 'ConnectButton',
   computed: {
     ...mapState(['btEnabled', 'connected'])
   },
+  mounted() {
+    StayAwake.init()
+  },
   methods: {
     ...mapActions(['connect']),
     onClick() {
+      StayAwake.enable()
       this.connect().catch((error) => {
         console.log(error)
         this.$bvToast.toast(error.message, {
