@@ -2,10 +2,10 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/coffee/' : '/',
   pwa: {
     name: 'Coffee Scale',
-    themeColor: '#7C6D68',
-    msTileColor: '#DD545C',
+    themeColor: '#528078',
+    msTileColor: '#ff6666',
     manifestOptions: {
-      background_color: '#6C5662',
+      background_color: '#ffffff',
       display: 'standalone',
       orientation: 'landscape'
     }
