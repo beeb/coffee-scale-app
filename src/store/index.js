@@ -27,12 +27,21 @@ export default new Vuex.Store({
     targetRatio: 2.5,
     preInfusion: 5.0,
     totalTime: 30.0,
-    currentWeight: 30.0,
+    recording: false,
+    startTimeMs: 0,
+    currentWeight: 0.0,
     currentData: [{ x: 0, y: 0 }]
   },
   getters: {
     targetWeight: (state) => {
       return state.coffeeWeight * state.targetRatio
+    },
+    elapsedTime: (state) => {
+      if (state.startTimeMs === 0) {
+        return 0
+      }
+      let now = new Date().getTime()
+      return (now - state.startTimeMs) / 1000
     }
   },
   mutations: {
@@ -55,8 +64,23 @@ export default new Vuex.Store({
       let val = Math.max(state.preInfusion, payload.time)
       state.totalTime = val
     },
+    setRecording(state, payload) {
+      state.recording = payload.recording
+    },
     setCurrentWeight(state, payload) {
       state.currentWeight = payload.weight
+      let now = new Date().getTime()
+      if (state.recording && state.startTimeMs === 0 && payload.weight > 0) {
+        state.startTimeMs = now - state.preInfusion * 1000
+      }
+      if (state.recording && state.startTimeMs > 0) {
+        let elapsed = (now - state.startTimeMs) / 1000
+        state.currentData.push({ x: elapsed, y: payload.weight })
+      }
+      if (state.recording && state.startTimeMs > 0 && payload.weight < 0.1) {
+        state.recording = false
+        state.startTimeMs = 0
+      }
     },
     addDataPoint(state, payload) {
       state.currentData.push({ x: payload.time, y: payload.weight })
@@ -107,6 +131,10 @@ export default new Vuex.Store({
     },
     readWeight({ commit, state }) {
       commit({ type: 'setCoffeeWeight', weight: state.currentWeight })
+    },
+    startRecording({ commit }) {
+      commit({ type: 'clearCurrentData' })
+      commit({ type: 'setRecording', recording: true })
     }
   },
   modules: {}

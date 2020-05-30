@@ -5,6 +5,7 @@
     <Chart :styles="chartStyles"></Chart>
     <Gauge></Gauge>
     <ConnectButton></ConnectButton>
+    <StartButton></StartButton>
   </b-container>
 </template>
 
@@ -14,6 +15,7 @@ import Chart from './components/Chart.vue'
 import Logo from './components/Logo.vue'
 import Gauge from './components/Gauge.vue'
 import ConnectButton from './components/ConnectButton.vue'
+import StartButton from './components/StartButton.vue'
 
 import { mapActions } from 'vuex'
 
@@ -24,7 +26,8 @@ export default {
     Settings,
     Chart,
     Gauge,
-    ConnectButton
+    ConnectButton,
+    StartButton
   },
   data() {
     return {
