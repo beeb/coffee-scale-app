@@ -56,13 +56,13 @@ export default {
 }
 @keyframes pulse {
   0% {
-    opacity: 100%;
+    opacity: 1;
   }
   50% {
-    opacity: 20%;
+    opacity: 0.2;
   }
   100% {
-    opacity: 100%;
+    opacity: 1;
   }
 }
 </style>
