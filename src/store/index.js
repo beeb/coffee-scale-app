@@ -99,6 +99,7 @@ export default new Vuex.Store({
               weight.addEventListener('characteristicvaluechanged', (ev) => {
                 let bytes = ev.target.value
                 let value = bytes.getInt16(0, false)
+                console.log(value / 100)
                 commit({ type: 'setCurrentWeight', weight: value / 100 })
               })
             })
