@@ -50,7 +50,7 @@ export default {
   padding: 0.5rem;
 }
 </style>
-<style lang="scss">
+<style lang="css">
 .recording-animate {
   animation: pulse 2s infinite;
 }
