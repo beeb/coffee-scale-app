@@ -1,7 +1,12 @@
 <template>
   <div id="logo-status">
     <h1>
-      <b-icon-hexagon-fill v-b-tooltip.hover :variant="iconVariant" :title="tooltipMessage"></b-icon-hexagon-fill
+      <b-icon-hexagon-fill
+        v-b-tooltip.hover
+        :variant="iconVariant"
+        :title="tooltipMessage"
+        :class="{ animate: recording }"
+      ></b-icon-hexagon-fill
       >&nbsp;Brew
     </h1>
   </div>
@@ -13,9 +18,15 @@ import { mapState } from 'vuex'
 export default {
   name: 'Logo',
   computed: {
-    ...mapState(['btEnabled', 'connected']),
+    ...mapState(['btEnabled', 'connected', 'recording']),
     iconVariant() {
-      return this.connected ? 'primary' : this.btEnabled ? 'warning' : 'danger'
+      if (this.recording || !this.btEnabled) {
+        return 'danger'
+      }
+      if (!this.connected) {
+        return 'warning'
+      }
+      return 'primary'
     },
     tooltipMessage() {
       return this.connected
@@ -37,5 +48,19 @@ export default {
   background-color: #fff;
   border-radius: 0.2rem;
   padding: 0.5rem;
+}
+.animate {
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% {
+    opacity: 100%;
+  }
+  50% {
+    opacity: 20%;
+  }
+  100% {
+    opacity: 100%;
+  }
 }
 </style>
