@@ -5,7 +5,7 @@
         v-b-tooltip.hover
         :variant="iconVariant"
         :title="tooltipMessage"
-        :class="{ animate: recording }"
+        :class="{ 'recording-animate': recording }"
       ></b-icon-hexagon-fill
       >&nbsp;Brew
     </h1>
@@ -49,7 +49,9 @@ export default {
   border-radius: 0.2rem;
   padding: 0.5rem;
 }
-.animate {
+</style>
+<style lang="scss">
+.recording-animate {
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
