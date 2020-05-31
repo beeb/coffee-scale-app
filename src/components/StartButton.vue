@@ -1,6 +1,6 @@
 <template>
   <div id="start" v-b-tooltip.hover.v-warning :title="canRecord ? '' : 'Tare scale to enable recording'">
-    <b-button v-if="!recording" :disabled="currentWeight > 0.1" variant="primary" size="sm" @click="onClick">
+    <b-button v-if="!recording && connected" :disabled="!canRecord" variant="primary" size="sm" @click="onClick">
       <small :style="{ fontSize: '0.5rem' }">
         <b-icon-circle-fill :style="{ verticalAlign: 'inherit' }"></b-icon-circle-fill>
       </small>
@@ -17,7 +17,7 @@ export default {
   computed: {
     ...mapState(['connected', 'recording', 'currentWeight']),
     canRecord() {
-      return !this.recording && this.currentWeight <= 0.1
+      return !this.recording && this.currentWeight >= -0.1 && this.currentWeight <= 0.1
     }
   },
   methods: {

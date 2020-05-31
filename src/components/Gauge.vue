@@ -1,6 +1,7 @@
 <template>
   <div id="gauge">
     <VueSvgGauge
+      v-if="connected"
       :start-angle="-110"
       :end-angle="110"
       :value="currentWeight"
@@ -31,7 +32,7 @@ export default {
     VueSvgGauge
   },
   computed: {
-    ...mapState(['currentWeight']),
+    ...mapState(['connected', 'currentWeight']),
     ...mapGetters(['targetWeight'])
   }
 }
