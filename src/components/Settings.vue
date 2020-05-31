@@ -34,15 +34,17 @@
       </b-col>
       <b-col>
         <b-form-group id="target-ratio" label="Target ratio" label-for="input-target-ratio" label-size="sm">
-          <b-form-input
-            id="input-target-ratio"
-            v-model="targetRatioBind"
-            size="sm"
-            type="number"
-            lazy-formatter
-            :formatter="formatter"
-            number
-          ></b-form-input>
+          <b-input-group :append="'= ' + targetWeight + 'g'" size="sm">
+            <b-form-input
+              id="input-target-ratio"
+              v-model="targetRatioBind"
+              size="sm"
+              type="number"
+              lazy-formatter
+              :formatter="formatter"
+              number
+            ></b-form-input>
+          </b-input-group>
         </b-form-group>
       </b-col>
       <b-col>
@@ -79,7 +81,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -90,6 +92,7 @@ export default {
   },
   computed: {
     ...mapState(['connected', 'coffeeWeight', 'targetRatio', 'preInfusion', 'totalTime']),
+    ...mapGetters(['targetWeight']),
     coffeeWeightBind: {
       get() {
         return this.coffeeWeight
