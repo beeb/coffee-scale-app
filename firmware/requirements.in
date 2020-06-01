@@ -1,0 +1,5 @@
+black
+esptool
+flake8
+mypy
+pip-tools
