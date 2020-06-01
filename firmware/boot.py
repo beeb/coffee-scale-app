@@ -3,7 +3,8 @@
 # esp.osdebug(None)
 import machine
 import network
-import webrepl
+
+# import webrepl
 
 
 def do_connect():
@@ -18,5 +19,5 @@ def do_connect():
 
 
 machine.freq(80000000)
-webrepl.start()
-do_connect()
+# webrepl.start()
+# do_connect()
