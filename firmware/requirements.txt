@@ -4,10 +4,11 @@
 #
 #    pip-compile requirements.in
 #
+adafruit-ampy==1.0.7      # via -r requirements.in
 appdirs==1.4.4            # via black
 attrs==19.3.0             # via black
 black==19.10b0            # via -r requirements.in
-click==7.1.2              # via black, pip-tools
+click==7.1.2              # via adafruit-ampy, black, pip-tools
 ecdsa==0.15               # via esptool
 esptool==2.8              # via -r requirements.in
 flake8==3.8.2             # via -r requirements.in
@@ -15,11 +16,12 @@ mccabe==0.6.1             # via flake8
 mypy-extensions==0.4.3    # via mypy
 mypy==0.770               # via -r requirements.in
 pathspec==0.8.0           # via black
-pip-tools==5.1.2          # via -r requirements.in
+pip-tools==5.2.0          # via -r requirements.in
 pyaes==1.6.1              # via esptool
 pycodestyle==2.6.0        # via flake8
 pyflakes==2.2.0           # via flake8
-pyserial==3.4             # via esptool
+pyserial==3.4             # via adafruit-ampy, esptool
+python-dotenv==0.13.0     # via adafruit-ampy
 regex==2020.5.14          # via black
 six==1.15.0               # via ecdsa, pip-tools
 toml==0.10.1              # via black
