@@ -4,6 +4,8 @@ import time
 import bluetooth
 from machine import ADC, Pin
 
+# import esp32
+
 from ble_scales import BLEScales
 
 # from filtering import KalmanFilter
@@ -14,6 +16,10 @@ scales = BLEScales(ble)
 button_pin = Pin(23, Pin.IN)
 vsens_pin = ADC(Pin(34))
 vsens_pin.atten(ADC.ATTN_11DB)
+
+# wake = Pin(14, mode = Pin.IN)
+# esp32.wake_on_ext0(pin = wake, level = esp32.WAKEUP_ANY_HIGH)
+# machine.deepsleep()
 
 
 def vsens_to_percent(v_adc):
