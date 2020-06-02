@@ -34,7 +34,9 @@ class BLEScales:
     def __init__(self, ble, name="mpy-coffee"):
         self._ble = ble
         self._ble.active(True)
+        print('bt activated')
         self._ble.irq(handler=self._irq)
+        print('irq setup')
         ((self._weight_handle,), (self._battery_handle,),) = self._ble.gatts_register_services(
             (_AUTOMATION_IO_SERVICE, _BATTERY_SERVICE)
         )
@@ -42,7 +44,9 @@ class BLEScales:
         self._payload = advertising_payload(
             name=name, services=[_AUTOMATION_IO_UUID, _BATTERY_UUID], appearance=_ADV_APPEARANCE_GENERIC_WEIGHT_SCALE,
         )
+        print('before advertise')
         self._advertise()
+        print('after advertise')
 
     def _irq(self, event, data):
         # Track connections so we can send notifications.

@@ -2,24 +2,25 @@
 import time
 
 import bluetooth
-from machine import ADC, Pin
-
-# import esp32
-
+import esp32
 from ble_scales import BLEScales
+from machine import ADC, Pin, deepsleep
 
 # from filtering import KalmanFilter
+print('reached file')
 
 ble = bluetooth.BLE()
+
+print('bt loaded')
 scales = BLEScales(ble)
+print('scales init')
 # kf = KalmanFilter(0.2, 0.5)
 button_pin = Pin(23, Pin.IN)
 vsens_pin = ADC(Pin(34))
 vsens_pin.atten(ADC.ATTN_11DB)
 
-# wake = Pin(14, mode = Pin.IN)
-# esp32.wake_on_ext0(pin = wake, level = esp32.WAKEUP_ANY_HIGH)
-# machine.deepsleep()
+wake_pin = Pin(36, mode=Pin.IN)
+esp32.wake_on_ext0(pin=wake_pin, level=esp32.WAKEUP_ANY_HIGH)
 
 
 def vsens_to_percent(v_adc):
@@ -57,6 +58,7 @@ def vsens_to_percent(v_adc):
 
 
 def main():
+    print('main reached')
     bat_percent = vsens_to_percent(vsens_pin.read())
     print(bat_percent)
     scales.set_battery_level(bat_percent)
@@ -75,7 +77,11 @@ def main():
 
         if button_pin.value() == 1:
             start = time.ticks_ms()  # tare
-
+        if wake_pin.value() == 1:
+            print('Going to sleep')
+            while wake_pin.value() > 0:
+                time.sleep_ms(100)
+            deepsleep()
         # filtered_weight = kf.update_estimate(filtered_weight)
         # scales.set_weight(filtered_weight, notify=True)
         time.sleep_ms(250)
