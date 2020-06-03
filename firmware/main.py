@@ -78,13 +78,18 @@ def main():
         if button_pin.value() == 1:
             start = time.ticks_ms()  # tare
         if wake_pin.value() == 1:
-            print('Going to sleep')
-            while wake_pin.value() > 0:
-                time.sleep_ms(100)
-            deepsleep()
+            go_to_sleep()
         # filtered_weight = kf.update_estimate(filtered_weight)
         # scales.set_weight(filtered_weight, notify=True)
         time.sleep_ms(250)
+
+
+def go_to_sleep():
+    print('Going to sleep')
+    while wake_pin.value() > 0:
+        time.sleep_ms(100)
+    ble.active(False)
+    deepsleep()
 
 
 if __name__ == "__main__":
