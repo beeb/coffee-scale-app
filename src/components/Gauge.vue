@@ -17,7 +17,7 @@
       :scale-interval="0"
     >
       <div class="inner-text">
-        <span>{{ currentWeight.toFixed(1) }}g</span>
+        <span>{{ currentWeight.toFixed(2) }}g</span>
       </div>
     </VueSvgGauge>
   </div>

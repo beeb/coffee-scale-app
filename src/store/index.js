@@ -70,16 +70,16 @@ export default new Vuex.Store({
     setCurrentWeight(state, payload) {
       state.currentWeight = payload.weight
       let now = new Date().getTime()
-      if (state.recording && state.startTimeMs === 0 && payload.weight > 0) {
+      if (state.recording && state.startTimeMs === 0 && payload.weight > 0.5) {
         state.startTimeMs = now - state.preInfusion * 1000
+      }
+      if (state.recording && state.startTimeMs > 0 && payload.weight < -0.1) {
+        state.recording = false
+        state.startTimeMs = 0
       }
       if (state.recording && state.startTimeMs > 0) {
         let elapsed = (now - state.startTimeMs) / 1000
         state.currentData.push({ x: elapsed, y: payload.weight })
-      }
-      if (state.recording && state.startTimeMs > 0 && payload.weight < 0.1) {
-        state.recording = false
-        state.startTimeMs = 0
       }
     },
     addDataPoint(state, payload) {
