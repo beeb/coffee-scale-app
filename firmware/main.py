@@ -14,13 +14,7 @@ i2c = I2C(-1, scl=Pin(22), sda=Pin(21))
 screen = SSD1306_I2C(width=128, height=32, i2c=i2c)
 screen.fill(0)
 show_sprite(screen, LOGO, 51, 1)
-screen.fill(0)
-show_digit(screen, 8, 12, 1)
-show_digit(screen, 8, 35, 1)
-show_sprite(screen, DOT, 58, 27)
-show_digit(screen, 8, 66, 1)
-show_digit(screen, 8, 89, 1)
-show_sprite(screen, GRAM, 112, 16)
+screen.show()
 
 
 ble = bluetooth.BLE()
@@ -49,6 +43,7 @@ def main():
     scales.set_battery_level(bat_percent)
 
     last = 0
+    last_display = 0
     while True:
         if button_pin.value() == 0:
             hx.tare(times=2)
@@ -58,6 +53,9 @@ def main():
         if time.ticks_diff(now, last) > 100:
             last = now
             scales.set_weight(filtered_weight, notify=True)
+        if time.ticks_diff(now, last_display) > 500:
+            last_display = now
+            display_weight(filtered_weight)
 
 
 def adc_to_percent(v_adc):
@@ -81,6 +79,20 @@ def adc_to_percent(v_adc):
     if v_adc >= 1931:  # 3.3-3.4 = 0-6%
         return int(0.10169492 * v_adc - 196.373)
     return 0
+
+
+def display_weight(weight):
+    screen.fill(0)
+    if weight >= 100:
+        show_digit(screen, 8, 1, 1)
+    if weight >= 10:
+        show_digit(screen, 8, 23, 1)
+    show_digit(screen, 8, 45, 1)
+    show_sprite(screen, DOT, 67, 27)
+    show_digit(screen, 8, 74, 1)
+    show_digit(screen, 8, 96, 1)
+    show_sprite(screen, GRAM, 117, 16)
+    screen.show()
 
 
 if __name__ == "__main__":

@@ -21,7 +21,6 @@ def show_sprite(screen, sprite, x_offset, y_offset):
         for y, row in enumerate(reversed(pixels)):
             for x, c in enumerate(reversed(row)):
                 screen.pixel(x + x_offset + m_offset_x, y + y_offset + m_offset_y, c)
-    screen.show()
 
 
 def show_digit(screen, digit, x_offset, y_offset):
@@ -32,7 +31,6 @@ def show_digit(screen, digit, x_offset, y_offset):
             for x, c, in enumerate(row):
                 if c:
                     screen.pixel(x + x_offset + segment_x, y + y_offset + segment_y, c)
-    screen.show()
 
 
 def mirror_x(array):
