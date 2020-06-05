@@ -18,6 +18,6 @@ def do_connect():
     print('Network config:', sta_if.ifconfig())
 
 
-machine.freq(80000000)
+# machine.freq(80000000)
 # webrepl.start()
 # do_connect()

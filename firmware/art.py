@@ -150,7 +150,6 @@ DIGIT_0 = [
 ]
 
 DIGIT_1 = [
-    SEGMENT_2,
     SEGMENT_4,
     SEGMENT_7,
     SEGMENT_9,

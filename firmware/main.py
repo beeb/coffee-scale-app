@@ -32,7 +32,6 @@ kf.update_estimate(hx.get_units(times=1))
 
 
 def main():
-    print('main reached')
     kf_vsense = KalmanFilter(100, 0.01)
     kf_vsense.last_estimate = vsense_pin.read()
     for i in range(10):
@@ -46,14 +45,14 @@ def main():
     last_display = 0
     while True:
         if button_pin.value() == 0:
-            hx.tare(times=2)
+            hx.tare(times=5)
             kf.last_estimate = 0
         filtered_weight = kf.update_estimate(hx.get_units(times=1))
         now = time.ticks_ms()
         if time.ticks_diff(now, last) > 100:
             last = now
             scales.set_weight(filtered_weight, notify=True)
-        if time.ticks_diff(now, last_display) > 500:
+        if time.ticks_diff(now, last_display) > 213:
             last_display = now
             display_weight(filtered_weight)
 
@@ -83,14 +82,17 @@ def adc_to_percent(v_adc):
 
 def display_weight(weight):
     screen.fill(0)
+    string = '{:.2f}'.format(weight)
     if weight >= 100:
-        show_digit(screen, 8, 1, 1)
+        digit1 = string[-6]
+        show_digit(screen, digit1, 1, 1)
     if weight >= 10:
-        show_digit(screen, 8, 23, 1)
-    show_digit(screen, 8, 45, 1)
+        digit2 = string[-5]
+        show_digit(screen, digit2, 23, 1)
+    show_digit(screen, string[-4], 45, 1)
     show_sprite(screen, DOT, 67, 27)
-    show_digit(screen, 8, 74, 1)
-    show_digit(screen, 8, 96, 1)
+    show_digit(screen, string[-2], 74, 1)
+    show_digit(screen, string[-1], 96, 1)
     show_sprite(screen, GRAM, 117, 16)
     screen.show()
 
