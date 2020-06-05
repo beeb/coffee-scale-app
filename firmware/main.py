@@ -21,7 +21,7 @@ screen.show()
 ble = bluetooth.BLE()
 print('bt loaded')
 scales = BLEScales(ble)
-kf = KalmanFilter(0.2, q=0.1)
+kf = KalmanFilter(0.02, q=0.05)
 button_pin = Pin(0, Pin.IN, Pin.PULL_UP)
 vsense_pin = ADC(Pin(34))
 vsense_pin.atten(ADC.ATTN_11DB)
@@ -51,7 +51,8 @@ def main():
         if button_pin.value() == 0:
             hx.tare(times=5)
             kf.last_estimate = 0
-        filtered_weight = kf.update_estimate(hx.get_units(times=1))
+        raw = hx.get_units(times=1)
+        filtered_weight = kf.update_estimate(raw)
         now = time.ticks_ms()
         if time.ticks_diff(now, last) > 100:
             last = now
@@ -88,6 +89,8 @@ def display_weight():
         string = '{:.2f}'.format(filtered_weight)
         if len(string) > 6:
             string = '{:.1f}'.format(filtered_weight)
+        if string == '-0.00':
+            string = '0.00'
         position = 118
         for char in reversed(string):
             if position < 0:
