@@ -2,6 +2,7 @@
 import time
 import bluetooth
 from machine import ADC, I2C, Pin
+import _thread
 
 from hx711 import HX711
 from ssd1306 import SSD1306_I2C
@@ -20,7 +21,7 @@ screen.show()
 ble = bluetooth.BLE()
 print('bt loaded')
 scales = BLEScales(ble)
-kf = KalmanFilter(0.1, q=0.1)
+kf = KalmanFilter(0.2, q=0.1)
 button_pin = Pin(0, Pin.IN, Pin.PULL_UP)
 vsense_pin = ADC(Pin(34))
 vsense_pin.atten(ADC.ATTN_11DB)
@@ -29,9 +30,11 @@ hx = HX711(dout=14, pd_sck=13)
 hx.set_scale(3082.2)
 hx.tare()
 kf.update_estimate(hx.get_units(times=1))
+filtered_weight = 0
 
 
 def main():
+    global filtered_weight
     kf_vsense = KalmanFilter(100, 0.01)
     kf_vsense.last_estimate = vsense_pin.read()
     for i in range(10):
@@ -41,8 +44,9 @@ def main():
     print(bat_percent)
     scales.set_battery_level(bat_percent)
 
+    _thread.start_new_thread(display_weight, ())
+
     last = 0
-    last_display = 0
     while True:
         if button_pin.value() == 0:
             hx.tare(times=5)
@@ -52,9 +56,6 @@ def main():
         if time.ticks_diff(now, last) > 100:
             last = now
             scales.set_weight(filtered_weight, notify=True)
-        if time.ticks_diff(now, last_display) > 213:
-            last_display = now
-            display_weight(filtered_weight)
 
 
 def adc_to_percent(v_adc):
@@ -80,21 +81,31 @@ def adc_to_percent(v_adc):
     return 0
 
 
-def display_weight(weight):
-    screen.fill(0)
-    string = '{:.2f}'.format(weight)
-    if weight >= 100:
-        digit1 = string[-6]
-        show_digit(screen, digit1, 1, 1)
-    if weight >= 10:
-        digit2 = string[-5]
-        show_digit(screen, digit2, 23, 1)
-    show_digit(screen, string[-4], 45, 1)
-    show_sprite(screen, DOT, 67, 27)
-    show_digit(screen, string[-2], 74, 1)
-    show_digit(screen, string[-1], 96, 1)
-    show_sprite(screen, GRAM, 117, 16)
-    screen.show()
+def display_weight():
+    global filtered_weight
+    while True:
+        screen.fill(0)
+        string = '{:.2f}'.format(filtered_weight)
+        if len(string) > 6:
+            string = '{:.1f}'.format(filtered_weight)
+        position = 118
+        for char in reversed(string):
+            if position < 0:
+                break
+            if char == '-':
+                char = 'MINUS'
+            if char == '.':
+                position -= 7
+                if position < 0:
+                    break
+                show_sprite(screen, DOT, position, 27)
+            else:
+                position -= 22
+                if position < 0:
+                    break
+                show_digit(screen, char, position, 1)
+        show_sprite(screen, GRAM, 117, 16)
+        screen.show()
 
 
 if __name__ == "__main__":

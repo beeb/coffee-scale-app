@@ -136,6 +136,8 @@ SEGMENT_10 = (list(reversed(SEGMENT_1[0])), 1, 26)
 
 SEGMENT_11 = (mirror_x(SEGMENT_10[0]), 10, 26)
 
+DIGIT_MINUS = [SEGMENT_6]
+
 DIGIT_0 = [
     SEGMENT_1,
     SEGMENT_2,
