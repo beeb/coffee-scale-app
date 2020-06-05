@@ -2,64 +2,51 @@
 import time
 
 import bluetooth
-import esp32
 from ble_scales import BLEScales
-from machine import ADC, Pin, deepsleep
+from machine import ADC, Pin
 
-# from filtering import KalmanFilter
-print('reached file')
+from filtering import KalmanFilter
 
 ble = bluetooth.BLE()
-
 print('bt loaded')
 scales = BLEScales(ble)
-print('scales init')
-# kf = KalmanFilter(0.2, 0.5)
-button_pin = Pin(23, Pin.IN)
-vsens_pin = ADC(Pin(34))
-vsens_pin.atten(ADC.ATTN_11DB)
-
-wake_pin = Pin(36, mode=Pin.IN)
-esp32.wake_on_ext0(pin=wake_pin, level=esp32.WAKEUP_ANY_HIGH)
+kf = KalmanFilter(0.2, 0.5)
+button_pin = Pin(0, Pin.IN)
+vsense_pin = ADC(Pin(34))
+vsense_pin.atten(ADC.ATTN_11DB)
 
 
-def vsens_to_percent(v_adc):
-    # battery_voltage = vsens_pin.read() / 572.1  # 2.08V measured = 2380 = 4.16V real
-    # 2403 = 100%
-    # 2346 = 94%
-    # 2288 = 83%
-    # 2231 = 72%
-    # 2174 = 59%
-    # 2117 = 50%
-    # 2060 = 33%
-    # 2002 = 15%
-    # 1945 = 6%
-    # 1888 = 0%
-    if v_adc > 2346:
-        val = int(0.105263 * v_adc - 153)
+def adc_to_percent(v_adc):
+    if v_adc > 2399:  # 4.1-4.2 = 94-100%
+        val = int(0.10169492 * v_adc - 149.966)
         return val if val <= 100 else 100
-    if v_adc > 2288:
-        return int(0.189655 * v_adc - 351)
-    if v_adc > 2231:
-        return int(0.192983 * v_adc - 359)
-    if v_adc > 2174:
-        return int(0.22807 * v_adc - 437)
-    if v_adc > 2117:
-        return int(0.157895 * v_adc - 284)
-    if v_adc > 2060:
-        return int(0.298246 * v_adc - 581)
-    if v_adc > 2002:
-        return int(0.310345 * v_adc - 606)
-    if v_adc > 1945:
-        return int(0.157895 * v_adc - 301)
-    if v_adc >= 1888:
-        return int(0.105263 * v_adc - 198)
+    if v_adc > 2341:  # 4.0-4.1 = 83-94%
+        return int(0.18965517 * v_adc - 360.983)
+    if v_adc > 2282:  # 3.9-4.0 = 72-83%
+        return int(0.18644068 * v_adc - 353.458)
+    if v_adc > 2224:  # 3.8-3.9 = 59-72%
+        return int(0.22413793 * v_adc - 439.483)
+    if v_adc > 2165:  # 3.7-3.8 = 50-59%
+        return int(0.15254237 * v_adc - 280.254)
+    if v_adc > 2107:  # 3.6-3.7 = 33-50%
+        return int(0.29310345 * v_adc - 584.569)
+    if v_adc > 2048:  # 3.5-3.6 = 15-33%
+        return int(0.30508475 * v_adc - 609.814)
+    if v_adc > 1990:  # 3.4-3.5 = 6-15%
+        return int(0.15517241 * v_adc - 302.793)
+    if v_adc >= 1931:  # 3.3-3.4 = 0-6%
+        return int(0.10169492 * v_adc - 196.373)
     return 0
 
 
 def main():
     print('main reached')
-    bat_percent = vsens_to_percent(vsens_pin.read())
+    kf_vsense = KalmanFilter(100, 0.01)
+    filtered_adc = vsense_pin.read()
+    for i in range(10):
+        filtered_adc = kf_vsense.update_estimate(vsense_pin.read())
+        time.sleep_ms(10)
+    bat_percent = adc_to_percent(filtered_adc)
     print(bat_percent)
     scales.set_battery_level(bat_percent)
 
@@ -77,19 +64,10 @@ def main():
 
         if button_pin.value() == 1:
             start = time.ticks_ms()  # tare
-        if wake_pin.value() == 1:
-            go_to_sleep()
+
         # filtered_weight = kf.update_estimate(filtered_weight)
         # scales.set_weight(filtered_weight, notify=True)
         time.sleep_ms(250)
-
-
-def go_to_sleep():
-    print('Going to sleep')
-    while wake_pin.value() > 0:
-        time.sleep_ms(100)
-    ble.active(False)
-    deepsleep()
 
 
 if __name__ == "__main__":
