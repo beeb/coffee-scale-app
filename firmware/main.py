@@ -11,7 +11,7 @@ ble = bluetooth.BLE()
 print('bt loaded')
 scales = BLEScales(ble)
 kf = KalmanFilter(0.2, 0.5)
-button_pin = Pin(0, Pin.IN)
+button_pin = Pin(0, Pin.IN, Pin.PULL_UP)
 vsense_pin = ADC(Pin(34))
 vsense_pin.atten(ADC.ATTN_11DB)
 
@@ -42,10 +42,10 @@ def adc_to_percent(v_adc):
 def main():
     print('main reached')
     kf_vsense = KalmanFilter(100, 0.01)
-    filtered_adc = vsense_pin.read()
+    filtered_adc = kf_vsense.update_estimate(vsense_pin.read())
     for i in range(10):
         filtered_adc = kf_vsense.update_estimate(vsense_pin.read())
-        time.sleep_ms(10)
+        time.sleep_ms(30)
     bat_percent = adc_to_percent(filtered_adc)
     print(bat_percent)
     scales.set_battery_level(bat_percent)
@@ -53,6 +53,7 @@ def main():
     start = time.ticks_ms()
     while True:
         time_delta = time.ticks_diff(time.ticks_ms(), start)
+        print(time_delta)
         if time_delta < 10000:
             scales.set_weight(0, notify=True)
         elif time_delta < 35000:
@@ -62,7 +63,7 @@ def main():
         else:
             start = time.ticks_ms()
 
-        if button_pin.value() == 1:
+        if button_pin.value() == 0:
             start = time.ticks_ms()  # tare
 
         # filtered_weight = kf.update_estimate(filtered_weight)
