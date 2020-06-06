@@ -26,8 +26,8 @@ button_pin = Pin(0, Pin.IN, Pin.PULL_UP)
 vsense_pin = ADC(Pin(34))
 vsense_pin.atten(ADC.ATTN_11DB)
 
-hx = HX711(dout=14, pd_sck=13)
-hx.set_scale(3082.2)
+hx = HX711(dout=14, pd_sck=13, gain=64)
+hx.set_scale(1545.33)
 hx.tare()
 kf.update_estimate(hx.get_units(times=1))
 filtered_weight = 0
