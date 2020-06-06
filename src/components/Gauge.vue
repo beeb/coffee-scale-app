@@ -28,6 +28,7 @@ import { mapState, mapGetters } from 'vuex'
 import { VueSvgGauge } from 'vue-svg-gauge'
 
 export default {
+  name: 'Gauge',
   components: {
     VueSvgGauge
   },

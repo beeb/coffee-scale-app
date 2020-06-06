@@ -23,6 +23,8 @@ export default new Vuex.Store({
   state: {
     btEnabled: false,
     connected: false,
+    btServer: null,
+    batteryLevel: null,
     coffeeWeight: 16,
     targetRatio: 2.5,
     preInfusion: 5.0,
@@ -50,6 +52,12 @@ export default new Vuex.Store({
     },
     setConnected(state, payload) {
       state.connected = payload.connected
+    },
+    setBtServer(state, payload) {
+      state.btServer = payload.server
+    },
+    setBatteryLevel(state, payload) {
+      state.batteryLevel = payload.battery
     },
     setCoffeeWeight(state, payload) {
       state.coffeeWeight = payload.weight
@@ -91,6 +99,7 @@ export default new Vuex.Store({
     resetAppStatus(state) {
       state.connected = false
       state.currentWeight = 0.0
+      state.batteryLevel = null
     }
   },
   actions: {
@@ -104,7 +113,7 @@ export default new Vuex.Store({
     },
     connect({ commit }) {
       return navigator.bluetooth
-        .requestDevice({ filters: [{ name: 'mpy-coffee' }, { services: [parseInt('0x1815')] }] })
+        .requestDevice({ filters: [{ name: 'mpy-coffee' }, { services: [parseInt('0x1815'), parseInt('0x180F')] }] })
         .then((device) => {
           let bluetoothDevice = device
           bluetoothDevice.addEventListener('gattserverdisconnected', () => {
@@ -114,17 +123,19 @@ export default new Vuex.Store({
         })
         .then((server) => {
           commit({ type: 'setConnected', connected: true })
+          commit({ type: 'setBtServer', server: server })
           return server.getPrimaryService(parseInt('0x1815'))
         })
         .then((service) => {
-          return service.getCharacteristic(parseInt('0x2A59')).then((characteristic) => {
-            let weight = characteristic
-            weight.startNotifications().then(() => {
-              weight.addEventListener('characteristicvaluechanged', (ev) => {
-                let bytes = ev.target.value
-                let value = bytes.getInt16(0, false)
-                commit({ type: 'setCurrentWeight', weight: value / 100 })
-              })
+          return service.getCharacteristic(parseInt('0x2A59'))
+        })
+        .then((characteristic) => {
+          let weight = characteristic
+          return weight.startNotifications().then(() => {
+            weight.addEventListener('characteristicvaluechanged', (ev) => {
+              let bytes = ev.target.value
+              let value = bytes.getInt16(0, false)
+              commit({ type: 'setCurrentWeight', weight: value / 100 })
             })
           })
         })
@@ -135,6 +146,24 @@ export default new Vuex.Store({
     startRecording({ commit }) {
       commit({ type: 'clearCurrentData' })
       commit({ type: 'setRecording', recording: true })
+    },
+    getBatteryLevel({ commit, state }) {
+      if (state.btServer === null) {
+        return
+      }
+      return state.btServer
+        .getPrimaryService(parseInt('0x180F'))
+        .then((service) => {
+          return service.getCharacteristic(parseInt('0x2A19'))
+        })
+        .then((characteristic) => {
+          return characteristic.readValue()
+        })
+        .then((value) => {
+          let batteryLevel = value.getUint8(0)
+          console.log(batteryLevel)
+          commit({ type: 'setBatteryLevel', battery: batteryLevel })
+        })
     }
   },
   modules: {}

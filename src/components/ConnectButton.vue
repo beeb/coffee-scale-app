@@ -31,15 +31,24 @@ export default {
     StayAwake.init()
   },
   methods: {
-    ...mapActions(['connect']),
+    ...mapActions(['connect', 'getBatteryLevel']),
     onClick() {
       StayAwake.enable()
-      this.connect().catch((error) => {
-        console.log(error)
-        this.$bvToast.toast(error.message, {
-          title: 'Bluetooth Error'
+      this.connect()
+        .then(() => {
+          this.getBatteryLevel().catch((error) => {
+            console.log(error)
+            this.$bvToast.toast(error.message, {
+              title: 'Bluetooth Error'
+            })
+          })
         })
-      })
+        .catch((error) => {
+          console.log(error)
+          this.$bvToast.toast(error.message, {
+            title: 'Bluetooth Error'
+          })
+        })
     }
   }
 }

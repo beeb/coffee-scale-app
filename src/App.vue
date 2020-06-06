@@ -6,6 +6,7 @@
     <Gauge></Gauge>
     <ConnectButton></ConnectButton>
     <StartButton></StartButton>
+    <Battery></Battery>
   </b-container>
 </template>
 
@@ -16,6 +17,7 @@ import Logo from './components/Logo.vue'
 import Gauge from './components/Gauge.vue'
 import ConnectButton from './components/ConnectButton.vue'
 import StartButton from './components/StartButton.vue'
+import Battery from './components/Battery.vue'
 
 import { mapActions } from 'vuex'
 
@@ -27,7 +29,8 @@ export default {
     Chart,
     Gauge,
     ConnectButton,
-    StartButton
+    StartButton,
+    Battery
   },
   data() {
     return {
