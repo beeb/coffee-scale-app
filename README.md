@@ -2,7 +2,7 @@
 
 This project contains all the necessary software to program the [ESP32 microcontroller](https://learn.sparkfun.com/tutorials/esp32-thing-hookup-guide) and interface with it through a Bluetooth API-enabled web browser (Chrome, Opera).
 
-The `firmware` folder contains the `.py` files that need to be uploaded into the ESP32's memory running the [micropython](https://micropython.org/) interpreter.
+The `firmware` folder contains the `.py` files that need to be uploaded into the ESP32's memory running the [MicroPython](https://micropython.org/) interpreter.
 
 The `src` folder contains the source for the Progressive Web App that allows to retrieve the scale's reading in real time (10Hz refresh rate) as well as the battery level.
 
@@ -34,3 +34,15 @@ The app works as a timer to achieve the desired extraction in the desired time. 
 - The weight is communicated through Bluetooth Low Energy every 100ms
 - The microcontroller can charge a LiPo or Li-ion battery and report its charge level
 - The web-app persists user settings in the browser's local storage
+
+## Aknowledgments
+
+This project was made possible by the following projects and people (amongst others):
+
+[https://github.com/robert-hh/hx711-lopy](hx711-lopy) by robert-hh
+[https://github.com/denyssene/SimpleKalmanFilter](SimpleKalmanFilter) by denyssene
+[https://github.com/hellocomet/vue-svg-gauge](vue-svg-gauge) by hellocomet
+[https://github.com/jamesbachini/StayAwake.js](StayAwake.js) by jamesbachini
+[https://vuejs.org/](Vue.js)
+[https://bootstrap-vue.org/](BootstrapVue)
+[https://micropython.org/](MicroPython)
