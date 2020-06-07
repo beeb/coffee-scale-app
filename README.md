@@ -1,8 +1,8 @@
 # DIY Smart Coffee and Espresso Scale
 
-This project contains all the necessary software to program the micropython microcontroller and interface with it through a Bluetooth API-enabled web browser (Chrome, Opera).
+This project contains all the necessary software to program the [ESP32 microcontroller](https://learn.sparkfun.com/tutorials/esp32-thing-hookup-guide) and interface with it through a Bluetooth API-enabled web browser (Chrome, Opera).
 
-The `firmware` folder contains the `.py` files that need to be uploaded into the ESP32's memory running the micropython interpreter.
+The `firmware` folder contains the `.py` files that need to be uploaded into the ESP32's memory running the [micropython](https://micropython.org/) interpreter.
 
 The `src` folder contains the source for the Progressive Web App that allows to retrieve the scale's reading in real time (10Hz refresh rate) as well as the battery level.
 
