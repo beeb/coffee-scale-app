@@ -20,7 +20,7 @@ screen.show()
 ble = bluetooth.BLE()
 print('bt loaded')
 scales = BLEScales(ble)
-kf = KalmanFilter(0.02, q=0.05)
+kf = KalmanFilter(0.05, q=0.05)
 button_pin = Pin(0, Pin.IN, Pin.PULL_UP)
 vsense_pin = ADC(Pin(34))
 vsense_pin.atten(ADC.ATTN_11DB)
@@ -35,12 +35,10 @@ filtered_weight = 0
 
 def main():
     global filtered_weight, bat_percent
-    kf_vsense = KalmanFilter(100, 0.01)
-    kf_vsense.last_estimate = vsense_pin.read()
+    battery_sum = 0
     for i in range(10):
-        filtered_adc = kf_vsense.update_estimate(vsense_pin.read())
-        time.sleep_ms(30)
-    bat_percent = adc_to_percent(filtered_adc)
+        battery_sum += vsense_pin.read()
+    bat_percent = adc_to_percent(battery_sum / 10)
     scales.set_battery_level(bat_percent)
 
     _thread.start_new_thread(display_weight, ())
@@ -48,14 +46,17 @@ def main():
     last = 0
     while True:
         if button_pin.value() == 0:
-            hx.tare(times=5)
-            kf.last_estimate = 0
-        raw = hx.get_units(times=1)
-        filtered_weight = kf.update_estimate(raw)
+            while button_pin.value() == 0:
+                time.sleep_ms(10)
+            hx.tare(times=15)
+            kf.last_estimate = 0.0
+        weight = hx.get_units(times=1)
+        filtered_weight = kf.update_estimate(weight)
         now = time.ticks_ms()
         if time.ticks_diff(now, last) > 100:
             last = now
-            scales.set_weight(filtered_weight, notify=True)
+            rounded_weight = round(filtered_weight / 0.05) * 0.05
+            scales.set_weight(rounded_weight, notify=True)
 
 
 def adc_to_percent(v_adc):
@@ -85,9 +86,10 @@ def display_weight():
     global filtered_weight, bat_percent
     while True:
         screen.fill(0)
-        string = '{:.2f}'.format(filtered_weight)
+        rounded_weight = round(filtered_weight / 0.05) * 0.05
+        string = '{:.2f}'.format(rounded_weight)
         if len(string) > 6:
-            string = '{:.1f}'.format(filtered_weight)
+            string = '{:.1f}'.format(rounded_weight)
         if string == '-0.00':
             string = '0.00'
         position = 118
