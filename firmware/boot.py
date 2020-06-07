@@ -1,3 +1,6 @@
+# uncomment to setup WiFi connection
+
+"""
 import network
 
 
@@ -12,5 +15,5 @@ def do_connect():
     print('Network config:', sta_if.ifconfig())
 
 
-# uncomment to setup WiFi connection
-# do_connect()
+do_connect()
+"""
