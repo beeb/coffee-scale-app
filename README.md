@@ -34,6 +34,7 @@ The app works as a timer to achieve the desired extraction in the desired time. 
 - The weight is communicated through Bluetooth Low Energy every 100ms
 - The microcontroller can charge a LiPo or Li-ion battery and report its charge level
 - The web-app persists user settings in the browser's local storage
+- Can be added to the home screen of smartphones (_e.g._ with Chrome on Android, look almost like a native app)
 
 ## Acknowledgments
 
