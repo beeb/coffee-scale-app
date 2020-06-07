@@ -20,9 +20,6 @@ export default {
   computed: {
     ...mapState(['btEnabled', 'connected', 'recording']),
     iconVariant() {
-      if (this.recording) {
-        return 'info'
-      }
       if (!this.btEnabled) {
         return 'danger'
       }
