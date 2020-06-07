@@ -26,3 +26,11 @@ The app works as a timer to achieve the desired extraction in the desired time. 
 - As soon as the weight exceeds 0.5g, the timer starts counting from the pre-infusion time (default 5s).
 - The extraction can be followed in real time and should match the grey reference curve (in a direct drive lever machine, the user would adjust the pressure to match the curve)
 - When the extraction is finished, the cup is lifted from the scale, thus stopping the recording.
+
+## Features
+
+- Dual-core microcontroller allows for fast sampling rate of the load cell and fast refresh rate of the 128x32 OLED display
+- Load cell input is filtered with basic Kalman filter for fast response and good smoothing
+- The weight is communicated through Bluetooth Low Energy every 100ms
+- The microcontroller can charge a LiPo or Li-ion battery and report its charge level
+- The web-app persists user settings in the browser's local storage
