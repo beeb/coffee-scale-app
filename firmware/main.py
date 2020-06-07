@@ -7,7 +7,7 @@ import _thread
 from hx711 import HX711
 from ssd1306 import SSD1306_I2C
 
-from art import show_sprite, show_digit, LOGO, GRAM, DOT
+from art import show_sprite, show_digit, LOGO, GRAM, DOT, BATTERY
 from ble_scales import BLEScales
 from filtering import KalmanFilter
 
@@ -17,7 +17,6 @@ screen.fill(0)
 show_sprite(screen, LOGO, 51, 1)
 screen.show()
 
-
 ble = bluetooth.BLE()
 print('bt loaded')
 scales = BLEScales(ble)
@@ -25,6 +24,7 @@ kf = KalmanFilter(0.02, q=0.05)
 button_pin = Pin(0, Pin.IN, Pin.PULL_UP)
 vsense_pin = ADC(Pin(34))
 vsense_pin.atten(ADC.ATTN_11DB)
+bat_percent = 0
 
 hx = HX711(dout=14, pd_sck=13, gain=64)
 hx.set_scale(1545.33)
@@ -34,14 +34,13 @@ filtered_weight = 0
 
 
 def main():
-    global filtered_weight
+    global filtered_weight, bat_percent
     kf_vsense = KalmanFilter(100, 0.01)
     kf_vsense.last_estimate = vsense_pin.read()
     for i in range(10):
         filtered_adc = kf_vsense.update_estimate(vsense_pin.read())
         time.sleep_ms(30)
     bat_percent = adc_to_percent(filtered_adc)
-    print(bat_percent)
     scales.set_battery_level(bat_percent)
 
     _thread.start_new_thread(display_weight, ())
@@ -83,7 +82,7 @@ def adc_to_percent(v_adc):
 
 
 def display_weight():
-    global filtered_weight
+    global filtered_weight, bat_percent
     while True:
         screen.fill(0)
         string = '{:.2f}'.format(filtered_weight)
@@ -108,6 +107,8 @@ def display_weight():
                     break
                 show_digit(screen, char, position, 1)
         show_sprite(screen, GRAM, 117, 16)
+        if bat_percent <= 20:
+            show_sprite(screen, BATTERY, 117, 1)
         screen.show()
 
 
