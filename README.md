@@ -10,10 +10,10 @@ The `src` folder contains the source for the Progressive Web App that allows to 
 
 The app works as a timer to achieve the desired extraction in the desired time. A reference curve is displayed, taking into account the user parameters:
 
-- Coffee Weight: how much coffee grounds were put in the basket (the "Read" button puts the current scale value into this field)
-- Target ratio: the ratio of "coffee out" to "grounds in". The expected output weight is calculated next to the field.
-- Pre-infusion time: this is an amount of time that is added to the timer as soon as >0.5g are detected in the cup. This allows to indicate the desired total brew time including pre-infusion. It's the user responsibility to perform the pre-infusion with this amount of time.
-- Total time: the total brew time, including any pre-infusion.
+- **Coffee Weight**: how much coffee grounds were put in the basket (the "Read" button puts the current scale value into this field)
+- **Target Ratio**: the ratio of "coffee out" to "grounds in". The expected output weight is calculated next to the field.
+- **Pre-infusion Time**: this is an amount of time that is added to the timer as soon as >0.5g are detected in the cup. This allows to indicate the desired total brew time including pre-infusion. It's the user responsibility to perform the pre-infusion with this amount of time.
+- **Total Time**: the total brew time, including any pre-infusion.
 
 ## Workflow
 
