@@ -39,10 +39,10 @@ The app works as a timer to achieve the desired extraction in the desired time. 
 
 This project was made possible by the following projects and people (amongst others):
 
-[https://github.com/robert-hh/hx711-lopy](hx711-lopy) by robert-hh  
-[https://github.com/denyssene/SimpleKalmanFilter](SimpleKalmanFilter) by denyssene  
-[https://github.com/hellocomet/vue-svg-gauge](vue-svg-gauge) by hellocomet  
-[https://github.com/jamesbachini/StayAwake.js](StayAwake.js) by jamesbachini  
-[https://vuejs.org/](Vue.js)  
-[https://bootstrap-vue.org/](BootstrapVue)  
-[https://micropython.org/](MicroPython)
+[hx711-lopy](https://github.com/robert-hh/hx711-lopy) by robert-hh  
+[SimpleKalmanFilter](https://github.com/denyssene/SimpleKalmanFilter) by denyssene  
+[vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge) by hellocomet  
+[StayAwake.js](https://github.com/jamesbachini/StayAwake.js) by jamesbachini  
+[Vue.js](https://vuejs.org/)  
+[BootstrapVue](https://bootstrap-vue.org/)  
+[MicroPython](https://micropython.org/)
