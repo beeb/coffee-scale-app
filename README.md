@@ -35,9 +35,9 @@ The app works as a timer to achieve the desired extraction in the desired time. 
 - The microcontroller can charge a LiPo or Li-ion battery and report its charge level
 - The web-app persists user settings in the browser's local storage
 
-## Aknowledgments
+## Acknowledgments
 
-This project was made possible by the following projects and people (amongst others):
+This project was made possible by the following projects and people (amongst others). Thanks to them!
 
 [hx711-lopy](https://github.com/robert-hh/hx711-lopy) by robert-hh  
 [SimpleKalmanFilter](https://github.com/denyssene/SimpleKalmanFilter) by denyssene  
