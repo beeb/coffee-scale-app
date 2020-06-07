@@ -47,3 +47,8 @@ This project was made possible by the following projects and people (amongst oth
 [Vue.js](https://vuejs.org/)  
 [BootstrapVue](https://bootstrap-vue.org/)  
 [MicroPython](https://micropython.org/)
+
+
+## License
+
+Distributed under the MIT License
