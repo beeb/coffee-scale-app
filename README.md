@@ -1,35 +1,28 @@
-# coffee-scale-app
+# DIY Smart Coffee and Espresso Scale
 
-## Project setup
-```
-yarn install
-```
+This project contains all the necessary software to program the micropython microcontroller and interface with it through a Bluetooth API-enabled web browser (Chrome, Opera).
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+The `firmware` folder contains the `.py` files that need to be uploaded into the ESP32's memory running the micropython interpreter.
 
-### Compiles and minifies for production
-```
-yarn build
-```
+The `src` folder contains the source for the Progressive Web App that allows to retrieve the scale's reading in real time (10Hz refresh rate) as well as the battery level.
 
-### Lints and fixes files
-```
-yarn lint
-```
+## Settings
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The app works as a timer to achieve the desired extraction in the desired time. A reference curve is displayed, taking into account the user parameters:
 
-# Colors
+- Coffee Weight: how much coffee grounds were put in the basket (the "Read" button puts the current scale value into this field)
+- Target ratio: the ratio of "coffee out" to "grounds in". The expected output weight is calculated next to the field.
+- Pre-infusion time: this is an amount of time that is added to the timer as soon as >0.5g are detected in the cup. This allows to indicate the desired total brew time including pre-infusion. It's the user responsibility to perform the pre-infusion with this amount of time.
+- Total time: the total brew time, including any pre-infusion.
 
-- ![primary](https://dummyimage.com/20x20/42b983/42b983.png) `#42b983`
-- ![secondary](https://dummyimage.com/20x20/eed75a/eed75a.png) `#eed75a`
-- ![success](https://dummyimage.com/20x20/FFE869/FFE869.png) `#FFE869`
-- ![danger](https://dummyimage.com/20x20/ff6666/ff6666.png) `#ff6666`
-- ![info](https://dummyimage.com/20x20/528078/528078.png) `#528078`
-- ![warning](https://dummyimage.com/20x20/FEC100/FEC100.png) `#FEC100`
-- ![light](https://dummyimage.com/20x20/fdfbf7/fdfbf7.png) `#fdfbf7`
-- ![dark](https://dummyimage.com/20x20/555555/555555.png) `#555555`
+## Workflow
+
+- The basket or portafilter is put on the scale and tared with the scale's button.
+- The desired amount of coffee grounds is put inside the basket
+- the basket or portafilter is put back on the scales, thereby measuring the weight of the coffee grounds
+- The "Read" button next to the "Coffee Weight" input is clicked to read the current value into it
+- The cup is placed on the scale and it is tared with the button
+- The "Start recording" button is pressed (only available when the scale reads 0g). The app now waits for an increase in weight.
+- As soon as the weight exceeds 0.5g, the timer starts counting from the pre-infusion time (default 5s).
+- The extraction can be followed in real time and should match the grey reference curve (in a direct drive lever machine, the user would adjust the pressure to match the curve)
+- When the extraction is finished, the cup is lifted from the scale, thus stopping the recording.
