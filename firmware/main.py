@@ -27,13 +27,17 @@ vsense_pin.atten(ADC.ATTN_11DB)
 bat_percent = 0
 
 hx = HX711(dout=14, pd_sck=13, gain=64)
-hx.set_scale(1545.33)
+hx.set_scale(1536.41)
 hx.tare()
 kf.update_estimate(hx.get_units(times=1))
 filtered_weight = 0
 
 
 def main():
+    # calibration code below
+    # while True:
+    #    print(hx.read_average(times=100))
+
     global filtered_weight, bat_percent
     battery_sum = 0
     for i in range(10):
