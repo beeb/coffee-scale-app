@@ -64,6 +64,7 @@ export default {
             data: [
               { x: 0, y: 0 },
               { x: this.preInfusion, y: 0 },
+              { x: Math.max(0.93 * this.totalTime, this.preInfusion), y: 0.95 * this.targetWeight },
               { x: this.totalTime, y: this.targetWeight },
               { x: this.totalTime + 10, y: this.targetWeight }
             ]

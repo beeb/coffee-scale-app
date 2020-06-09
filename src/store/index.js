@@ -22,7 +22,7 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     btEnabled: false,
-    connected: false,
+    connected: true,
     btServer: null,
     batteryLevel: null,
     coffeeWeight: 16,
