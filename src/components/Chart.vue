@@ -59,13 +59,20 @@ export default {
             borderColor: '#555555',
             fill: true,
             showLine: true,
-            cubicInterpolationMode: 'monotone',
+            lineTension: 0.25,
             pointRadius: 0,
             data: [
               { x: 0, y: 0 },
               { x: this.preInfusion, y: 0 },
-              { x: Math.max(0.93 * this.totalTime, this.preInfusion), y: 0.95 * this.targetWeight },
-              { x: this.totalTime, y: this.targetWeight },
+              {
+                x: Math.max(this.preInfusion + 0.03 * (this.totalTime - this.preInfusion), this.preInfusion),
+                y: 0.02 * this.targetWeight
+              },
+              {
+                x: Math.max(this.preInfusion + 0.97 * (this.totalTime - this.preInfusion), this.preInfusion),
+                y: 0.98 * this.targetWeight
+              },
+              { x: Math.max(this.totalTime, this.preInfusion), y: this.targetWeight },
               { x: this.totalTime + 10, y: this.targetWeight }
             ]
           }

@@ -69,8 +69,7 @@ export default new Vuex.Store({
       state.preInfusion = payload.time
     },
     setTotalTime(state, payload) {
-      let val = Math.max(state.preInfusion, payload.time)
-      state.totalTime = val
+      state.totalTime = payload.time
     },
     setRecording(state, payload) {
       state.recording = payload.recording

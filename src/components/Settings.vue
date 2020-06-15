@@ -23,7 +23,7 @@
             </b-input-group-prepend>
             <b-form-input
               id="input-coffee-weight"
-              v-model="coffeeWeightBind"
+              v-model.lazy="coffeeWeightBind"
               type="number"
               lazy-formatter
               :formatter="formatter"
@@ -34,10 +34,10 @@
       </b-col>
       <b-col>
         <b-form-group id="target-ratio" label="Target ratio" label-for="input-target-ratio" label-size="sm">
-          <b-input-group :append="'= ' + targetWeight + 'g'" size="sm">
+          <b-input-group :append="'= ' + targetWeight.toFixed(2) + 'g'" size="sm">
             <b-form-input
               id="input-target-ratio"
-              v-model="targetRatioBind"
+              v-model.lazy="targetRatioBind"
               size="sm"
               type="number"
               lazy-formatter
@@ -52,7 +52,7 @@
           <b-input-group append="s" size="sm">
             <b-form-input
               id="input-pre-infusion"
-              v-model="preInfusionBind"
+              v-model.lazy="preInfusionBind"
               type="number"
               lazy-formatter
               :formatter="formatter"
@@ -66,9 +66,8 @@
           <b-input-group append="s" size="sm">
             <b-form-input
               id="input-total-time"
-              v-model="totalTimeBind"
+              v-model.lazy="totalTimeBind"
               type="number"
-              :min="preInfusion"
               lazy-formatter
               :formatter="formatter"
               number
