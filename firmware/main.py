@@ -27,7 +27,7 @@ vsense_pin.atten(ADC.ATTN_11DB)
 bat_percent = 0
 
 hx = HX711(dout=14, pd_sck=13, gain=64)
-hx.set_scale(1536.41)
+hx.set_scale(1544.667)
 hx.tare()
 kf.update_estimate(hx.get_units(times=1))
 filtered_weight = 0
