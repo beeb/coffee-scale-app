@@ -8,6 +8,10 @@ module.exports = {
       background_color: '#ffffff',
       display: 'standalone',
       orientation: 'landscape'
+    },
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      swSrc: 'src/service-worker.js'
     }
   },
   devServer: {
