@@ -1,15 +1,15 @@
 /* eslint-disable no-undef */
 // service-worker.js
 
-workbox.core.setCacheNameDetails({ prefix: 'd4' })
+workbox.core.setCacheNameDetails({ prefix: 'coffee-scale-app' })
 //Change this value every time before you build
-const LATEST_VERSION = '1.0.5'
+const LATEST_VERSION = '1.0.7'
 self.addEventListener('activate', () => {
   console.log(`%c ${LATEST_VERSION} `, 'background: #ddd; color: #0000ff')
   if (caches) {
     caches.keys().then((arr) => {
       arr.forEach((key) => {
-        if (key.indexOf('d4-precache') < -1) {
+        if (key.indexOf('coffee-scale-app-precache') < -1) {
           caches.delete(key).then(() => console.log(`%c Cleared ${key}`, 'background: #333; color: #ff0000'))
         } else {
           caches.open(key).then((cache) => {
@@ -33,7 +33,7 @@ self.addEventListener('activate', () => {
   }
 })
 
-workbox.skipWaiting()
+workbox.core.skipWaiting()
 workbox.clientsClaim()
 
 self.__precacheManifest = [].concat(self.__precacheManifest || [])
