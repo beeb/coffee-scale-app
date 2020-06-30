@@ -65,8 +65,12 @@ export default {
               { x: 0, y: 0 },
               { x: this.preInfusion, y: 0 },
               {
-                x: Math.max(this.preInfusion + 0.03 * (this.totalTime - this.preInfusion), this.preInfusion),
-                y: 0.02 * this.targetWeight
+                x: Math.max(this.preInfusion + 0.125 * (this.totalTime - this.preInfusion), this.preInfusion),
+                y: 0.05 * this.targetWeight
+              },
+              {
+                x: Math.max(this.preInfusion + 0.25 * (this.totalTime - this.preInfusion), this.preInfusion),
+                y: 0.15 * this.targetWeight
               },
               {
                 x: Math.max(this.preInfusion + 0.97 * (this.totalTime - this.preInfusion), this.preInfusion),
