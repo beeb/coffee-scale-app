@@ -3,7 +3,7 @@
 
 workbox.core.setCacheNameDetails({ prefix: 'coffee-scale-app' })
 //Change this value every time before you build
-const LATEST_VERSION = '1.0.7'
+const LATEST_VERSION = '1.0.8'
 self.addEventListener('activate', () => {
   console.log(`%c ${LATEST_VERSION} `, 'background: #ddd; color: #0000ff')
   if (caches) {
