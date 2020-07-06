@@ -36,16 +36,20 @@ The app works as a timer to achieve the desired extraction in the desired time. 
 - The web-app persists user settings in the browser's local storage
 - Can be added to the home screen of smartphones (_e.g._ with Chrome on Android, look almost like a native app)
 
+## Design files
+
+The 3D printable parts are available from the [prusaprinters page of this project](https://www.prusaprinters.org/prints/36112-diy-bluetooth-coffeeespresso-scale).
+
 ## Acknowledgments
 
 This project was made possible by the following projects and people (amongst others). Thanks to them!
 
-[hx711-lopy](https://github.com/robert-hh/hx711-lopy) by robert-hh  
-[SimpleKalmanFilter](https://github.com/denyssene/SimpleKalmanFilter) by denyssene  
-[vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge) by hellocomet  
-[StayAwake.js](https://github.com/jamesbachini/StayAwake.js) by jamesbachini  
-[Vue.js](https://vuejs.org/)  
-[BootstrapVue](https://bootstrap-vue.org/)  
+[hx711-lopy](https://github.com/robert-hh/hx711-lopy) by robert-hh
+[SimpleKalmanFilter](https://github.com/denyssene/SimpleKalmanFilter) by denyssene
+[vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge) by hellocomet
+[StayAwake.js](https://github.com/jamesbachini/StayAwake.js) by jamesbachini
+[Vue.js](https://vuejs.org/)
+[BootstrapVue](https://bootstrap-vue.org/)
 [MicroPython](https://micropython.org/)
 
 
