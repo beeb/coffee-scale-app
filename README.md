@@ -6,6 +6,8 @@ The `firmware` folder contains the `.py` files that need to be uploaded into the
 
 The `src` folder contains the source for the Progressive Web App that allows to retrieve the scale's reading in real time (10Hz refresh rate) as well as the battery level.
 
+The application is hosted at [beeb.li/coffee](https://beeb.li/coffee) for convenience of users desiring building the scale.
+
 ## Settings
 
 The app works as a timer to achieve the desired extraction in the desired time. A reference curve is displayed, taking into account the user parameters:
