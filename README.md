@@ -44,13 +44,13 @@ The 3D printable parts are available from the [prusaprinters page of this projec
 
 This project was made possible by the following projects and people (amongst others). Thanks to them!
 
-[hx711-lopy](https://github.com/robert-hh/hx711-lopy) by robert-hh
-[SimpleKalmanFilter](https://github.com/denyssene/SimpleKalmanFilter) by denyssene
-[vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge) by hellocomet
-[StayAwake.js](https://github.com/jamesbachini/StayAwake.js) by jamesbachini
-[Vue.js](https://vuejs.org/)
-[BootstrapVue](https://bootstrap-vue.org/)
-[MicroPython](https://micropython.org/)
+- [hx711-lopy](https://github.com/robert-hh/hx711-lopy) by robert-hh
+- [SimpleKalmanFilter](https://github.com/denyssene/SimpleKalmanFilter) by denyssene
+- [vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge) by hellocomet
+- [StayAwake.js](https://github.com/jamesbachini/StayAwake.js) by jamesbachini
+- [Vue.js](https://vuejs.org/)
+- [BootstrapVue](https://bootstrap-vue.org/)
+- [MicroPython](https://micropython.org/)
 
 
 ## License
