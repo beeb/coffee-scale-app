@@ -1,3 +1,5 @@
+![alt text](https://github.com/beeb/coffee-scale-app/blob/master/screenshot.jpg?raw=true)
+
 # DIY Smart Coffee and Espresso Scale
 
 This project contains all the necessary software to program the [ESP32 microcontroller](https://learn.sparkfun.com/tutorials/esp32-thing-hookup-guide) and interface with it through a Bluetooth API-enabled web browser (Chrome, Opera).
