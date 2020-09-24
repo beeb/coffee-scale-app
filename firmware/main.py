@@ -1,15 +1,17 @@
 """Main file running on the scales ESP32."""
 import time
-import bluetooth
-from machine import ADC, I2C, Pin
+
 import _thread
-
-from hx711 import HX711
-from ssd1306 import SSD1306_I2C
-
-from art import show_sprite, show_digit, LOGO, GRAM, DOT, BATTERY
+import bluetooth
+import micropython
+from art import BATTERY, DOT, GRAM, LOGO, show_digit, show_sprite
 from ble_scales import BLEScales
 from filtering import KalmanFilter
+from hx711 import HX711
+from machine import ADC, I2C, Pin
+from ssd1306 import SSD1306_I2C
+
+micropython.alloc_emergency_exception_buf(100)
 
 i2c = I2C(-1, scl=Pin(22), sda=Pin(21))
 screen = SSD1306_I2C(width=128, height=32, i2c=i2c)
@@ -33,12 +35,18 @@ kf.update_estimate(hx.get_units(times=1))
 filtered_weight = 0
 
 
+def tare_callback(pin):
+    global hx, kf
+    hx.tare(times=3)
+    kf.last_estimate = 0.0
+
+
 def main():
     # calibration code below
     # while True:
     #    print(hx.read_average(times=100))
 
-    global filtered_weight, bat_percent
+    global filtered_weight, bat_percent, scales, button_pin, hx, kf
     battery_sum = 0
     for i in range(10):
         battery_sum += vsense_pin.read()
@@ -47,13 +55,10 @@ def main():
 
     _thread.start_new_thread(display_weight, ())
 
+    button_pin.irq(trigger=Pin.IRQ_FALLING, handler=tare_callback)
+
     last = 0
     while True:
-        if button_pin.value() == 0:
-            while button_pin.value() == 0:
-                time.sleep_ms(10)
-            hx.tare(times=15)
-            kf.last_estimate = 0.0
         weight = hx.get_units(times=1)
         filtered_weight = kf.update_estimate(weight)
         now = time.ticks_ms()
