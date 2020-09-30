@@ -35,7 +35,7 @@ class BLEScales:
         self._ble = ble
         self._ble.active(True)
         print('bt activated')
-        self._ble.irq(handler=self._irq)
+        self._ble.irq(self._irq)
         ((self._weight_handle,), (self._battery_handle,),) = self._ble.gatts_register_services(
             (_AUTOMATION_IO_SERVICE, _BATTERY_SERVICE)
         )
