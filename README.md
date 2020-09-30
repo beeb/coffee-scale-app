@@ -5,7 +5,10 @@
 This project contains all the necessary software to program the [ESP32 microcontroller](https://learn.sparkfun.com/tutorials/esp32-thing-hookup-guide) and interface with it through a Bluetooth API-enabled web browser (Chrome, Opera).
 
 The `firmware` folder contains the `.py` files that need to be uploaded into the ESP32's memory running the [MicroPython](https://micropython.org/) interpreter.
-To upload the files to the microcontroller, either use [WebREPL](https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html) or [ampy](https://github.com/scientifichackers/ampy)
+
+The firmware code has been tested on [`esp32-idf4-20200930-unstable-v1.13-77-g0fd0eb00a.bin`](https://micropython.org/download/esp32/) and can be flashed with [esptool](https://github.com/espressif/esptool) according to the instructions on the micropython site.
+
+To upload the source files to the microcontroller, either use [WebREPL](https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html) or [ampy](https://github.com/scientifichackers/ampy).
 
 The `src` folder contains the source for the Progressive Web App that allows to retrieve the scale's reading in real time (10Hz refresh rate) as well as the battery level.
 
