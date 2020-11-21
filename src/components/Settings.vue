@@ -1,6 +1,6 @@
 <template>
   <b-form id="params-form" :style="{ width: width }" :class="{ 'white-bg': cols == 4 }">
-    <b-row align-v="center" :cols="cols">
+    <b-row v-if="!recording" align-v="center" :cols="cols">
       <b-col>
         <b-form-group
           id="coffee-weight"
@@ -90,7 +90,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['connected', 'coffeeWeight', 'targetRatio', 'preInfusion', 'totalTime']),
+    ...mapState(['connected', 'recording', 'coffeeWeight', 'targetRatio', 'preInfusion', 'totalTime']),
     ...mapGetters(['targetWeight']),
     coffeeWeightBind: {
       get() {
