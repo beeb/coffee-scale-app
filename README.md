@@ -6,7 +6,7 @@ This project contains all the necessary software to program the [ESP32 microcont
 
 The `firmware` folder contains the `.py` files that need to be uploaded into the ESP32's memory running the [MicroPython](https://micropython.org/) interpreter.
 
-The firmware code has been tested on [`esp32-idf4-20200930-unstable-v1.13-77-g0fd0eb00a.bin`](https://micropython.org/download/esp32/) and can be flashed with [esptool](https://github.com/espressif/esptool) according to the instructions on the micropython site.
+The firmware code has been tested on [`esp32-idf4-20200930-unstable-v1.13-77-g0fd0eb00a.bin`](https://micropython.org/download/esp32/) (later version should work too) and can be flashed with [esptool](https://github.com/espressif/esptool) according to the instructions on the micropython site.
 
 To upload the source files to the microcontroller, either use [WebREPL](https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html) or [ampy](https://github.com/scientifichackers/ampy).
 
