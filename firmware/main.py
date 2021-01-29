@@ -42,11 +42,12 @@ def tare_callback(pin):
 
 
 def main():
-    # calibration code below
+    global filtered_weight, bat_percent, scales, button_pin, hx, kf
+
+    # uncomment next 2 lines to get a load cell reading for calibration (in the console/serial)
     # while True:
     #    print(hx.read_average(times=100))
 
-    global filtered_weight, bat_percent, scales, button_pin, hx, kf
     battery_sum = 0
     for i in range(10):
         battery_sum += vsense_pin.read()
