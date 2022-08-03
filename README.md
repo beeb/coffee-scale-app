@@ -48,6 +48,12 @@ The app works as a timer to achieve the desired extraction in the desired time. 
 
 The 3D printable parts are available from the [prusaprinters page of this project](https://www.prusaprinters.org/prints/36112-diy-bluetooth-coffeeespresso-scale).
 
+## Forked version for ESP32 Feather breakout
+
+User Nkawu forked part of this repo at the following location: https://github.com/Nkawu/coffee-scale-firmware
+
+This alternative version uses a different microcontroller board and doesn't have any power button, as well as two tactile function buttons.
+
 ## Acknowledgments
 
 This project was made possible by the following projects and people (amongst others). Thanks to them!
