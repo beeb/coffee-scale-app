@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/coffee/' : '/',
+  publicPath: '/',
   pwa: {
     name: 'Coffee Scale',
     themeColor: '#528078',
