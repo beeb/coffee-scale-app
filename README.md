@@ -12,7 +12,7 @@ To upload the source files to the microcontroller, either use [WebREPL](https://
 
 The `src` folder contains the source for the Progressive Web App that allows to retrieve the scale's reading in real time (10Hz refresh rate) as well as the battery level.
 
-The application is hosted at [beeb.li/coffee](https://beeb.li/coffee) for convenience of users desiring building the scale.
+The application is hosted at [coffee.beeb.li](https://coffee.beeb.li) for convenience of users desiring building the scale.
 
 ## Settings
 
