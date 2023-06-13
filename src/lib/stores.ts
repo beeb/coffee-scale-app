@@ -1,5 +1,8 @@
 import { derived, writable } from 'svelte/store'
 
+export const btEnabled = writable(false)
+export const btConnected = writable(false)
+
 export const coffeeWeight = writable(18.0)
 export const targetRatio = writable(2.0)
 export const preInfusion = writable(5.0)
