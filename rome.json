@@ -11,5 +11,8 @@
 			"quoteStyle": "single",
 			"semicolons": "asNeeded"
 		}
+	},
+	"files": {
+		"ignore": [".svelte-kit/*", "node_modules/*"]
 	}
 }
