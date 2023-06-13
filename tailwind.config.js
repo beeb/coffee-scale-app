@@ -4,5 +4,17 @@ export default {
 	theme: {
 		extend: {},
 	},
-	plugins: [],
+	plugins: [require('daisyui')],
+	daisyui: {
+		themes: [
+			{
+				emerald: {
+					...require('daisyui/src/theming/themes')['[data-theme=emerald]'],
+					primary: '#42b983',
+					'primary-content': '#ffffff',
+					'--btn-text-case': 'none',
+				},
+			},
+		],
+	},
 }
