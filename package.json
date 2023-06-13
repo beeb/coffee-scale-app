@@ -12,6 +12,7 @@
 	},
 	"devDependencies": {
 		"@iconify-json/mingcute": "^1.1.6",
+		"@macfja/svelte-persistent-store": "^2.3.0",
 		"@sveltejs/adapter-static": "^2.0.2",
 		"@sveltejs/kit": "^1.20.2",
 		"autoprefixer": "^10.4.14",
