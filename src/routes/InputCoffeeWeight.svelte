@@ -4,7 +4,7 @@
 
 <div class="form-control w-full max-w-[12rem]">
   <label class="label" for="coffee-weight">
-    <span class="label-text text-xs md:text-sm">Coffee weight</span>
+    <span class="label-text text-sm">Coffee weight</span>
   </label>
   <div class="join">
     <button type="button" class="btn btn-primary join-item btn-sm">Read</button>

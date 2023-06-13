@@ -6,7 +6,7 @@
 
 <div class="form-control w-full max-w-[12rem]">
   <label class="label" for="coffee-weight">
-    <span class="label-text text-xs md:text-sm">Target ratio</span>
+    <span class="label-text text-sm">Target ratio</span>
   </label>
   <div class="join">
     <input
