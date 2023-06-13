@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { preInfusion, totalTime, targetWeight } from '$lib/stores'
+  import { preInfusion, totalTime, targetWeight, chartData } from '$lib/stores'
   import { Chart, registerables, type ChartItem } from 'chart.js'
-  import { onMount } from 'svelte'
+  import { afterUpdate, onMount } from 'svelte'
 
   let chart: Chart | null = null
   let chartRef: ChartItem
@@ -34,6 +34,17 @@
     ]
   }
 
+  $: chartDataset = {
+    label: 'Target',
+    backgroundColor: '#fdfbf788',
+    borderColor: '#555555',
+    fill: true,
+    showLine: true,
+    lineTension: 0.25,
+    pointRadius: 0,
+    data: $chartData
+  }
+
   onMount(() => {
     Chart.register(...registerables)
     chart = new Chart(chartRef, {
@@ -58,13 +69,21 @@
         }
       },
       data: {
-        datasets: [targetDataset]
+        datasets: []
       }
     })
     return () => {
       chart?.destroy()
       chart = null
     }
+  })
+
+  afterUpdate(() => {
+    if (!chart) return
+
+    chart.data.datasets[0] = targetDataset
+    chart.data.datasets[1] = chartDataset
+    chart.update('none')
   })
 </script>
 
