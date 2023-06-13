@@ -1,4 +1,4 @@
-![alt text](https://github.com/beeb/coffee-scale-app/blob/master/screenshot.jpg?raw=true)
+![alt text](./screenshot.jpg)
 
 # DIY Smart Coffee and Espresso Scale
 
