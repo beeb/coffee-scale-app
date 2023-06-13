@@ -88,6 +88,6 @@
   })
 </script>
 
-<div class="p-4 w-full h-full relative">
+<div class="p-2 w-full h-full relative">
   <canvas bind:this={chartRef} />
 </div>
