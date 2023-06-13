@@ -1,7 +1,5 @@
 <script>
-  import { targetRatio, coffeeWeight } from '$lib/stores'
-
-  $: outWeight = $targetRatio * $coffeeWeight
+  import { targetRatio, coffeeWeight, targetWeight } from '$lib/stores'
 </script>
 
 <div class="form-control w-full max-w-[12rem]">
@@ -17,6 +15,8 @@
       step="0.05"
       class="input input-bordered input-sm w-full max-w-xs join-item"
     />
-    <div class="join-item bg-base-200 px-3 text-sm inline-flex items-center flex-none">= {outWeight.toFixed(2)}g</div>
+    <div class="join-item bg-base-200 px-3 text-sm inline-flex items-center flex-none">
+      = {$targetWeight.toFixed(2)}g
+    </div>
   </div>
 </div>

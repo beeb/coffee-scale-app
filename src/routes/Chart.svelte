@@ -36,12 +36,13 @@
 
   $: chartDataset = {
     label: 'Target',
-    backgroundColor: '#fdfbf788',
-    borderColor: '#555555',
-    fill: true,
+    backgroundColor: '#63e792',
+    borderColor: '#63e792',
+    fill: false,
     showLine: true,
-    lineTension: 0.25,
+    lineTension: 0,
     pointRadius: 0,
+    borderCapStyle: 'round',
     data: $chartData
   }
 
