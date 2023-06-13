@@ -8,7 +8,7 @@
 
 <div class="flex flex-col bg-base-100 p-4 h-full">
   <div class="absolute top-2 right-2">
-    <label for="form-drawer" class="btn btn-sm btn-ghost btn-square" aria-label="Close drawer">
+    <label for="form-drawer" class="btn btn-sm btn-ghost btn-square" aria-label="Close settings drawer">
       <ArrowRight class="h-6 w-6" />
     </label>
   </div>

@@ -14,8 +14,8 @@
     <div class="absolute max-w-7xl inset-0">
       <Title />
       <div class="absolute right-10 bottom-20">
-        <label for="form-drawer" class="btn btn-neutral drawer-button btn-square" aria-label="Open drawer">
-          <Settings class="h-6 w-6" />
+        <label for="form-drawer" class="btn btn-neutral drawer-button" aria-label="Open settings drawer">
+          <Settings class="h-6 w-6" /> Settings
         </label>
       </div>
     </div>
