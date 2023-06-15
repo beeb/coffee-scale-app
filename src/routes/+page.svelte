@@ -6,6 +6,7 @@
   import { Toaster } from 'svelte-french-toast'
   import Settings from 'virtual:icons/mingcute/settings-1-line'
   import StartButton from './StartButton.svelte'
+  import Gauge from './Gauge.svelte'
 </script>
 
 <div class="w-full h-full max-w-7xl mx-auto relative drawer drawer-end">
@@ -19,7 +20,12 @@
           <Settings class="h-6 w-6" /> Settings
         </label>
       </div>
-      <StartButton />
+      <div class="absolute left-20 bottom-20">
+        <StartButton />
+      </div>
+      <div class="absolute left-20 top-[calc(50%-10rem)]">
+        <Gauge />
+      </div>
     </div>
   </div>
   <div class="drawer-side">
