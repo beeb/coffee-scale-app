@@ -23,9 +23,17 @@
       <div class="absolute left-20 bottom-20">
         <StartButton />
       </div>
-      <div class="absolute left-20 top-[calc(50%-10rem)]">
-        <Gauge>
-          <span>10.00g</span>
+      <div class="absolute left-20 top-[calc(50%-7rem)] w-56">
+        <Gauge
+          startAngle={-110}
+          endAngle={110}
+          value={12}
+          max={45}
+          separatorStep={45 / 4}
+          innerRadius={70}
+          scaleInterval={0}
+        >
+          <div class="w-full h-full text-3xl font-bold text-center mt-16">10.00g</div>
         </Gauge>
       </div>
     </div>

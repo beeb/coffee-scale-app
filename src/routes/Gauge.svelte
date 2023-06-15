@@ -151,11 +151,9 @@
         <circle r={innerRadius} cx={xCenter} cy={yCenter} fill="black" />
 
         {#if Array.isArray(separatorPathsValue)}
-          <template>
-            {#each separatorPathsValue as separator}
-              <path d={separator} fill="black" />
-            {/each}
-          </template>
+          {#each separatorPathsValue as separator}
+            <path d={separator} fill="black" />
+          {/each}
         {/if}
       </mask>
     </defs>
@@ -178,11 +176,9 @@
       {/if}
     </g>
     {#if Array.isArray(scaleLinesValue)}
-      <template>
-        {#each scaleLinesValue as line (line.xE)}
-          <line x1={line.xS} y1={line.yS} x2={line.xE} y2={line.yE} stroke-width="1" stroke={baseColor} />
-        {/each}
-      </template>
+      {#each scaleLinesValue as line (line.xE)}
+        <line x1={line.xS} y1={line.yS} x2={line.xE} y2={line.yE} stroke-width="1" stroke={baseColor} />
+      {/each}
     {/if}
     <foreignObject x="0" y="0" width="100%" {height}>
       <slot />
