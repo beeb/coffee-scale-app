@@ -150,7 +150,7 @@
 
         <circle r={innerRadius} cx={xCenter} cy={yCenter} fill="black" />
 
-        {#if separatorPathsValue !== null}
+        {#if Array.isArray(separatorPathsValue)}
           <template>
             {#each separatorPathsValue as separator}
               <path d={separator} fill="black" />
@@ -177,7 +177,7 @@
         <path d={gaugePath} fill={baseColor} filter="url(#innershadow)" />
       {/if}
     </g>
-    {#if scaleLinesValue !== null}
+    {#if Array.isArray(scaleLinesValue)}
       <template>
         {#each scaleLinesValue as line (line.xE)}
           <line x1={line.xS} y1={line.yS} x2={line.xE} y2={line.yE} stroke-width="1" stroke={baseColor} />

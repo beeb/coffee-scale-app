@@ -24,7 +24,9 @@
         <StartButton />
       </div>
       <div class="absolute left-20 top-[calc(50%-10rem)]">
-        <Gauge />
+        <Gauge>
+          <span>10.00g</span>
+        </Gauge>
       </div>
     </div>
   </div>
