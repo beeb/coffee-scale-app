@@ -23,7 +23,7 @@
       <div class="absolute left-20 bottom-20">
         <StartButton />
       </div>
-      <div class="absolute left-20 top-[calc(50%-7rem)] w-56">
+      <div class="absolute left-20 top-[calc(50%-5rem)] w-48">
         <Gauge
           startAngle={-110}
           endAngle={110}
