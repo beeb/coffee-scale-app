@@ -5,6 +5,7 @@
   import Title from './Title.svelte'
   import { Toaster } from 'svelte-french-toast'
   import Settings from 'virtual:icons/mingcute/settings-1-line'
+  import StartButton from './StartButton.svelte'
 </script>
 
 <div class="w-full h-full max-w-7xl mx-auto relative drawer drawer-end">
@@ -18,6 +19,7 @@
           <Settings class="h-6 w-6" /> Settings
         </label>
       </div>
+      <StartButton />
     </div>
   </div>
   <div class="drawer-side">
