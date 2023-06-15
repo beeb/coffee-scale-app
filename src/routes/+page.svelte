@@ -33,7 +33,7 @@
           innerRadius={70}
           scaleInterval={0}
         >
-          <div class="w-full h-full text-3xl font-bold text-center mt-16">10.00g</div>
+          <div class="w-full h-full text-3xl font-bold text-center mt-16">12.00g</div>
         </Gauge>
       </div>
     </div>

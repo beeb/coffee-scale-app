@@ -1,4 +1,8 @@
 <script lang="ts">
+  /*
+  This gauge is based on the amazing work of [vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge/).
+  */
+
   type ColorStop = { offset: number; color: `#${string}` }
 
   const radius = 100
