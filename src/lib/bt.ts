@@ -1,5 +1,5 @@
 import { browser } from '$app/environment'
-import { batteryLevel, btConnected, btEnabled, btServer, currentWeight } from './stores'
+import { batteryLevel, btConnected, btEnabled, btServer, currentWeight, recordWeight } from './stores'
 import { get } from 'svelte/store'
 
 export async function checkBtStatus() {
@@ -38,6 +38,7 @@ export async function connectBt() {
 		}
 		const value = (event.target as BluetoothRemoteGATTCharacteristic).value?.getInt16(0, false) ?? 0
 		currentWeight.set(value / 100.0)
+		recordWeight()
 	})
 	await readBatteryLevel()
 }
