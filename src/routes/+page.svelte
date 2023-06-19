@@ -8,15 +8,15 @@
   import StartButton from './StartButton.svelte'
   import Gauge from './Gauge.svelte'
   import { onMount } from 'svelte'
-  import { checkStatus } from '$lib/bt'
+  import { checkBtStatus } from '$lib/bt'
 
   const btAvailabilityChangeListener = async () => {
-    await checkStatus()
+    await checkBtStatus()
   }
 
   onMount(async () => {
     try {
-      await checkStatus()
+      await checkBtStatus()
     } catch (e) {
       console.error(e)
       toast.error('Bluetooth Error')
