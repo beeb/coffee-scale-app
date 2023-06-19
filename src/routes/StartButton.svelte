@@ -31,7 +31,7 @@
   <div class="alert alert-error">
     <Cross class="h-6 w-6" />
     <span
-      >Bluetooth not available. Try enabling Bluetooth or switching to
+      >Bluetooth not available. Try enabling Bluetooth or switching to a
       <a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API#browser_compatibility">
         supported browser
       </a>
