@@ -3,6 +3,7 @@
   import Record from 'virtual:icons/mingcute/record-mail-line'
   import Link from 'virtual:icons/mingcute/link-line'
   import Cross from 'virtual:icons/mingcute/close-circle-line'
+  import Warning from 'virtual:icons/mingcute/warning-line'
   import { connectBt } from '$lib/bt'
   import toast from 'svelte-french-toast'
 
@@ -16,18 +17,20 @@
     }
   }
 
-  $: canRecord = !$recording && $currentWeight >= -0.1 && $currentWeight <= 0.1
+  $: canRecord = $currentWeight >= -0.1 && $currentWeight <= 0.1
 </script>
 
 {#if $btEnabled && $btConnected}
-  <button
-    type="button"
-    class="btn btn-primary btn-sm sm:btn-md"
-    class:btn-disabled={!canRecord}
-    on:click={startRecording}
-  >
-    <Record class="h-6 w-6" /> Start Recording
-  </button>
+  {#if canRecord && !$recording}
+    <button type="button" class="btn btn-primary btn-sm sm:btn-md" on:click={startRecording}>
+      <Record class="h-6 w-6" /> Start Recording
+    </button>
+  {:else if !$recording}
+    <div class="alert alert-warning">
+      <Warning class="h-6 w-6" />
+      <span>The scale needs to be tared before starting the recording</span>
+    </div>
+  {/if}
 {:else if $btEnabled}
   <button type="button" class="btn btn-warning btn-sm sm:btn-md" on:click={connect}>
     <Link class="h-6 w-6" /> Connect to Scale
