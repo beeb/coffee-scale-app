@@ -107,9 +107,10 @@
   }
 
   const getAngle = (value: number) => {
+    const clampedAngle = Math.min(Math.max(value, min), max)
     const totalValue = max - min || 1
 
-    return (value * totalAngle) / totalValue + startAngle
+    return (clampedAngle * totalAngle) / totalValue + startAngle
   }
 
   const describePath = (radius: number, startAngle: number, endAngle: number) => {
