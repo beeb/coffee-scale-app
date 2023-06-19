@@ -3,10 +3,26 @@
   import Chart from './Chart.svelte'
   import Form from './Form.svelte'
   import Title from './Title.svelte'
-  import { Toaster } from 'svelte-french-toast'
+  import toast, { Toaster } from 'svelte-french-toast'
   import Settings from 'virtual:icons/mingcute/settings-1-line'
   import StartButton from './StartButton.svelte'
   import Gauge from './Gauge.svelte'
+  import { onMount } from 'svelte'
+  import { checkStatus } from '$lib/bt'
+
+  onMount(async () => {
+    try {
+      await checkStatus()
+    } catch (e) {
+      console.error(e)
+      toast.error('Bluetooth Error')
+    }
+    if ('onavailabilitychanged' in navigator.bluetooth) {
+      navigator.bluetooth.addEventListener('availabilitychanged', async () => {
+        await checkStatus()
+      })
+    }
+  })
 </script>
 
 <div class="w-full h-full max-w-7xl mx-auto relative drawer drawer-end">
