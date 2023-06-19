@@ -13,7 +13,7 @@
 			"type": "image/png"
 		}
 	],
-	"theme_color": "#42b983",
+	"theme_color": "#ffffff",
 	"background_color": "#ffffff",
 	"start_url": "https://coffee.beeb.li",
 	"display": "standalone",
