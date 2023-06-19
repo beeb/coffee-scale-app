@@ -82,8 +82,8 @@
   afterUpdate(() => {
     if (!chart) return
 
-    chart.data.datasets[0] = targetDataset
-    chart.data.datasets[1] = chartDataset
+    chart.data.datasets[1] = targetDataset
+    chart.data.datasets[2] = chartDataset
     chart.update('none')
   })
 </script>
