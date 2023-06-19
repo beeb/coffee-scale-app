@@ -66,7 +66,7 @@
         </div>
       {/if}
       {#if $batteryLevel}
-        <div class="absolute right-0 bottom-0">
+        <div class="absolute right-4 bottom-2">
           <BatteryLevel level={$batteryLevel} />
         </div>
       {/if}

@@ -27,11 +27,7 @@
       <Stop class="h-6 w-6" /> Stop Recording
     </button>
   {:else}
-    <div
-      class="tooltip tooltip-right tooltip-open"
-      class:tooltip-open={!canRecord}
-      data-tip="The scale needs to be tared to start the recording"
-    >
+    <div class="tooltip tooltip-right" data-tip="The scale needs to be tared to start the recording">
       <button type="button" class="btn btn-primary btn-sm sm:btn-md" disabled={!canRecord} on:click={startRecording}>
         <Record class="h-6 w-6" /> Start Recording
       </button>
