@@ -4,13 +4,13 @@ import { get } from 'svelte/store'
 
 let weightCharacteristic: BluetoothRemoteGATTCharacteristic | null = null
 
-function onWeightUpdate(event: Event) {
+async function onWeightUpdate(event: Event) {
 	if (event.target === null) {
 		return
 	}
 	const value = (event.target as BluetoothRemoteGATTCharacteristic).value?.getInt16(0, false) ?? 0
 	currentWeight.set(value / 100.0)
-	recordWeight()
+	await recordWeight()
 }
 
 export async function checkBtStatus() {
