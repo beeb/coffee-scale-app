@@ -26,14 +26,20 @@
     <button type="button" class="btn btn-primary btn-outline btn-sm sm:btn-md" on:click={stopRecording}>
       <Stop class="h-6 w-6" /> Stop Recording
     </button>
-  {:else if canRecord}
-    <button type="button" class="btn btn-primary btn-sm sm:btn-md" on:click={startRecording}>
-      <Record class="h-6 w-6" /> Start Recording
-    </button>
   {:else}
-    <div class="alert alert-warning">
-      <Warning class="h-6 w-6" />
-      <span>The scale needs to be tared before starting the recording</span>
+    <div
+      class="tooltip tooltip-right tooltip-open"
+      class:tooltip-open={!canRecord}
+      data-tip="The scale needs to be tared to start the recording"
+    >
+      <button
+        type="button"
+        class="btn btn-primary btn-sm sm:btn-md"
+        class:btn-disabled={!canRecord}
+        on:click={startRecording}
+      >
+        <Record class="h-6 w-6" /> Start Recording
+      </button>
     </div>
   {/if}
 {:else if $btEnabled}
