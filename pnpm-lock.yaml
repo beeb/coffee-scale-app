@@ -17,6 +17,9 @@ devDependencies:
   '@sveltejs/kit':
     specifier: ^1.20.2
     version: 1.20.2(svelte@3.59.1)(vite@4.3.9)
+  '@types/web-bluetooth':
+    specifier: ^0.0.17
+    version: 0.0.17
   autoprefixer:
     specifier: ^10.4.14
     version: 10.4.14(postcss@8.4.24)
@@ -502,6 +505,10 @@ packages:
 
   /@types/pug@2.0.6:
     resolution: {integrity: sha512-SnHmG9wN1UVmagJOnyo/qkk0Z7gejYxOYYmaAwr5u2yFYfsupN3sg10kyzN8Hep/2zbHxCnsumxOoRIRMBwKCg==}
+    dev: true
+
+  /@types/web-bluetooth@0.0.17:
+    resolution: {integrity: sha512-4p9vcSmxAayx72yn70joFoL44c9MO/0+iVEBIQXe3v2h2SiAsEIo/G5v6ObFWvNKRFjbrVadNf9LqEEZeQPzdA==}
     dev: true
 
   /acorn@8.8.2:
