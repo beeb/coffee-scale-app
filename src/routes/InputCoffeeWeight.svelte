@@ -1,5 +1,5 @@
 <script>
-  import { coffeeWeight } from '$lib/stores'
+  import { coffeeWeight, currentWeight, btConnected } from '$lib/stores'
 </script>
 
 <div class="form-control w-full max-w-[12rem]">
@@ -7,7 +7,16 @@
     <span class="label-text text-sm">Coffee weight</span>
   </label>
   <div class="join">
-    <button type="button" class="btn btn-primary join-item btn-sm">Read</button>
+    <button
+      type="button"
+      class="btn btn-primary join-item btn-sm"
+      disabled={!$btConnected}
+      on:click={() => {
+        $coffeeWeight = $currentWeight
+      }}
+    >
+      Read
+    </button>
     <input
       id="coffee-weight"
       type="number"

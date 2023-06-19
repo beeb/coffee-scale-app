@@ -1,7 +1,7 @@
 <script>
   import '../app.css'
   import Chart from './Chart.svelte'
-  import Form from './Form.svelte'
+  import SettingsForm from './SettingsForm.svelte'
   import Title from './Title.svelte'
   import toast, { Toaster } from 'svelte-french-toast'
   import Settings from 'virtual:icons/mingcute/settings-1-line'
@@ -74,7 +74,7 @@
   </div>
   <div class="drawer-side">
     <label for="form-drawer" class="drawer-overlay" />
-    <Form />
+    <SettingsForm />
   </div>
 </div>
 <Toaster />
