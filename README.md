@@ -28,7 +28,7 @@ The app works as a timer to achieve the desired extraction in the desired time. 
 - The basket or portafilter is put on the scale and tared with the scale's button.
 - The desired amount of coffee grounds is put inside the basket
 - the basket or portafilter is put back on the scales, thereby measuring the weight of the coffee grounds
-- The "Read" button next to the "Coffee Weight" input is clicked to read the current value into it
+- In the Settings pane, the "Read" button next to the "Coffee Weight" input is clicked to read the current value into it
 - The cup is placed on the scale and it is tared with the button
 - The "Start recording" button is pressed (only available when the scale reads 0g). The app now waits for an increase in weight.
 - As soon as the weight exceeds 0.5g, the timer starts counting from the pre-infusion time (default 5s).
@@ -65,7 +65,6 @@ This project was made possible by the following projects and people (amongst oth
 - [Vue.js](https://vuejs.org/)
 - [BootstrapVue](https://bootstrap-vue.org/)
 - [MicroPython](https://micropython.org/)
-
 
 ## License
 

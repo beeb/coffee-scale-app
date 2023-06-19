@@ -1,0 +1,27 @@
+{
+	"$schema": "./node_modules/rome/configuration_schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"formatter": {
+		"lineWidth": 120
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "asNeeded"
+		}
+	},
+	"files": {
+		"ignore": [
+			"src/i18n/*",
+			".svelte-kit/*",
+			"node_modules/*",
+			"build/*",
+			".env",
+			".env.*",
+			"pnpm-lock.yaml",
+			"src/app.d.ts"
+		]
+	}
+}
