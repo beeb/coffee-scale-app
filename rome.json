@@ -13,6 +13,15 @@
 		}
 	},
 	"files": {
-		"ignore": [".svelte-kit/*", "node_modules/*"]
+		"ignore": [
+			"src/i18n/*",
+			".svelte-kit/*",
+			"node_modules/*",
+			"build/*",
+			".env",
+			".env.*",
+			"pnpm-lock.yaml",
+			"src/app.d.ts"
+		]
 	}
 }
