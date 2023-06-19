@@ -9,7 +9,7 @@
   import Gauge from './Gauge.svelte'
   import { onMount } from 'svelte'
   import { checkBtStatus } from '$lib/bt'
-  import { batteryLevel, btConnected } from '$lib/stores'
+  import { batteryLevel, btConnected, currentWeight, targetWeight } from '$lib/stores'
   import BatteryLevel from './BatteryLevel.svelte'
 
   const btAvailabilityChangeListener = async () => {
@@ -53,13 +53,15 @@
           <Gauge
             startAngle={-110}
             endAngle={110}
-            value={12}
-            max={45}
-            separatorStep={45 / 4}
+            value={$currentWeight}
+            max={$targetWeight}
+            separatorStep={$targetWeight / 4}
             innerRadius={70}
             scaleInterval={0}
           >
-            <div class="w-full h-full text-3xl font-bold text-center mt-16">12.00g</div>
+            <div class="w-full h-full text-3xl font-bold text-center mt-16">
+              {$currentWeight.toFixed(2)}g
+            </div>
           </Gauge>
         </div>
       {/if}
