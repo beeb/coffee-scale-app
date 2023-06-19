@@ -2,6 +2,17 @@ import { browser } from '$app/environment'
 import { batteryLevel, btConnected, btEnabled, btServer, currentWeight, recordWeight } from './stores'
 import { get } from 'svelte/store'
 
+let weightCharacteristic: BluetoothRemoteGATTCharacteristic | null = null
+
+function onWeightUpdate(event: Event) {
+	if (event.target === null) {
+		return
+	}
+	const value = (event.target as BluetoothRemoteGATTCharacteristic).value?.getInt16(0, false) ?? 0
+	currentWeight.set(value / 100.0)
+	recordWeight()
+}
+
 export async function checkBtStatus() {
 	if (!browser) {
 		return false
@@ -9,6 +20,7 @@ export async function checkBtStatus() {
 	const available = await navigator.bluetooth.getAvailability()
 	btEnabled.set(available)
 	if (get(btConnected) && !available) {
+		weightCharacteristic?.removeEventListener('characteristicvaluechanged', onWeightUpdate)
 		btConnected.set(false)
 	}
 	return available
@@ -30,16 +42,9 @@ export async function connectBt() {
 	btConnected.set(true)
 	btServer.set(server ?? null)
 	const service = await server?.getPrimaryService(parseInt('0x1815'))
-	const weight = await service?.getCharacteristic(parseInt('0x2A59'))
-	await weight?.startNotifications()
-	weight?.addEventListener('characteristicvaluechanged', (event) => {
-		if (event.target === null) {
-			return
-		}
-		const value = (event.target as BluetoothRemoteGATTCharacteristic).value?.getInt16(0, false) ?? 0
-		currentWeight.set(value / 100.0)
-		recordWeight()
-	})
+	weightCharacteristic = (await service?.getCharacteristic(parseInt('0x2A59'))) ?? null
+	await weightCharacteristic?.startNotifications()
+	weightCharacteristic?.addEventListener('characteristicvaluechanged', onWeightUpdate)
 	await readBatteryLevel()
 }
 
