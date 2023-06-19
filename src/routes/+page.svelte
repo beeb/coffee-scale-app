@@ -10,6 +10,10 @@
   import { onMount } from 'svelte'
   import { checkStatus } from '$lib/bt'
 
+  const btAvailabilityChangeListener = async () => {
+    await checkStatus()
+  }
+
   onMount(async () => {
     try {
       await checkStatus()
@@ -18,9 +22,12 @@
       toast.error('Bluetooth Error')
     }
     if ('onavailabilitychanged' in navigator.bluetooth) {
-      navigator.bluetooth.addEventListener('availabilitychanged', async () => {
-        await checkStatus()
-      })
+      navigator.bluetooth.addEventListener('availabilitychanged', btAvailabilityChangeListener)
+    }
+    return () => {
+      if ('onavailabilitychanged' in navigator.bluetooth) {
+        navigator.bluetooth.removeEventListener('availabilitychanged', btAvailabilityChangeListener)
+      }
     }
   })
 </script>
