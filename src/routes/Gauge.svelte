@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
+  import { tweened } from 'svelte/motion'
+  import { cubicOut } from 'svelte/easing'
+
   /*
   This gauge is based on the amazing work of [vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge/).
   */
@@ -24,6 +28,15 @@
   export let baseColor: `#${string}` = '#dddddd'
   export let scaleInterval = 5
 
+  const tweenedAngle = tweened(value, {
+    duration: 200,
+    easing: cubicOut
+  })
+
+  $: {
+    tweenedAngle.set(value)
+  }
+
   $: height =
     Math.abs(endAngle) <= 180 && Math.abs(startAngle) <= 180
       ? Math.max(yCenter, polarToCartesian(radius, startAngle).y, polarToCartesian(radius, endAngle).y)
@@ -37,7 +50,7 @@
 
   $: basePath = describePath(radius, startAngle, endAngle)
 
-  $: gaugePath = describePath(radius, getAngle(value), endAngle)
+  $: gaugePath = describePath(radius, getAngle($tweenedAngle), endAngle)
 
   $: scaleLinesValue = scaleLines(scaleInterval, isCircle, min, max, innerRadius)
 
