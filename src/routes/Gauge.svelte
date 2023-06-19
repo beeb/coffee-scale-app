@@ -44,7 +44,7 @@
 
   $: totalAngle = Math.abs(endAngle - startAngle)
 
-  $: separatorPathsValue = separatorPaths(separatorStep, totalAngle, min, max, separatorThickness)
+  $: separatorPathsValue = separatorPaths(separatorStep, min, max, separatorThickness)
 
   $: isCircle = Math.abs(totalAngle) === 360
 
@@ -54,13 +54,7 @@
 
   $: scaleLinesValue = scaleLines(scaleInterval, isCircle, min, max, innerRadius)
 
-  const separatorPaths = (
-    separatorStep: number,
-    totalAngle: number,
-    min: number,
-    max: number,
-    separatorThickness: number
-  ) => {
+  const separatorPaths = (separatorStep: number, min: number, max: number, separatorThickness: number) => {
     if (separatorStep > 0) {
       const paths = []
       // If the gauge is a circle, this will add a separator at the start
