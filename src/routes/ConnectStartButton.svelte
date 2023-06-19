@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { btConnected, btEnabled, currentWeight, recording, startRecording } from '$lib/stores'
+  import { btConnected, btEnabled, currentWeight, recording, startRecording, stopRecording } from '$lib/stores'
   import Record from 'virtual:icons/mingcute/record-mail-line'
   import Link from 'virtual:icons/mingcute/link-line'
   import Cross from 'virtual:icons/mingcute/close-circle-line'
   import Warning from 'virtual:icons/mingcute/warning-line'
+  import Stop from 'virtual:icons/mingcute/stop-circle-fill'
   import { connectBt } from '$lib/bt'
   import toast from 'svelte-french-toast'
 
@@ -21,11 +22,15 @@
 </script>
 
 {#if $btEnabled && $btConnected}
-  {#if canRecord && !$recording}
+  {#if $recording}
+    <button type="button" class="btn btn-primary btn-outline btn-sm sm:btn-md" on:click={stopRecording}>
+      <Stop class="h-6 w-6" /> Stop Recording
+    </button>
+  {:else if canRecord}
     <button type="button" class="btn btn-primary btn-sm sm:btn-md" on:click={startRecording}>
       <Record class="h-6 w-6" /> Start Recording
     </button>
-  {:else if !$recording}
+  {:else}
     <div class="alert alert-warning">
       <Warning class="h-6 w-6" />
       <span>The scale needs to be tared before starting the recording</span>

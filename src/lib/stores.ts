@@ -30,6 +30,11 @@ export function startRecording() {
 	recording.set(true)
 }
 
+export function stopRecording() {
+	startTimeMs.set(0)
+	recording.set(false)
+}
+
 export function recordWeight() {
 	if (!get(recording)) {
 		return
@@ -43,8 +48,7 @@ export function recordWeight() {
 	} else if (startTime > 0 && weight < -0.1) {
 		// End of the shot, we removed the cup from the scale
 		// The recording is stopped
-		startTimeMs.set(0)
-		recording.set(false)
+		stopRecording()
 	} else if (startTime > 0) {
 		// Recording the shot...
 		const elapsed = (now - startTime) / 1000
