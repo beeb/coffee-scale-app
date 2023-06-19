@@ -5,10 +5,12 @@
   import Title from './Title.svelte'
   import toast, { Toaster } from 'svelte-french-toast'
   import Settings from 'virtual:icons/mingcute/settings-1-line'
-  import StartButton from './StartButton.svelte'
+  import ConnectStartButton from './ConnectStartButton.svelte'
   import Gauge from './Gauge.svelte'
   import { onMount } from 'svelte'
   import { checkBtStatus } from '$lib/bt'
+  import { batteryLevel, btConnected } from '$lib/stores'
+  import BatteryLevel from './BatteryLevel.svelte'
 
   const btAvailabilityChangeListener = async () => {
     await checkBtStatus()
@@ -44,21 +46,28 @@
         </label>
       </div>
       <div class="absolute left-20 bottom-20">
-        <StartButton />
+        <ConnectStartButton />
       </div>
-      <div class="absolute left-20 top-[calc(50%-5rem)]" style="width: min(15rem, 45vh)">
-        <Gauge
-          startAngle={-110}
-          endAngle={110}
-          value={12}
-          max={45}
-          separatorStep={45 / 4}
-          innerRadius={70}
-          scaleInterval={0}
-        >
-          <div class="w-full h-full text-3xl font-bold text-center mt-16">12.00g</div>
-        </Gauge>
-      </div>
+      {#if $btConnected}
+        <div class="absolute left-20 top-[calc(50%-5rem)]" style="width: min(15rem, 45vh)">
+          <Gauge
+            startAngle={-110}
+            endAngle={110}
+            value={12}
+            max={45}
+            separatorStep={45 / 4}
+            innerRadius={70}
+            scaleInterval={0}
+          >
+            <div class="w-full h-full text-3xl font-bold text-center mt-16">12.00g</div>
+          </Gauge>
+        </div>
+      {/if}
+      {#if $batteryLevel}
+        <div class="absolute right-0 bottom-0">
+          <BatteryLevel level={$batteryLevel} />
+        </div>
+      {/if}
     </div>
   </div>
   <div class="drawer-side">
