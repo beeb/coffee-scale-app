@@ -24,19 +24,9 @@ export const targetWeight = derived([coffeeWeight, targetRatio], ([$coffeeWeight
 	return $coffeeWeight * $targetRatio
 })
 
-let wakeLock: WakeLockSentinel | null = null
+export const wakeLock = writable<WakeLockSentinel | null>(null)
 
 export async function startRecording() {
-	if (!browser) {
-		return
-	}
-	if ('wakeLock' in navigator) {
-		try {
-			wakeLock = await navigator.wakeLock.request('screen')
-		} catch (err) {
-			console.error(err)
-		}
-	}
 	// Initially, the `startTimeMs` is set to 0 during the pre-infusion stage
 	// When coffee starts to drop (threshold 0.5g), we will start to record data points and record the start time
 	chartData.set([{ x: 0, y: 0 }])
@@ -46,10 +36,6 @@ export async function startRecording() {
 export async function stopRecording() {
 	startTimeMs.set(0)
 	recording.set(false)
-	if (wakeLock !== null) {
-		await wakeLock.release()
-		wakeLock = null
-	}
 }
 
 export async function recordWeight() {

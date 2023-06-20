@@ -1,5 +1,5 @@
 import { browser } from '$app/environment'
-import { batteryLevel, btConnected, btEnabled, btServer, currentWeight, recordWeight } from './stores'
+import { batteryLevel, btConnected, btEnabled, btServer, currentWeight, recordWeight, wakeLock } from './stores'
 import { get } from 'svelte/store'
 
 let weightCharacteristic: BluetoothRemoteGATTCharacteristic | null = null
@@ -22,6 +22,11 @@ export async function checkBtStatus() {
 	if (get(btConnected) && !available) {
 		weightCharacteristic?.removeEventListener('characteristicvaluechanged', onWeightUpdate)
 		btConnected.set(false)
+		const wake = get(wakeLock)
+		if (wake !== null) {
+			await wake.release()
+			wakeLock.set(null)
+		}
 	}
 	return available
 }
@@ -46,6 +51,13 @@ export async function connectBt() {
 	await weightCharacteristic?.startNotifications()
 	weightCharacteristic?.addEventListener('characteristicvaluechanged', onWeightUpdate)
 	await readBatteryLevel()
+	if ('wakeLock' in navigator) {
+		try {
+			wakeLock.set(await navigator.wakeLock.request('screen'))
+		} catch (err) {
+			console.error(err)
+		}
+	}
 }
 
 export async function readBatteryLevel() {
