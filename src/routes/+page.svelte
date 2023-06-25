@@ -7,7 +7,7 @@
   import Settings from 'virtual:icons/mingcute/settings-1-line'
   import ConnectStartButton from './ConnectStartButton.svelte'
   import Gauge from './Gauge.svelte'
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
   import { checkBtStatus } from '$lib/bt'
   import { batteryLevel, btConnected, currentWeight, targetWeight } from '$lib/stores'
   import BatteryLevel from './BatteryLevel.svelte'
@@ -26,10 +26,11 @@
     if ('onavailabilitychanged' in navigator.bluetooth) {
       navigator.bluetooth.addEventListener('availabilitychanged', btAvailabilityChangeListener)
     }
-    return () => {
-      if ('onavailabilitychanged' in navigator.bluetooth) {
-        navigator.bluetooth.removeEventListener('availabilitychanged', btAvailabilityChangeListener)
-      }
+  })
+
+  onDestroy(() => {
+    if ('onavailabilitychanged' in navigator.bluetooth) {
+      navigator.bluetooth.removeEventListener('availabilitychanged', btAvailabilityChangeListener)
     }
   })
 </script>
