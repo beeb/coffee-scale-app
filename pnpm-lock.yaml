@@ -42,8 +42,8 @@ devDependencies:
     specifier: ^3.4.4
     version: 3.4.4(postcss@8.4.24)(svelte@4.0.0)
   svelte-french-toast:
-    specifier: 1.0.4-beta.0
-    version: 1.0.4-beta.0(svelte@4.0.0)
+    specifier: ^1.0.4
+    version: 1.0.4(svelte@4.0.0)
   tailwindcss:
     specifier: ^3.3.2
     version: 3.3.2
@@ -1549,8 +1549,8 @@ packages:
       - sugarss
     dev: true
 
-  /svelte-french-toast@1.0.4-beta.0(svelte@4.0.0):
-    resolution: {integrity: sha512-PkYNukEQAPZyV5ei+JzeYEsbaXFSbJS8/SDTdC8giYa5Atxp2SRepFnPDWx6mu7rV53g886FNLktPMLwRljkpw==}
+  /svelte-french-toast@1.0.4(svelte@4.0.0):
+    resolution: {integrity: sha512-ryRvVSZFXCKLehoYp8Z1PFFs+Kexuk7Pmt51z+OQ/MD04fCtXnF9G57C2wZbpEV79s93RCgLaDH/YGACuBs1hw==}
     peerDependencies:
       svelte: ^3.57.0
     dependencies:
