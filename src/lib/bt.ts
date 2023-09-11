@@ -1,6 +1,6 @@
 import { browser } from '$app/environment'
-import { batteryLevel, btConnected, btEnabled, btServer, currentWeight, recordWeight, wakeLock } from './stores'
 import { get } from 'svelte/store'
+import { batteryLevel, btConnected, btEnabled, btServer, currentWeight, recordWeight, wakeLock } from './stores'
 
 let weightCharacteristic: BluetoothRemoteGATTCharacteristic | null = null
 

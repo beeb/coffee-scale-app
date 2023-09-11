@@ -1,4 +1,3 @@
-import { browser } from '$app/environment'
 import { writable as persistentWritable } from '@macfja/svelte-persistent-store'
 import { derived, get, writable } from 'svelte/store'
 

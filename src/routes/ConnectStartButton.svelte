@@ -3,7 +3,6 @@
   import Record from 'virtual:icons/mingcute/record-mail-line'
   import Link from 'virtual:icons/mingcute/link-line'
   import Cross from 'virtual:icons/mingcute/close-circle-line'
-  import Warning from 'virtual:icons/mingcute/warning-line'
   import Stop from 'virtual:icons/mingcute/stop-circle-fill'
   import { connectBt } from '$lib/bt'
   import toast from 'svelte-french-toast'
