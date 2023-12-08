@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+gdbServerPort = 3333
+elf = "target/xtensa-esp32-none-elf/debug/coffee_scale_firmware"
+firmware = "target/xtensa-esp32-none-elf/debug/coffee_scale_firmware"

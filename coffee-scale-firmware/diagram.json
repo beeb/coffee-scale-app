@@ -1,0 +1,77 @@
+{
+    "version": 1,
+    "editor": "wokwi",
+    "author": "beeb <703631+beeb@users.noreply.github.com>",
+    "parts": [
+        {
+            "type": "board-esp32-devkit-c-v4",
+            "id": "esp",
+            "top": 0,
+            "left": 0,
+            "attrs": {
+                "flashSize": "16"
+            }
+        },
+        {
+            "type": "board-ssd1306",
+            "id": "oled1",
+            "top": 233.54,
+            "left": 0.23,
+            "attrs": {
+                "i2cAddress": "0x3c"
+            }
+        }
+    ],
+    "connections": [
+        [
+            "esp:TX",
+            "$serialMonitor:RX",
+            "",
+            []
+        ],
+        [
+            "esp:RX",
+            "$serialMonitor:TX",
+            "",
+            []
+        ],
+        [
+            "esp:21",
+            "oled1:SDA",
+            "green",
+            [
+                "h-33.56",
+                "v163.2"
+            ]
+        ],
+        [
+            "esp:22",
+            "oled1:SCL",
+            "green",
+            [
+                "h0"
+            ]
+        ],
+        [
+            "esp:GND.2",
+            "oled1:GND",
+            "black",
+            [
+                "h-62.36",
+                "v211.2"
+            ]
+        ],
+        [
+            "esp:5V",
+            "oled1:VCC",
+            "red",
+            [
+                "h0"
+            ]
+        ]
+    ],
+    "serialMonitor": {
+        "display": "terminal",
+        "convertEol": true
+    }
+}
