@@ -1,10 +1,14 @@
 #![no_std]
 #![no_main]
 
+// cargo espflash flash --release --bootloader C:\tb\target\xtensa-esp32-espidf\release\build\esp-idf-sys-b70e5b0d2fa5cc23\out\build\bootloader\bootloader.bin
+
 use embedded_graphics::{
     image::Image,
+    mono_font::{ascii::FONT_6X10, MonoTextStyle},
     pixelcolor::{BinaryColor, Gray4},
     prelude::*,
+    text::Text,
 };
 use esp_backtrace as _;
 use esp_wifi::{initialize, EspWifiInitFor};
@@ -49,9 +53,15 @@ fn main() -> ! {
         &clocks,
     );
 
-    let mut driver = ssd1327_i2c::SSD1327I2C::new(i2c);
+    let mut display = ssd1327_i2c::SSD1327I2C::with_wh(i2c, 128, 96);
 
-    driver.init();
+    display.init();
+
+    let style = MonoTextStyle::new(&FONT_6X10, Gray4::WHITE);
+
+    Text::new("Hello rust!", Point::new(10, 10), style)
+        .draw(&mut display)
+        .unwrap();
 
     /* let interface = I2CDisplayInterface::new(i2c);
 
@@ -62,14 +72,23 @@ fn main() -> ! {
 
     log::info!("Display initialized");
 
-    let bmp: Bmp<Gray4> = Bmp::from_slice(include_bytes!("../assets/hex.bmp")).unwrap();
+    /* let bmp: Bmp<Gray4> = Bmp::from_slice(include_bytes!("../assets/hex.bmp")).unwrap();
     let image = Image::new(&bmp, Point::new(32, 32));
-    image.draw(&mut driver).unwrap();
-    log::info!("Image should be displayed");
+    image.draw(&mut display).unwrap();
+    log::info!("Image should be displayed"); */
 
     loop {
-        image.draw(&mut driver).unwrap();
-        log::info!("Image should be displayed");
+        /*     image.draw(&mut display).unwrap();
+        log::info!("Image should be displayed"); */
         delay.delay_ms(500u32);
+
+        /* display
+            .send_cmd(ssd1327_i2c::Commands::DisplayModeAllON)
+            .unwrap();
+        delay.delay_ms(1000u32);
+        display
+            .send_cmd(ssd1327_i2c::Commands::DisplayModeAllOFF)
+            .unwrap();
+        delay.delay_ms(1000u32); */
     }
 }
