@@ -47,7 +47,7 @@ fn main() -> ! {
     ) else {
         panic!("Failed to initialize esp-wifi");
     };
-    log::info!("BLE initialized");
+    log::info!("esp-wifi initialized");
 
     let mut bluetooth = peripherals.BT;
 
@@ -78,11 +78,11 @@ fn main() -> ! {
             AdStructure::Flags(LE_GENERAL_DISCOVERABLE | BR_EDR_NOT_SUPPORTED),
             AdStructure::ServiceUuids16(&[AUTOMATION_IO_UUID, BATTERY_UUID]),
             AdStructure::CompleteLocalName("mpy-coffee"),
-            // appearance
-            AdStructure::Unknown {
+            // appearance: not yet implemented by bleps
+            /* AdStructure::Unknown {
                 ty: ADV_APPEARANCE_TYPE,
                 data: &APPEARANCE_GENERIC_WEIGHT_SCALE,
-            },
+            }, */
         ]) else {
             panic!("Failed to create advertising data");
         };
@@ -137,7 +137,7 @@ fn main() -> ! {
             if let Some(1) = srv.get_characteristic_value(weight_notify_enable_handle, 0, &mut buf)
             {
                 if buf[0] == 1 {
-                    // notitications enabled
+                    log::info!("Weight: notification enabled");
                     notification = Some(NotificationData::new(
                         weight_handle,
                         &weight_value.to_be_bytes(),
@@ -147,6 +147,7 @@ fn main() -> ! {
             match srv.do_work_with_notification(notification) {
                 Ok(res) => {
                     if let WorkResult::GotDisconnected = res {
+                        log::info!("Got disconnected");
                         break;
                     }
                 }
