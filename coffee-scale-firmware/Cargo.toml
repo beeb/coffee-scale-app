@@ -6,6 +6,9 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+bleps = { git = "https://github.com/bjoernQ/bleps", package = "bleps", features = [
+    "macros",
+] }
 hal = { package = "esp32-hal", version = "0.16.0", default-features = false, features = [
     "rt",
     "vectored",

@@ -101,6 +101,41 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "327762f6e5a765692301e5bb513e0d9fef63be86bbc14528052b1cd3e6f03e07"
 
 [[package]]
+name = "bleps"
+version = "0.1.0"
+source = "git+https://github.com/bjoernQ/bleps#5e70db0e32721eec71b6fd2beba16a5c77382310"
+dependencies = [
+ "bleps-dedup",
+ "bleps-macros",
+ "embedded-io",
+ "log",
+]
+
+[[package]]
+name = "bleps-dedup"
+version = "0.1.0"
+source = "git+https://github.com/bjoernQ/bleps#5e70db0e32721eec71b6fd2beba16a5c77382310"
+dependencies = [
+ "darling",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.39",
+]
+
+[[package]]
+name = "bleps-macros"
+version = "0.1.0"
+source = "git+https://github.com/bjoernQ/bleps#5e70db0e32721eec71b6fd2beba16a5c77382310"
+dependencies = [
+ "litrs 0.2.3",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+ "uuid",
+]
+
+[[package]]
 name = "byte-slice-cast"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -122,6 +157,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "coffee_scale_firmware"
 version = "0.1.0"
 dependencies = [
+ "bleps",
  "embedded-graphics",
  "embedded-io",
  "embedded-svc",
@@ -380,7 +416,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "064c5793a4b6eabc95f6452c7320c035265d85066998f2544e8c8cdfe7b7ff44"
 dependencies = [
  "darling",
- "litrs",
+ "litrs 0.4.1",
  "object",
  "proc-macro-crate",
  "proc-macro-error",
@@ -700,6 +736,15 @@ name = "linked_list_allocator"
 version = "0.10.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9afa463f5405ee81cdb9cc2baf37e08ec7e4c8209442b5d72c04cfb2cd6e6286"
+
+[[package]]
+name = "litrs"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9275e0933cf8bb20f008924c0cb07a0692fe54d8064996520bf998de9eb79aa"
+dependencies = [
+ "proc-macro2",
+]
 
 [[package]]
 name = "litrs"
@@ -1215,6 +1260,12 @@ name = "usb-device"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f6cc3adc849b5292b4075fc0d5fdcf2f24866e88e336dd27a8943090a520508"
+
+[[package]]
+name = "uuid"
+version = "1.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e395fcf16a7a3d8127ec99782007af141946b4795001f876d54fb0d55978560"
 
 [[package]]
 name = "vcell"
