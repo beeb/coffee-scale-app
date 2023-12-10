@@ -1,5 +1,7 @@
+use std::sync::{Arc, Mutex};
+
 use esp32_nimble::{utilities::BleUuid, BLEDevice, NimbleProperties};
-use esp_idf_svc::hal::delay;
+use esp_idf_svc::{hal::delay, sys::esp_random};
 
 const WEIGHT_SCALE_SERVICE: BleUuid = BleUuid::from_uuid16(0x181D);
 const WEIGHT_MEASUREMENT_CHARACTERISTIC: BleUuid = BleUuid::from_uuid16(0x2A9D);
@@ -27,6 +29,7 @@ fn main() {
     });
     server.on_disconnect(|_desc, reason| {
         log::info!("Client disconnected ({:X})", reason);
+        ble_device.get_advertising().start().unwrap();
     });
 
     let battery_service = server.create_service(BATTERY_SERVICE);
@@ -51,7 +54,11 @@ fn main() {
     ble_advertising.start().unwrap();
 
     loop {
-        weight_characteristic.lock().notify();
-        delay::FreeRtos::delay_ms(500);
+        let rand = unsafe { u16::try_from(esp_random() % 5000).unwrap() };
+        weight_characteristic
+            .lock()
+            .set_value(&rand.to_be_bytes())
+            .notify();
+        delay::FreeRtos::delay_ms(200);
     }
 }
