@@ -23,6 +23,7 @@ fn main() -> Result<()> {
 
     loop {
         let rand = unsafe { u16::try_from(esp_random() % 5000)? };
+        log::info!("Weight: {:.2}g", rand as f32 / 100.);
         ble::WEIGHT
             .get()
             .ok_or_else(|| anyhow!("Weight characteristic not initialized"))?
