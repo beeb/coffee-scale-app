@@ -1,5 +1,3 @@
-use std::sync::{Arc, Mutex};
-
 use esp32_nimble::{utilities::BleUuid, BLEDevice, NimbleProperties};
 use esp_idf_svc::{hal::delay, sys::esp_random};
 
