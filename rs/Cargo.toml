@@ -28,7 +28,9 @@ log = { version = "0.4", default-features = false }
 esp-idf-svc = { version = "0.47", default-features = false }
 esp32-nimble = "0.4"
 anyhow = "1"
-loadcell = "0.1.0"
+loadcell = "0.1"
+ssd1306 = "0.8"
+embedded-graphics = "0.8"
 
 [build-dependencies]
 embuild = "0.31.3"
