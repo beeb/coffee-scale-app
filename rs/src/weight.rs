@@ -53,9 +53,7 @@ where
         // take readings of the loadcell and keep iterating until the weight is stable
         let mut readings: VecDeque<f32> = VecDeque::with_capacity(10);
         loop {
-            while !self.sensor.is_ready() {
-                self.delay.delay_us(LOADCELL_READY_DELAY);
-            }
+            self.wait_ready();
             let reading = self.sensor.read_scaled();
             log::info!("Waiting for stable weight: {:.4}", reading);
             if readings.len() == 10 {
