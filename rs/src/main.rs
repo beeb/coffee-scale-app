@@ -1,7 +1,12 @@
 use std::collections::VecDeque;
 
 use anyhow::{anyhow, Result};
-use esp_idf_svc::hal::delay;
+use esp_idf_svc::hal::{
+    adc::ADC1,
+    delay,
+    gpio::{Gpio12, Gpio14, Gpio34},
+    peripherals::Peripherals,
+};
 use loadcell::LoadCell;
 
 mod battery;
@@ -12,12 +17,16 @@ fn main() -> Result<()> {
     esp_idf_svc::sys::link_patches();
     esp_idf_svc::log::EspLogger::initialize_default();
 
+    let peripherals = Peripherals::take()?;
+    let pins = peripherals.pins;
+
     log::info!("Starting up...");
 
     ble::init()?;
     log::info!("BLE initialized");
 
-    let battery_percent = battery::read_battery_percent()?;
+    let battery_percent =
+        battery::read_battery_percent::<Gpio34, ADC1>(pins.gpio34, peripherals.adc1)?;
     log::info!("Battery level: {}%", battery_percent);
     ble::BATTERY
         .get()
@@ -25,7 +34,7 @@ fn main() -> Result<()> {
         .lock()
         .set_value(&battery_percent.to_be_bytes());
 
-    let mut load_sensor = weight::init_load_sensor()?;
+    let mut load_sensor = weight::init_load_sensor::<Gpio14, Gpio12>(pins.gpio14, pins.gpio12)?;
 
     // take readings of the loadcell and keep iterating until the weight is stable
     let mut readings: VecDeque<f32> = VecDeque::with_capacity(10);

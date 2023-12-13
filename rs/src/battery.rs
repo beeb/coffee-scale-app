@@ -1,15 +1,14 @@
 use anyhow::Result;
-use esp_idf_svc::hal::{adc, peripherals::Peripherals};
+use esp_idf_svc::hal::{adc, gpio::ADCPin, peripheral::Peripheral};
 
-pub fn read_battery_percent() -> Result<u8> {
-    let peripherals = Peripherals::take().unwrap();
-    let vsense_pin = peripherals.pins.gpio34;
+pub fn read_battery_percent<VPin, Adc>(vsense_pin: VPin, adc: Adc) -> Result<u8>
+where
+    VPin: Peripheral<P = VPin> + ADCPin<Adc = Adc>,
+    Adc: Peripheral<P = Adc> + adc::Adc,
+{
     let mut analog =
         adc::AdcChannelDriver::<{ adc::attenuation::DB_11 }, _>::new(vsense_pin).unwrap();
-    let mut powered_adc1 = adc::AdcDriver::new(
-        peripherals.adc1,
-        &adc::config::Config::new().calibration(true),
-    )?;
+    let mut powered_adc1 = adc::AdcDriver::new(adc, &adc::config::Config::new().calibration(true))?;
     let mut value = powered_adc1.read(&mut analog)?;
     for _ in 0..9 {
         value += powered_adc1.read(&mut analog)?;
