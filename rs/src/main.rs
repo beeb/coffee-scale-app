@@ -1,20 +1,25 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, time::Duration};
 
 use anyhow::{anyhow, Result};
-use esp_idf_svc::hal::{
-    adc::ADC1,
-    delay::{self, Delay},
-    gpio::{Gpio12, Gpio14, Gpio34},
-    peripherals::Peripherals,
+use esp_idf_svc::{
+    hal::{
+        adc::ADC1,
+        delay::Delay,
+        gpio::{Gpio12, Gpio14, Gpio34},
+        peripherals::Peripherals,
+    },
+    systime::EspSystemTime,
+    timer::EspTaskTimerService,
 };
 use loadcell::LoadCell;
+
+use crate::weight::LOADCELL_READY_DELAY;
 
 mod battery;
 mod ble;
 mod weight;
 
 const CALIBRATE_MODE: bool = false;
-const LOADCELL_READY_DELAY: u32 = 5000;
 
 fn main() -> Result<()> {
     esp_idf_svc::sys::link_patches();
@@ -74,17 +79,26 @@ fn main() -> Result<()> {
         }
         delay.delay_us(LOADCELL_READY_DELAY * 2);
     }
-    load_sensor.tare(1);
+    log::info!("offset: {}", load_sensor.get_offset());
+    load_sensor.tare(10);
+
+    let mut weight;
+
+    let system_time = EspSystemTime {};
+    let mut last_notify = Duration::default();
 
     loop {
-        let weight = weight::read_weight(&mut load_sensor);
-        log::info!("Weight: {:.2}g", weight as f32 / 100.);
-        ble::WEIGHT
-            .get()
-            .ok_or_else(|| anyhow!("Weight characteristic not initialized"))?
-            .lock()
-            .set_value(&weight.to_be_bytes())
-            .notify();
-        delay.delay_ms(200);
+        weight = weight::read_weight(&mut load_sensor, &delay);
+        log::info!("weight: {weight}");
+        let now = system_time.now();
+        if now - last_notify > Duration::from_millis(200) {
+            last_notify = now;
+            ble::WEIGHT
+                .get()
+                .unwrap()
+                .lock()
+                .set_value(&weight.to_be_bytes())
+                .notify();
+        }
     }
 }

@@ -9,6 +9,8 @@ use loadcell::{
     LoadCell,
 };
 
+pub const LOADCELL_READY_DELAY: u32 = 5000;
+
 pub type LoadSensor<'a, SckPin, DtPin> =
     HX711<PinDriver<'a, SckPin, Output>, PinDriver<'a, DtPin, Input>, Delay>;
 
@@ -29,15 +31,20 @@ where
     while !load_sensor.is_ready() {
         delay.delay_ms(10);
     }
-    load_sensor.tare(1);
     Ok(load_sensor)
 }
 
-pub fn read_weight<DtPin, SckPin>(load_sensor: &mut LoadSensor<'_, SckPin, DtPin>) -> i16
+pub fn read_weight<DtPin, SckPin>(
+    load_sensor: &mut LoadSensor<'_, SckPin, DtPin>,
+    delay: &Delay,
+) -> i16
 where
     DtPin: Pin,
     SckPin: Pin,
 {
+    while !load_sensor.is_ready() {
+        delay.delay_us(LOADCELL_READY_DELAY);
+    }
     let reading = (load_sensor.read_scaled() / 0.05).round() * 0.05; // rounded to 0.05g
     (reading * 100.) as i16
 }
