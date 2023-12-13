@@ -95,6 +95,16 @@ fn main() -> Result<()> {
     loop {
         weight = scales.read_weight();
         log::info!("weight: {weight}");
+        display.clear_buffer();
+        Text::with_baseline(
+            &format!("{:10.2}", weight as f32 / 100.),
+            Point::zero(),
+            text_style,
+            Baseline::Top,
+        )
+        .draw(&mut display)
+        .unwrap();
+        display.flush().unwrap();
         let now = system_time.now();
         if now - last_notify > Duration::from_millis(200) {
             last_notify = now;
