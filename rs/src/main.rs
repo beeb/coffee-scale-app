@@ -1,13 +1,6 @@
 use std::time::Duration;
 
 use anyhow::{anyhow, Result};
-use embedded_graphics::{
-    geometry::Point,
-    mono_font::{ascii::FONT_6X10, MonoTextStyleBuilder},
-    pixelcolor::BinaryColor,
-    text::{Baseline, Text},
-    Drawable,
-};
 use esp_idf_svc::{
     hal::{
         adc::ADC1,
@@ -54,6 +47,7 @@ fn main() -> Result<()> {
     let battery_percent =
         battery::read_battery_percent::<Gpio34, ADC1>(pins.gpio34, peripherals.adc1)?;
     log::info!("Battery level: {}%", battery_percent);
+    screen.set_battery(battery_percent);
     ble::BATTERY
         .get()
         .ok_or_else(|| anyhow!("Battery characteristic not initialized"))?
@@ -80,25 +74,11 @@ fn main() -> Result<()> {
     let system_time = EspSystemTime {};
     let mut last_notify = Duration::default();
 
-    let text_style = MonoTextStyleBuilder::new()
-        .font(&FONT_6X10)
-        .text_color(BinaryColor::On)
-        .build();
-
     loop {
         weight = scales.read_weight();
         log::info!("weight: {weight}");
 
-        screen.display.clear_buffer();
-        Text::with_baseline(
-            &format!("{:10.2}", weight as f32 / 100.),
-            Point::zero(),
-            text_style,
-            Baseline::Top,
-        )
-        .draw(&mut screen.display)
-        .unwrap();
-        screen.display.flush().unwrap();
+        screen.print(weight);
 
         let now = system_time.now();
         if now - last_notify > Duration::from_millis(200) {

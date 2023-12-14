@@ -11,7 +11,9 @@ use loadcell::{
     LoadCell,
 };
 
-pub const LOADCELL_READY_DELAY: u32 = 5000;
+const LOADCELL_READY_DELAY: u32 = 5000;
+const LOADCELL_STABLE_THRESHOLD: usize = 5;
+const LOADCELL_TARE_READINGS: usize = 5;
 
 pub type LoadSensor<'a, SckPin, DtPin> =
     HX711<PinDriver<'a, SckPin, Output>, PinDriver<'a, DtPin, Input>, Delay>;
@@ -51,16 +53,18 @@ where
 
     pub fn wait_stable(&mut self) {
         // take readings of the loadcell and keep iterating until the weight is stable
-        let mut readings: VecDeque<f32> = VecDeque::with_capacity(10);
+        let mut readings: VecDeque<f32> = VecDeque::with_capacity(LOADCELL_STABLE_THRESHOLD);
         loop {
             self.wait_ready();
             let reading = self.sensor.read_scaled();
             log::info!("Waiting for stable weight: {:.4}", reading);
-            if readings.len() == 10 {
+            if readings.len() == LOADCELL_STABLE_THRESHOLD {
                 readings.pop_front();
             }
             readings.push_back(reading);
-            if readings.len() == 10 && readings.iter().all(|&x| (x - reading).abs() < 0.1) {
+            if readings.len() == LOADCELL_STABLE_THRESHOLD
+                && readings.iter().all(|&x| (x - reading).abs() < 0.1)
+            {
                 break;
             }
             self.delay.delay_us(LOADCELL_READY_DELAY * 2);
@@ -68,7 +72,7 @@ where
     }
 
     pub fn tare(&mut self) {
-        self.sensor.tare(10);
+        self.sensor.tare(LOADCELL_TARE_READINGS);
     }
 
     pub fn read_average(&mut self, count: usize) -> f32 {
@@ -85,7 +89,7 @@ where
 
     pub fn read_weight(&mut self) -> i16 {
         self.wait_ready();
-        let reading = (self.sensor.read_scaled() / 0.05).round() * 0.05; // rounded to 0.05g
-        (reading * 100.) as i16
+        let val = (self.sensor.read_scaled() / 0.05).round() * 0.05; // rounded to 0.05g
+        (val * 100.) as i16
     }
 }

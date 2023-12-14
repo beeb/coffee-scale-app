@@ -1,7 +1,9 @@
 use embedded_graphics::{
-    geometry::Point,
+    geometry::{Point, Size},
     image::{Image, ImageRaw},
+    mono_font::{mapping::StrGlyphMapping, DecorationDimensions, MonoFont, MonoTextStyle},
     pixelcolor::BinaryColor,
+    text::{Alignment, Baseline, Text, TextStyleBuilder},
     Drawable,
 };
 use esp_idf_svc::hal::i2c::I2cDriver;
@@ -19,8 +21,19 @@ type Display<'a> = Ssd1306<
     BufferedGraphicsMode<DisplaySize128x32>,
 >;
 
+const CUSTOM_FONT: MonoFont = MonoFont {
+    image: ImageRaw::new(include_bytes!("../assets/font.raw"), 266),
+    glyph_mapping: &StrGlyphMapping::new("0123456789.-gb", 10),
+    character_size: Size::new(19, 30),
+    character_spacing: 2,
+    baseline: 30,
+    underline: DecorationDimensions::default_underline(30),
+    strikethrough: DecorationDimensions::default_strikethrough(30),
+};
+
 pub struct Screen<'a> {
     pub display: Display<'a>,
+    pub battery: u8,
 }
 
 impl<'a> Screen<'a> {
@@ -32,6 +45,47 @@ impl<'a> Screen<'a> {
         let im = Image::new(&raw, Point::new(51, 1));
         im.draw(&mut display).unwrap();
         display.flush().unwrap();
-        Screen { display }
+        Screen {
+            display,
+            battery: 100,
+        }
+    }
+
+    pub fn set_battery(&mut self, battery: u8) {
+        self.battery = battery;
+    }
+
+    pub fn print(&mut self, number: i16) {
+        let character_style = MonoTextStyle::new(&CUSTOM_FONT, BinaryColor::On);
+        let text_style = TextStyleBuilder::new()
+            .baseline(Baseline::Bottom)
+            .alignment(Alignment::Right)
+            .build();
+        self.display.clear_buffer();
+        Text::with_text_style(
+            &format!("{:02}", number.abs() % 100),
+            Point::new(116, 31),
+            character_style,
+            text_style,
+        )
+        .draw(&mut self.display)
+        .unwrap();
+        Text::with_text_style(
+            &format!("{}.", number / 100),
+            Point::new(89, 31),
+            character_style,
+            text_style,
+        )
+        .draw(&mut self.display)
+        .unwrap();
+        Text::with_text_style("g", Point::new(136, 31), character_style, text_style)
+            .draw(&mut self.display)
+            .unwrap();
+        if self.battery < 20 {
+            Text::with_text_style("b", Point::new(136, 8), character_style, text_style)
+                .draw(&mut self.display)
+                .unwrap();
+        }
+        self.display.flush().unwrap();
     }
 }
