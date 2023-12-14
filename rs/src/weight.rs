@@ -51,6 +51,7 @@ where
 
     pub fn wait_ready(&self) {
         while !self.sensor.is_ready() {
+            //log::warn!("Loadcell not ready");
             self.delay.delay_us(LOADCELL_READY_DELAY_US);
         }
     }

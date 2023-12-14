@@ -1,5 +1,6 @@
 //#![feature(box_into_inner)]
 use std::{
+    num::NonZeroU32,
     sync::{
         atomic::{AtomicI16, Ordering},
         Arc,
@@ -10,11 +11,13 @@ use std::{
 use anyhow::{anyhow, Result};
 use esp_idf_svc::hal::{
     adc::ADC1,
-    delay::Delay,
+    delay::{Delay, BLOCK},
     gpio::{Gpio12, Gpio14, Gpio34},
     i2c,
     peripherals::Peripherals,
     prelude::*,
+    task::notification::Notification,
+    timer::{config, TimerDriver},
 };
 use ssd1306::I2CDisplayInterface;
 
@@ -78,8 +81,25 @@ fn main() -> Result<()> {
     let shared_weight = Arc::clone(&weight);
 
     thread::spawn(move || {
-        let delay = Delay::new_default();
+        let notification = Notification::new();
+        let timer_conf = config::Config::new().auto_reload(true);
+        let mut timer = TimerDriver::new(peripherals.timer00, &timer_conf).unwrap();
+        timer.set_alarm(timer.tick_hz() / 5).unwrap();
+        let notifier = notification.notifier();
+        // Saftey: make sure the `Notification` object is not dropped while the subscription is active
+        unsafe {
+            timer
+                .subscribe(move || {
+                    let bitset = 0b00000000001;
+                    notifier.notify(NonZeroU32::new(bitset).unwrap());
+                })
+                .unwrap();
+        }
+        timer.enable_interrupt().unwrap();
+        timer.enable_alarm(true).unwrap();
+        timer.enable(true).unwrap();
         loop {
+            notification.wait(BLOCK);
             let weight = shared_weight.load(Ordering::Relaxed);
             ble::WEIGHT
                 .get()
@@ -87,7 +107,6 @@ fn main() -> Result<()> {
                 .lock()
                 .set_value(&weight.to_be_bytes())
                 .notify();
-            delay.delay_ms(200);
         }
     });
 
