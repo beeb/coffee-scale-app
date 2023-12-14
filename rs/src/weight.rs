@@ -91,7 +91,7 @@ where
         average
     }
 
-    pub fn read_weight(&mut self, weight: &mut AtomicI16) {
+    pub fn read_weight(&mut self, weight: &AtomicI16) {
         self.wait_ready();
         let val = (self.sensor.read_scaled() / 0.05).round() * 0.05; // rounded to 0.05g
         weight.store((val * 100.) as i16, Ordering::Relaxed);

@@ -2,7 +2,10 @@
 use std::{
     ffi::{c_void, CString},
     ptr,
-    sync::atomic::{AtomicI16, Ordering},
+    sync::{
+        atomic::{AtomicI16, Ordering},
+        Arc,
+    },
 };
 
 use anyhow::{anyhow, Result};
@@ -75,12 +78,13 @@ fn main() -> Result<()> {
 
     scales.tare();
 
-    let mut weight: AtomicI16 = AtomicI16::new(0);
+    let weight: Arc<AtomicI16> = Arc::new(AtomicI16::new(0));
+    let shared_weight = Arc::clone(&weight);
 
-    spawn(|| {
+    spawn(move || {
         let delay = Delay::new_default();
         loop {
-            let weight = weight.load(Ordering::Relaxed);
+            let weight = shared_weight.load(Ordering::Relaxed);
             ble::WEIGHT
                 .get()
                 .unwrap()
@@ -92,7 +96,7 @@ fn main() -> Result<()> {
     });
 
     loop {
-        scales.read_weight(&mut weight);
+        scales.read_weight(&weight);
         let weight = weight.load(Ordering::Relaxed);
         screen.print(weight);
     }
@@ -107,7 +111,7 @@ extern "C" fn spawn_closure<F: FnOnce()>(arg: *mut c_void) {
     }
 }
 
-fn spawn<F: FnOnce() + Send>(closure: F) {
+fn spawn<F: FnOnce() + Send + 'static>(closure: F) {
     let fn_name = CString::new("bt").unwrap();
     let closure_ptr = Box::leak(Box::new(closure));
     unsafe {
