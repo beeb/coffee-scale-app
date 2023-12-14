@@ -14,7 +14,7 @@ use loadcell::{
     LoadCell,
 };
 
-const LOADCELL_READY_DELAY_US: u32 = 5000;
+const LOADCELL_READY_DELAY_US: u32 = 1000;
 const LOADCELL_LOOP_DELAY_US: u32 = 10000;
 const LOADCELL_STABLE_READINGS: usize = 10;
 const LOADCELL_TARE_READINGS: usize = 5;
