@@ -1,4 +1,7 @@
-use std::collections::VecDeque;
+use std::{
+    collections::VecDeque,
+    sync::atomic::{AtomicI16, Ordering},
+};
 
 use anyhow::Result;
 use esp_idf_svc::hal::{
@@ -88,9 +91,9 @@ where
         average
     }
 
-    pub fn read_weight(&mut self) -> i16 {
+    pub fn read_weight(&mut self, weight: &mut AtomicI16) {
         self.wait_ready();
         let val = (self.sensor.read_scaled() / 0.05).round() * 0.05; // rounded to 0.05g
-        (val * 100.) as i16
+        weight.store((val * 100.) as i16, Ordering::Relaxed);
     }
 }

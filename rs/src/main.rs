@@ -1,15 +1,21 @@
-use std::time::Duration;
+//#![feature(box_into_inner)]
+use std::{
+    ffi::{c_void, CString},
+    ptr,
+    sync::atomic::{AtomicI16, Ordering},
+};
 
 use anyhow::{anyhow, Result};
 use esp_idf_svc::{
     hal::{
         adc::ADC1,
+        delay::Delay,
         gpio::{Gpio12, Gpio14, Gpio34},
         i2c,
         peripherals::Peripherals,
         prelude::*,
     },
-    systime::EspSystemTime,
+    sys::{vTaskDelete, xTaskCreatePinnedToCore},
 };
 use ssd1306::I2CDisplayInterface;
 
@@ -69,26 +75,50 @@ fn main() -> Result<()> {
 
     scales.tare();
 
-    let mut weight;
+    let mut weight: AtomicI16 = AtomicI16::new(0);
 
-    let system_time = EspSystemTime {};
-    let mut last_notify = Duration::default();
-
-    loop {
-        weight = scales.read_weight();
-        log::info!("weight: {weight}");
-
-        screen.print(weight);
-
-        let now = system_time.now();
-        if now - last_notify > Duration::from_millis(200) {
-            last_notify = now;
+    spawn(|| {
+        let delay = Delay::new_default();
+        loop {
+            let weight = weight.load(Ordering::Relaxed);
             ble::WEIGHT
                 .get()
                 .unwrap()
                 .lock()
                 .set_value(&weight.to_be_bytes())
                 .notify();
+            delay.delay_ms(200);
         }
+    });
+
+    loop {
+        scales.read_weight(&mut weight);
+        let weight = weight.load(Ordering::Relaxed);
+        screen.print(weight);
+    }
+}
+
+extern "C" fn spawn_closure<F: FnOnce()>(arg: *mut c_void) {
+    let closure: Box<F> = unsafe { Box::from_raw(arg as *mut F) };
+    //let closure = std::boxed::Box::<F>::into_inner(closure);
+    closure();
+    unsafe {
+        vTaskDelete(ptr::null_mut());
+    }
+}
+
+fn spawn<F: FnOnce() + Send>(closure: F) {
+    let fn_name = CString::new("bt").unwrap();
+    let closure_ptr = Box::leak(Box::new(closure));
+    unsafe {
+        xTaskCreatePinnedToCore(
+            Some(spawn_closure::<F>),
+            fn_name.as_ptr(),
+            2048,
+            closure_ptr as *mut F as *mut c_void,
+            2,
+            ptr::null_mut(),
+            1,
+        );
     }
 }

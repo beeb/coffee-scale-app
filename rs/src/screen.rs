@@ -62,6 +62,7 @@ impl<'a> Screen<'a> {
             .alignment(Alignment::Right)
             .build();
         self.display.clear_buffer();
+
         if number > -10_000 {
             Text::with_text_style(
                 &format!("{:02}", number.abs() % 100),
