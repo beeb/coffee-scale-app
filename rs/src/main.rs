@@ -1,24 +1,20 @@
 //#![feature(box_into_inner)]
 use std::{
-    ffi::{c_void, CString},
-    ptr,
     sync::{
         atomic::{AtomicI16, Ordering},
         Arc,
     },
+    thread,
 };
 
 use anyhow::{anyhow, Result};
-use esp_idf_svc::{
-    hal::{
-        adc::ADC1,
-        delay::Delay,
-        gpio::{Gpio12, Gpio14, Gpio34},
-        i2c,
-        peripherals::Peripherals,
-        prelude::*,
-    },
-    sys::{vTaskDelete, xTaskCreatePinnedToCore},
+use esp_idf_svc::hal::{
+    adc::ADC1,
+    delay::Delay,
+    gpio::{Gpio12, Gpio14, Gpio34},
+    i2c,
+    peripherals::Peripherals,
+    prelude::*,
 };
 use ssd1306::I2CDisplayInterface;
 
@@ -81,7 +77,7 @@ fn main() -> Result<()> {
     let weight: Arc<AtomicI16> = Arc::new(AtomicI16::new(0));
     let shared_weight = Arc::clone(&weight);
 
-    spawn(move || {
+    thread::spawn(move || {
         let delay = Delay::new_default();
         loop {
             let weight = shared_weight.load(Ordering::Relaxed);
@@ -99,30 +95,5 @@ fn main() -> Result<()> {
         scales.read_weight(&weight);
         let weight = weight.load(Ordering::Relaxed);
         screen.print(weight);
-    }
-}
-
-extern "C" fn spawn_closure<F: FnOnce()>(arg: *mut c_void) {
-    let closure: Box<F> = unsafe { Box::from_raw(arg as *mut F) };
-    //let closure = std::boxed::Box::<F>::into_inner(closure);
-    closure();
-    unsafe {
-        vTaskDelete(ptr::null_mut());
-    }
-}
-
-fn spawn<F: FnOnce() + Send + 'static>(closure: F) {
-    let fn_name = CString::new("bt").unwrap();
-    let closure_ptr = Box::leak(Box::new(closure));
-    unsafe {
-        xTaskCreatePinnedToCore(
-            Some(spawn_closure::<F>),
-            fn_name.as_ptr(),
-            2048,
-            closure_ptr as *mut F as *mut c_void,
-            2,
-            ptr::null_mut(),
-            1,
-        );
     }
 }
