@@ -18,15 +18,13 @@ use esp_idf_svc::{
     },
     systime::EspSystemTime,
 };
-use ssd1306::{
-    mode::DisplayConfig, rotation::DisplayRotation, size::DisplaySize128x32, I2CDisplayInterface,
-    Ssd1306,
-};
+use ssd1306::I2CDisplayInterface;
 
-use crate::weight::Scales;
+use crate::{screen::Screen, weight::Scales};
 
 mod battery;
 mod ble;
+mod screen;
 mod weight;
 
 const CALIBRATE_MODE: bool = false;
@@ -47,18 +45,8 @@ fn main() -> Result<()> {
         &i2c::I2cConfig::new().baudrate(400.kHz().into()),
     )?;
     let interface = I2CDisplayInterface::new(i2c);
-    let mut display = Ssd1306::new(interface, DisplaySize128x32, DisplayRotation::Rotate0)
-        .into_buffered_graphics_mode();
-    display.init().unwrap();
 
-    let text_style = MonoTextStyleBuilder::new()
-        .font(&FONT_6X10)
-        .text_color(BinaryColor::On)
-        .build();
-    Text::with_baseline("Hello world!", Point::zero(), text_style, Baseline::Top)
-        .draw(&mut display)
-        .unwrap();
-    display.flush().unwrap();
+    let mut screen = Screen::new(interface);
 
     ble::init()?;
     log::info!("BLE initialized");
@@ -92,19 +80,26 @@ fn main() -> Result<()> {
     let system_time = EspSystemTime {};
     let mut last_notify = Duration::default();
 
+    let text_style = MonoTextStyleBuilder::new()
+        .font(&FONT_6X10)
+        .text_color(BinaryColor::On)
+        .build();
+
     loop {
         weight = scales.read_weight();
         log::info!("weight: {weight}");
-        display.clear_buffer();
+
+        screen.display.clear_buffer();
         Text::with_baseline(
             &format!("{:10.2}", weight as f32 / 100.),
             Point::zero(),
             text_style,
             Baseline::Top,
         )
-        .draw(&mut display)
+        .draw(&mut screen.display)
         .unwrap();
-        display.flush().unwrap();
+        screen.display.flush().unwrap();
+
         let now = system_time.now();
         if now - last_notify > Duration::from_millis(200) {
             last_notify = now;
