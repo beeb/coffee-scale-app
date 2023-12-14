@@ -62,22 +62,42 @@ impl<'a> Screen<'a> {
             .alignment(Alignment::Right)
             .build();
         self.display.clear_buffer();
-        Text::with_text_style(
-            &format!("{:02}", number.abs() % 100),
-            Point::new(116, 31),
-            character_style,
-            text_style,
-        )
-        .draw(&mut self.display)
-        .unwrap();
-        Text::with_text_style(
-            &format!("{}.", number / 100),
-            Point::new(89, 31),
-            character_style,
-            text_style,
-        )
-        .draw(&mut self.display)
-        .unwrap();
+        if number > -10_000 {
+            Text::with_text_style(
+                &format!("{:02}", number.abs() % 100),
+                Point::new(116, 31),
+                character_style,
+                text_style,
+            )
+            .draw(&mut self.display)
+            .unwrap();
+            Text::with_text_style(
+                &format!("{}.", number / 100),
+                Point::new(89, 31),
+                character_style,
+                text_style,
+            )
+            .draw(&mut self.display)
+            .unwrap();
+        } else {
+            Text::with_text_style(
+                &format!("{}", number.abs() % 100 / 10),
+                Point::new(116, 31),
+                character_style,
+                text_style,
+            )
+            .draw(&mut self.display)
+            .unwrap();
+            Text::with_text_style(
+                &format!("{}.", number / 100),
+                Point::new(110, 31),
+                character_style,
+                text_style,
+            )
+            .draw(&mut self.display)
+            .unwrap();
+        }
+
         Text::with_text_style("g", Point::new(136, 31), character_style, text_style)
             .draw(&mut self.display)
             .unwrap();
