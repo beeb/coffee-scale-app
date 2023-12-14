@@ -11,7 +11,7 @@ use std::{
 use anyhow::{anyhow, Result};
 use esp_idf_svc::hal::{
     adc::ADC1,
-    delay::{Delay, BLOCK},
+    delay::BLOCK,
     gpio::{Gpio12, Gpio14, Gpio34},
     i2c,
     peripherals::Peripherals,
