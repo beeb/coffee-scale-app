@@ -11,8 +11,9 @@ use loadcell::{
     LoadCell,
 };
 
-const LOADCELL_READY_DELAY: u32 = 5000;
-const LOADCELL_STABLE_THRESHOLD: usize = 5;
+const LOADCELL_READY_DELAY_US: u32 = 5000;
+const LOADCELL_LOOP_DELAY_US: u32 = 10000;
+const LOADCELL_STABLE_READINGS: usize = 10;
 const LOADCELL_TARE_READINGS: usize = 5;
 
 pub type LoadSensor<'a, SckPin, DtPin> =
@@ -47,27 +48,27 @@ where
 
     pub fn wait_ready(&self) {
         while !self.sensor.is_ready() {
-            self.delay.delay_us(LOADCELL_READY_DELAY);
+            self.delay.delay_us(LOADCELL_READY_DELAY_US);
         }
     }
 
     pub fn wait_stable(&mut self) {
         // take readings of the loadcell and keep iterating until the weight is stable
-        let mut readings: VecDeque<f32> = VecDeque::with_capacity(LOADCELL_STABLE_THRESHOLD);
+        let mut readings: VecDeque<f32> = VecDeque::with_capacity(LOADCELL_STABLE_READINGS);
         loop {
             self.wait_ready();
             let reading = self.sensor.read_scaled();
             log::info!("Waiting for stable weight: {:.4}", reading);
-            if readings.len() == LOADCELL_STABLE_THRESHOLD {
+            if readings.len() == LOADCELL_STABLE_READINGS {
                 readings.pop_front();
             }
             readings.push_back(reading);
-            if readings.len() == LOADCELL_STABLE_THRESHOLD
+            if readings.len() == LOADCELL_STABLE_READINGS
                 && readings.iter().all(|&x| (x - reading).abs() < 0.1)
             {
                 break;
             }
-            self.delay.delay_us(LOADCELL_READY_DELAY * 2);
+            self.delay.delay_us(LOADCELL_LOOP_DELAY_US);
         }
     }
 
@@ -81,7 +82,7 @@ where
         for n in 1..=count {
             self.wait_ready();
             current = self.sensor.read() as f32;
-            self.delay.delay_us(LOADCELL_READY_DELAY * 2);
+            self.delay.delay_us(LOADCELL_LOOP_DELAY_US);
             average += (current - average) / (n as f32);
         }
         average
