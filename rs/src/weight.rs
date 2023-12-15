@@ -96,7 +96,7 @@ where
     pub fn read_weight(&mut self, weight: &AtomicI32) {
         self.wait_ready();
         let reading = self.sensor.read_scaled().expect("read scaled");
-        let val = (reading * 20.).round() / 20.; // rounded to 0.05g
-        weight.store((val * 100.) as i32, Ordering::Relaxed);
+        let val = (reading / 0.05).round() * 5.; // rounded to 0.05g
+        weight.store(val as i32, Ordering::Relaxed);
     }
 }
