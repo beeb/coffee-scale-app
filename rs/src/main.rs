@@ -61,7 +61,7 @@ fn main() -> Result<()> {
         .lock()
         .set_value(&battery_percent.to_be_bytes());
 
-    let scales = Arc::new(Mutex::new(Scales::new(pins.gpio12, pins.gpio14)?));
+    let scales = Arc::new(Mutex::new(Scales::new(pins.gpio13, pins.gpio14)?));
     // tare the scales after it's become stable
     {
         let mut scales = scales.lock().expect("mutex lock");
