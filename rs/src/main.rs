@@ -52,7 +52,8 @@ fn main() -> Result<()> {
     log::info!("BLE initialized");
 
     // read battery level
-    let battery_percent = battery::read_battery_percent(pins.gpio34, peripherals.adc1)?;
+    let (battery_percent, adc_value) =
+        battery::read_battery_percent(pins.gpio34, peripherals.adc1)?;
     log::info!("Battery level: {}%", battery_percent);
     screen.set_battery(battery_percent);
     ble::BATTERY
@@ -154,7 +155,7 @@ fn main() -> Result<()> {
             log::info!("button released");
             log::info!("short press, tare scales");
             let mut scales = shared_scales.lock().expect("mutex lock");
-            scales.tare(Some(20));
+            scales.tare(Some(5));
             button_pin
                 .enable_interrupt()
                 .expect("enable button interrupt");
@@ -169,7 +170,7 @@ fn main() -> Result<()> {
                 scales.read_average(10)
             };
             log::info!("Weight reading: {average}");
-            screen.print_calibration(average);
+            screen.print_calibration(average, adc_value);
             continue;
         }
         // Read weight from loadcell

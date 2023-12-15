@@ -112,7 +112,7 @@ impl<'a> Screen<'a> {
         self.display.flush().expect("flush display buffer");
     }
 
-    pub fn print_calibration(&mut self, number: i32) {
+    pub fn print_calibration(&mut self, number: i32, adc: u16) {
         let character_style = MonoTextStyle::new(&FONT_7X13, BinaryColor::On);
         let text_style = TextStyleBuilder::new()
             .baseline(Baseline::Bottom)
@@ -126,7 +126,15 @@ impl<'a> Screen<'a> {
             text_style,
         )
         .draw(&mut self.display)
-        .expect("draw decimals");
+        .expect("draw loadcell");
+        Text::with_text_style(
+            &format!("adc: {adc}"),
+            Point::new(2, 30),
+            character_style,
+            text_style,
+        )
+        .draw(&mut self.display)
+        .expect("draw adc");
         self.display.flush().expect("flush display buffer");
     }
 }

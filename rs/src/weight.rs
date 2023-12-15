@@ -42,7 +42,7 @@ where
 
         let delay = Delay::new_default();
         let mut sensor = hx711::HX711::new(hx711_sck, hx711_dt, delay);
-        sensor.set_scale(6.492e-4);
+        sensor.set_scale(6.48e-4);
         while !sensor.is_ready() {
             delay.delay_ms(10);
         }

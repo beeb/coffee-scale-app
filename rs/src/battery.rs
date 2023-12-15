@@ -1,7 +1,7 @@
 use anyhow::Result;
 use esp_idf_svc::hal::{adc, gpio::ADCPin, peripheral::Peripheral};
 
-pub fn read_battery_percent<VPin, Adc>(vsense_pin: VPin, adc: Adc) -> Result<u8>
+pub fn read_battery_percent<VPin, Adc>(vsense_pin: VPin, adc: Adc) -> Result<(u8, u16)>
 where
     VPin: Peripheral<P = VPin> + ADCPin<Adc = Adc>,
     Adc: Peripheral<P = Adc> + adc::Adc,
@@ -15,7 +15,7 @@ where
     }
     value /= 10;
 
-    Ok(adc_to_percent(value))
+    Ok((adc_to_percent(value), value))
 }
 
 fn adc_to_percent(adc: u16) -> u8 {
