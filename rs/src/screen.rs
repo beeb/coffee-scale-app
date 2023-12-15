@@ -1,7 +1,9 @@
 use embedded_graphics::{
     geometry::{Point, Size},
     image::{Image, ImageRaw},
-    mono_font::{mapping::StrGlyphMapping, DecorationDimensions, MonoFont, MonoTextStyle},
+    mono_font::{
+        ascii::FONT_7X13, mapping::StrGlyphMapping, DecorationDimensions, MonoFont, MonoTextStyle,
+    },
     pixelcolor::BinaryColor,
     text::{Alignment, Baseline, Text, TextStyleBuilder},
     Drawable,
@@ -107,6 +109,24 @@ impl<'a> Screen<'a> {
                 .draw(&mut self.display)
                 .expect("draw battery symbol");
         }
+        self.display.flush().expect("flush display buffer");
+    }
+
+    pub fn print_calibration(&mut self, number: i32) {
+        let character_style = MonoTextStyle::new(&FONT_7X13, BinaryColor::On);
+        let text_style = TextStyleBuilder::new()
+            .baseline(Baseline::Bottom)
+            .alignment(Alignment::Left)
+            .build();
+        self.display.clear_buffer();
+        Text::with_text_style(
+            &format!("calib: {number:>7}"),
+            Point::new(2, 15),
+            character_style,
+            text_style,
+        )
+        .draw(&mut self.display)
+        .expect("draw decimals");
         self.display.flush().expect("flush display buffer");
     }
 }

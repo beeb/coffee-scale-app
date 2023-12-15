@@ -81,7 +81,7 @@ where
             .tare(num_samples.unwrap_or(LOADCELL_TARE_READINGS));
     }
 
-    pub fn read_average(&mut self, count: usize) -> f32 {
+    pub fn read_average(&mut self, count: usize) -> i32 {
         let mut current;
         let mut average: f32 = 0.0;
         for n in 1..=count {
@@ -90,7 +90,7 @@ where
             self.delay.delay_us(LOADCELL_LOOP_DELAY_US);
             average += (current - average) / (n as f32);
         }
-        average
+        average as i32
     }
 
     pub fn read_weight(&mut self, weight: &AtomicI32) {
