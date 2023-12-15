@@ -3,12 +3,14 @@ import { get } from 'svelte/store'
 import { batteryLevel, btConnected, btEnabled, btServer, currentWeight, recordWeight, wakeLock } from './stores'
 
 let weightCharacteristic: BluetoothRemoteGATTCharacteristic | null = null
+let newFirmware = false
 
 async function onWeightUpdate(event: Event) {
 	if (event.target === null) {
 		return
 	}
-	const value = (event.target as BluetoothRemoteGATTCharacteristic).value?.getInt16(0, false) ?? 0
+	const dataView = (event.target as BluetoothRemoteGATTCharacteristic).value
+	const value = (newFirmware ? dataView?.getInt32(0, false) : dataView?.getInt16(0, false)) ?? 0
 	currentWeight.set(value / 100.0)
 	await recordWeight()
 }
@@ -56,15 +58,15 @@ export async function connectBt() {
 		// python firmware
 		const service = await server?.getPrimaryService(parseInt('0x1815'))
 		weightCharacteristic = (await service?.getCharacteristic(parseInt('0x2A59'))) ?? null
-		await weightCharacteristic?.startNotifications()
-		weightCharacteristic?.addEventListener('characteristicvaluechanged', onWeightUpdate)
+		newFirmware = false
 	} catch {
 		// rust firmware
 		const service = await server?.getPrimaryService(parseInt('0x181D'))
 		weightCharacteristic = (await service?.getCharacteristic(parseInt('0x2A9D'))) ?? null
-		await weightCharacteristic?.startNotifications()
-		weightCharacteristic?.addEventListener('characteristicvaluechanged', onWeightUpdate)
+		newFirmware = true
 	}
+	await weightCharacteristic?.startNotifications()
+	weightCharacteristic?.addEventListener('characteristicvaluechanged', onWeightUpdate)
 
 	await readBatteryLevel()
 	if ('wakeLock' in navigator) {
