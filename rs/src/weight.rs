@@ -13,6 +13,10 @@ use loadcell::{
     hx711::{self, HX711},
     LoadCell,
 };
+use signalo_filters::{
+    hampel::{self, Hampel},
+    signalo_traits::{Filter, WithConfig},
+};
 
 const LOADCELL_READY_DELAY_US: u32 = 1000;
 const LOADCELL_LOOP_DELAY_US: u32 = 10000;
@@ -28,6 +32,7 @@ where
     SckPin: Peripheral<P = SckPin> + Pin + OutputPin,
 {
     sensor: LoadSensor<'a, SckPin, DtPin>,
+    filter: Hampel<f32, 11>,
     delay: Delay,
 }
 
@@ -37,21 +42,27 @@ where
     SckPin: Peripheral<P = SckPin> + Pin + OutputPin,
 {
     pub fn new(clock_pin: SckPin, data_pin: DtPin) -> Result<Self> {
+        let delay = Delay::new_default();
+
+        let filter = Hampel::with_config(hampel::Config { threshold: 2.0 });
+
         let hx711_sck = gpio::PinDriver::output(clock_pin)?;
         let hx711_dt = gpio::PinDriver::input(data_pin)?;
 
-        let delay = Delay::new_default();
         let mut sensor = hx711::HX711::new(hx711_sck, hx711_dt, delay);
         sensor.set_scale(6.48e-4);
         while !sensor.is_ready() {
             delay.delay_ms(10);
         }
-        Ok(Scales { sensor, delay })
+        Ok(Scales {
+            sensor,
+            filter,
+            delay,
+        })
     }
 
     pub fn wait_ready(&self) {
         while !self.sensor.is_ready() {
-            //log::warn!("Loadcell not ready");
             self.delay.delay_us(LOADCELL_READY_DELAY_US);
         }
     }
@@ -77,6 +88,7 @@ where
     }
 
     pub fn tare(&mut self, num_samples: Option<usize>) {
+        self.filter = Hampel::with_config(hampel::Config { threshold: 2.0 });
         self.sensor
             .tare(num_samples.unwrap_or(LOADCELL_TARE_READINGS));
     }
@@ -96,7 +108,10 @@ where
     pub fn read_weight(&mut self, weight: &AtomicI32) {
         self.wait_ready();
         let reading = self.sensor.read_scaled().expect("read scaled");
-        let val = (reading / 0.05).round() * 5.; // rounded to 0.05g
+        log::info!("Raw reading: {reading:.2}");
+        let filtered = self.filter.filter(reading);
+        log::info!("Filtered reading: {filtered:.2}");
+        let val = (filtered / 0.05).round() * 5.; // rounded to 0.05g
         weight.store(val as i32, Ordering::Relaxed);
     }
 }

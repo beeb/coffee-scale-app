@@ -31,6 +31,7 @@ anyhow = "1"
 loadcell = { git = "https://github.com/DaneSlattery/hx711.git", branch = "1-issue-with-multiple-tarings" }
 ssd1306 = "0.8"
 embedded-graphics = "0.8"
+signalo_filters = "0.6.0"
 
 [build-dependencies]
 embuild = "0.31.3"
