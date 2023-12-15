@@ -55,7 +55,7 @@ impl<'a> Screen<'a> {
         self.battery = battery;
     }
 
-    pub fn print(&mut self, number: i16) {
+    pub fn print(&mut self, number: i32) {
         let character_style = MonoTextStyle::new(&CUSTOM_FONT, BinaryColor::On);
         let text_style = TextStyleBuilder::new()
             .baseline(Baseline::Bottom)

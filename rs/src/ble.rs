@@ -47,7 +47,7 @@ pub fn init() -> Result<()> {
         WEIGHT_MEASUREMENT_CHARACTERISTIC,
         NimbleProperties::READ | NimbleProperties::NOTIFY,
     );
-    weight_characteristic.lock().set_value(&0i16.to_be_bytes());
+    weight_characteristic.lock().set_value(&0i32.to_be_bytes());
     WEIGHT
         .set(weight_characteristic)
         .map_err(|_| anyhow!("Weight characteristic already initialized"))?;

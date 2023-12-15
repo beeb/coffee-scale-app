@@ -2,7 +2,7 @@
 use std::{
     num::NonZeroU32,
     sync::{
-        atomic::{AtomicI16, Ordering},
+        atomic::{AtomicI32, Ordering},
         Arc,
     },
     thread,
@@ -77,7 +77,7 @@ fn main() -> Result<()> {
 
     scales.tare();
 
-    let weight: Arc<AtomicI16> = Arc::new(AtomicI16::new(0));
+    let weight: Arc<AtomicI32> = Arc::new(AtomicI32::new(0));
     let shared_weight = Arc::clone(&weight);
 
     thread::spawn(move || {

@@ -1,6 +1,6 @@
 use std::{
     collections::VecDeque,
-    sync::atomic::{AtomicI16, Ordering},
+    sync::atomic::{AtomicI32, Ordering},
 };
 
 use anyhow::Result;
@@ -61,7 +61,12 @@ where
         let mut readings: VecDeque<f32> = VecDeque::with_capacity(LOADCELL_STABLE_READINGS);
         loop {
             self.wait_ready();
-            let reading = self.sensor.read_scaled();
+            let reading = match self.sensor.read_scaled() {
+                Ok(val) => val,
+                Err(_) => {
+                    panic!("Error reading loadcell");
+                }
+            };
             log::info!("Waiting for stable weight: {:.4}", reading);
             if readings.len() == LOADCELL_STABLE_READINGS {
                 readings.pop_front();
@@ -85,16 +90,27 @@ where
         let mut average: f32 = 0.0;
         for n in 1..=count {
             self.wait_ready();
-            current = self.sensor.read() as f32;
+            current = match self.sensor.read() {
+                Ok(val) => val as f32,
+                Err(_) => {
+                    panic!("Error reading loadcell");
+                }
+            };
             self.delay.delay_us(LOADCELL_LOOP_DELAY_US);
             average += (current - average) / (n as f32);
         }
         average
     }
 
-    pub fn read_weight(&mut self, weight: &AtomicI16) {
+    pub fn read_weight(&mut self, weight: &AtomicI32) {
         self.wait_ready();
-        let val = (self.sensor.read_scaled() / 0.05).round() * 0.05; // rounded to 0.05g
-        weight.store((val * 100.) as i16, Ordering::Relaxed);
+        let reading = match self.sensor.read_scaled() {
+            Ok(val) => val,
+            Err(_) => {
+                panic!("Error reading loadcell");
+            }
+        };
+        let val = (reading * 20.).round() / 20.; // rounded to 0.05g
+        weight.store((val * 100.) as i32, Ordering::Relaxed);
     }
 }
