@@ -23,14 +23,20 @@ pub fn init() -> Result<()> {
 
         server
             .update_conn_params(desc.conn_handle, 24, 48, 0, 60)
-            .unwrap();
+            .expect("ble update conn params");
 
         log::info!("Multi-connect support: start advertising");
-        ble_device.get_advertising().start().unwrap();
+        ble_device
+            .get_advertising()
+            .start()
+            .expect("ble start advertising");
     });
     server.on_disconnect(|_desc, reason| {
         log::info!("Client disconnected ({:X})", reason);
-        ble_device.get_advertising().start().unwrap();
+        ble_device
+            .get_advertising()
+            .start()
+            .expect("ble start advertising after disconnect");
     });
 
     let battery_service = server.create_service(BATTERY_SERVICE);

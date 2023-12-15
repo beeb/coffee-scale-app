@@ -40,11 +40,11 @@ impl<'a> Screen<'a> {
     pub fn new(interface: I2CInterface<I2cDriver<'a>>) -> Self {
         let mut display = Ssd1306::new(interface, DisplaySize128x32, DisplayRotation::Rotate0)
             .into_buffered_graphics_mode();
-        display.init().unwrap();
+        display.init().expect("display init");
         let raw: ImageRaw<BinaryColor> = ImageRaw::new(include_bytes!("../assets/hex.raw"), 26);
         let im = Image::new(&raw, Point::new(51, 1));
-        im.draw(&mut display).unwrap();
-        display.flush().unwrap();
+        im.draw(&mut display).expect("draw splash image");
+        display.flush().expect("flush display buffer");
         Screen {
             display,
             battery: 100,
@@ -71,7 +71,7 @@ impl<'a> Screen<'a> {
                 text_style,
             )
             .draw(&mut self.display)
-            .unwrap();
+            .expect("draw decimals");
             Text::with_text_style(
                 &format!("{}.", number / 100),
                 Point::new(89, 31),
@@ -79,7 +79,7 @@ impl<'a> Screen<'a> {
                 text_style,
             )
             .draw(&mut self.display)
-            .unwrap();
+            .expect("draw digits");
         } else {
             Text::with_text_style(
                 &format!("{}", number.abs() % 100 / 10),
@@ -88,7 +88,7 @@ impl<'a> Screen<'a> {
                 text_style,
             )
             .draw(&mut self.display)
-            .unwrap();
+            .expect("draw decimals");
             Text::with_text_style(
                 &format!("{}.", number / 100),
                 Point::new(110, 31),
@@ -96,17 +96,17 @@ impl<'a> Screen<'a> {
                 text_style,
             )
             .draw(&mut self.display)
-            .unwrap();
+            .expect("draw digits");
         }
 
         Text::with_text_style("g", Point::new(136, 31), character_style, text_style)
             .draw(&mut self.display)
-            .unwrap();
+            .expect("draw gram symbol");
         if self.battery < 20 {
             Text::with_text_style("b", Point::new(136, 8), character_style, text_style)
                 .draw(&mut self.display)
-                .unwrap();
+                .expect("draw battery symbol");
         }
-        self.display.flush().unwrap();
+        self.display.flush().expect("flush display buffer");
     }
 }

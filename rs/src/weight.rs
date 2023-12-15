@@ -61,12 +61,7 @@ where
         let mut readings: VecDeque<f32> = VecDeque::with_capacity(LOADCELL_STABLE_READINGS);
         loop {
             self.wait_ready();
-            let reading = match self.sensor.read_scaled() {
-                Ok(val) => val,
-                Err(_) => {
-                    panic!("Error reading loadcell");
-                }
-            };
+            let reading = self.sensor.read_scaled().expect("read scaled");
             log::info!("Waiting for stable weight: {:.4}", reading);
             if readings.len() == LOADCELL_STABLE_READINGS {
                 readings.pop_front();
@@ -81,8 +76,9 @@ where
         }
     }
 
-    pub fn tare(&mut self) {
-        self.sensor.tare(LOADCELL_TARE_READINGS);
+    pub fn tare(&mut self, num_samples: Option<usize>) {
+        self.sensor
+            .tare(num_samples.unwrap_or(LOADCELL_TARE_READINGS));
     }
 
     pub fn read_average(&mut self, count: usize) -> f32 {
@@ -90,12 +86,7 @@ where
         let mut average: f32 = 0.0;
         for n in 1..=count {
             self.wait_ready();
-            current = match self.sensor.read() {
-                Ok(val) => val as f32,
-                Err(_) => {
-                    panic!("Error reading loadcell");
-                }
-            };
+            current = self.sensor.read().expect("read with offset") as f32;
             self.delay.delay_us(LOADCELL_LOOP_DELAY_US);
             average += (current - average) / (n as f32);
         }
@@ -104,12 +95,7 @@ where
 
     pub fn read_weight(&mut self, weight: &AtomicI32) {
         self.wait_ready();
-        let reading = match self.sensor.read_scaled() {
-            Ok(val) => val,
-            Err(_) => {
-                panic!("Error reading loadcell");
-            }
-        };
+        let reading = self.sensor.read_scaled().expect("read scaled");
         let val = (reading * 20.).round() / 20.; // rounded to 0.05g
         weight.store((val * 100.) as i32, Ordering::Relaxed);
     }

@@ -7,7 +7,7 @@ where
     Adc: Peripheral<P = Adc> + adc::Adc,
 {
     let mut analog =
-        adc::AdcChannelDriver::<{ adc::attenuation::DB_11 }, _>::new(vsense_pin).unwrap();
+        adc::AdcChannelDriver::<{ adc::attenuation::DB_11 }, _>::new(vsense_pin).expect("adc");
     let mut powered_adc1 = adc::AdcDriver::new(adc, &adc::config::Config::new().calibration(true))?;
     let mut value = powered_adc1.read(&mut analog)?;
     for _ in 0..9 {

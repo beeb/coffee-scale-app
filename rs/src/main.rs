@@ -66,7 +66,7 @@ fn main() -> Result<()> {
 
     if CALIBRATE_MODE {
         // loop indefinitely
-        scales.tare();
+        scales.tare(None);
         loop {
             let average = scales.read_average(10);
             log::info!("Weight reading: {:.4}", average);
@@ -75,7 +75,7 @@ fn main() -> Result<()> {
 
     scales.wait_stable();
 
-    scales.tare();
+    scales.tare(None);
 
     let weight: Arc<AtomicI32> = Arc::new(AtomicI32::new(0));
     let shared_weight = Arc::clone(&weight);
@@ -83,27 +83,28 @@ fn main() -> Result<()> {
     thread::spawn(move || {
         let notification = Notification::new();
         let timer_conf = config::Config::new().auto_reload(true);
-        let mut timer = TimerDriver::new(peripherals.timer00, &timer_conf).unwrap();
-        timer.set_alarm(timer.tick_hz() / 5).unwrap();
+        let mut timer = TimerDriver::new(peripherals.timer00, &timer_conf).expect("timer");
+        timer
+            .set_alarm(timer.tick_hz() / 5)
+            .expect("set timer alarm");
         let notifier = notification.notifier();
-        // Saftey: make sure the `Notification` object is not dropped while the subscription is active
         unsafe {
             timer
                 .subscribe(move || {
                     let bitset = 0b00000000001;
-                    notifier.notify(NonZeroU32::new(bitset).unwrap());
+                    notifier.notify(NonZeroU32::new(bitset).expect("new bitset"));
                 })
-                .unwrap();
+                .expect("subscribe to timer");
         }
-        timer.enable_interrupt().unwrap();
-        timer.enable_alarm(true).unwrap();
-        timer.enable(true).unwrap();
+        timer.enable_interrupt().expect("enable timer interrupt");
+        timer.enable_alarm(true).expect("enable timer alarm");
+        timer.enable(true).expect("enable timer");
         loop {
             notification.wait(BLOCK);
             let weight = shared_weight.load(Ordering::Relaxed);
             ble::WEIGHT
                 .get()
-                .unwrap()
+                .expect("weight characteristic not initialized")
                 .lock()
                 .set_value(&weight.to_be_bytes())
                 .notify();
