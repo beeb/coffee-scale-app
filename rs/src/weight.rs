@@ -7,7 +7,6 @@ use anyhow::Result;
 use esp_idf_svc::hal::{
     delay::Delay,
     gpio::{self, Input, InputPin, Output, OutputPin, Pin, PinDriver},
-    interrupt,
     peripheral::Peripheral,
 };
 use loadcell::{
@@ -33,7 +32,7 @@ where
     SckPin: Peripheral<P = SckPin> + Pin + OutputPin,
 {
     sensor: LoadSensor<'a, SckPin, DtPin>,
-    filter: Hampel<f32, 15>,
+    filter: Hampel<f32, 11>,
     delay: Delay,
 }
 
@@ -45,7 +44,7 @@ where
     pub fn new(clock_pin: SckPin, data_pin: DtPin) -> Result<Self> {
         let delay = Delay::new_default();
 
-        let filter = Hampel::with_config(hampel::Config { threshold: 2.0 });
+        let filter = Hampel::with_config(hampel::Config { threshold: 3.0 });
 
         let hx711_sck = gpio::PinDriver::output(clock_pin)?;
         let hx711_dt = gpio::PinDriver::input(data_pin)?;
@@ -73,7 +72,7 @@ where
         let mut readings: VecDeque<f32> = VecDeque::with_capacity(LOADCELL_STABLE_READINGS);
         loop {
             self.wait_ready();
-            let reading = interrupt::free(|| self.sensor.read_scaled().expect("read scaled"));
+            let reading = self.sensor.read_scaled().expect("read scaled");
             log::info!("Waiting for stable weight: {:.4}", reading);
             if readings.len() == LOADCELL_STABLE_READINGS {
                 readings.pop_front();
@@ -89,7 +88,7 @@ where
     }
 
     pub fn tare(&mut self, num_samples: Option<usize>) {
-        self.filter = Hampel::with_config(hampel::Config { threshold: 2.0 });
+        self.filter = Hampel::with_config(hampel::Config { threshold: 3.0 });
         self.sensor
             .tare(num_samples.unwrap_or(LOADCELL_TARE_READINGS))
     }
@@ -99,7 +98,7 @@ where
         let mut average: f32 = 0.0;
         for n in 1..=count {
             self.wait_ready();
-            current = interrupt::free(|| self.sensor.read().expect("read with offset") as f32);
+            current = self.sensor.read().expect("read with offset") as f32;
             self.delay.delay_us(LOADCELL_LOOP_DELAY_US);
             average += (current - average) / (n as f32);
         }
@@ -108,7 +107,7 @@ where
 
     pub fn read_weight(&mut self, weight: &AtomicI32) {
         self.wait_ready();
-        let reading = interrupt::free(|| self.sensor.read_scaled().expect("read scaled"));
+        let reading = self.sensor.read_scaled().expect("read scaled");
         log::info!("Raw reading: {reading:.2}");
         let filtered = self.filter.filter(reading);
         log::info!("Filtered reading: {filtered:.2}");

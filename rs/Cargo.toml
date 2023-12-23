@@ -28,7 +28,7 @@ log = { version = "0.4", default-features = false }
 esp-idf-svc = { version = "0.47", default-features = false }
 esp32-nimble = "0.4"
 anyhow = "1"
-loadcell = { git = "https://github.com/DaneSlattery/hx711.git", branch = "1-issue-with-multiple-tarings" }
+loadcell = { git = "https://github.com/beeb/hx711.git", branch = "critical-section" }
 ssd1306 = "0.8"
 embedded-graphics = "0.8"
 signalo_filters = "0.6.0"
