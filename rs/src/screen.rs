@@ -74,14 +74,27 @@ impl<'a> Screen<'a> {
             )
             .draw(&mut self.display)
             .expect("draw decimals");
-            Text::with_text_style(
-                &format!("{}.", number / 100),
-                Point::new(89, 31),
-                character_style,
-                text_style,
-            )
-            .draw(&mut self.display)
-            .expect("draw digits");
+
+            if number > -100 && number < 0 {
+                // -0.xx would not show the minus sign due to the divison by 100 being 0.
+                Text::with_text_style(
+                    &format!("-{}.", number / 100),
+                    Point::new(89, 31),
+                    character_style,
+                    text_style,
+                )
+                .draw(&mut self.display)
+                .expect("draw digits");
+            } else {
+                Text::with_text_style(
+                    &format!("{}.", number / 100),
+                    Point::new(89, 31),
+                    character_style,
+                    text_style,
+                )
+                .draw(&mut self.display)
+                .expect("draw digits");
+            }
         } else {
             Text::with_text_style(
                 &format!("{}", number.abs() % 100 / 10),
