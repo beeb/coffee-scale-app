@@ -1,20 +1,20 @@
-use std::sync::{Mutex, OnceLock};
+use std::sync::Mutex;
 
 use esp_idf_svc::hal::interrupt::{IsrCriticalSection, IsrCriticalSectionGuard};
 
 static CS: IsrCriticalSection = IsrCriticalSection::new();
-static CS_GUARD: OnceLock<Mutex<Option<IsrCriticalSectionGuard>>> = OnceLock::new();
+static CS_GUARD: Mutex<Option<IsrCriticalSectionGuard>> = Mutex::new(None);
 
 pub struct EspCriticalSection {}
 
 unsafe impl critical_section::Impl for EspCriticalSection {
     unsafe fn acquire() {
-        let mut guard = CS_GUARD.get_or_init(|| Mutex::new(None)).lock().unwrap();
+        let mut guard = CS_GUARD.lock().unwrap();
         *guard = Some(CS.enter());
     }
 
     unsafe fn release(_token: ()) {
-        let mut guard = CS_GUARD.get().unwrap().lock().unwrap();
+        let mut guard = CS_GUARD.lock().unwrap();
         *guard = None;
     }
 }
