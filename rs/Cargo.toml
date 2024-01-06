@@ -12,26 +12,16 @@ opt-level = "s"
 debug = true    # Symbols are nice and they don't increase the size on Flash
 opt-level = "z"
 
-[features]
-default = ["std", "embassy", "esp-idf-svc/native"]
-
-std = ["alloc", "esp-idf-svc/binstart", "esp-idf-svc/std"]
-alloc = ["esp-idf-svc/alloc"]
-embassy = [
-    "esp-idf-svc/embassy-sync",
-    "esp-idf-svc/critical-section",
-    "esp-idf-svc/embassy-time-driver",
-]
-
 [dependencies]
-log = { version = "0.4", default-features = false }
-esp-idf-svc = { version = "0.47", default-features = false }
-esp32-nimble = "0.4"
 anyhow = "1"
-loadcell = { git = "https://github.com/beeb/hx711.git", branch = "critical-section" }
-ssd1306 = "0.8"
+critical-section = "1"
 embedded-graphics = "0.8"
+esp-idf-svc = { version = "0.47" }
+esp32-nimble = "0.4"
+loadcell = { git = "https://github.com/beeb/hx711.git", branch = "critical-section" }
+log = { version = "0.4", default-features = false }
 signalo_filters = "0.6.0"
+ssd1306 = "0.8"
 
 [build-dependencies]
 embuild = "0.31.3"

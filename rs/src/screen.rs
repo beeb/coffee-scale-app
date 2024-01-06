@@ -65,48 +65,32 @@ impl<'a> Screen<'a> {
             .build();
         self.display.clear_buffer();
 
-        if number > -10_000 {
+        // Draw one decimal place
+        // To draw two decimal places: &format!("{:02}", number.abs() % 100)
+        Text::with_text_style(
+            &format!("{}", number.abs() % 100 / 10),
+            Point::new(116, 31),
+            character_style,
+            text_style,
+        )
+        .draw(&mut self.display)
+        .expect("draw decimals");
+
+        // Draw the digits left of the decimal separator
+        if number > -100 && number < 0 {
+            // -0.xx would not show the minus sign due to the divison by 100 being 0.
             Text::with_text_style(
-                &format!("{:02}", number.abs() % 100),
-                Point::new(116, 31),
+                &format!("-{}.", number / 100),
+                Point::new(110, 31), // x coordinate if drawing two decimal places: 89
                 character_style,
                 text_style,
             )
             .draw(&mut self.display)
-            .expect("draw decimals");
-
-            if number > -100 && number < 0 {
-                // -0.xx would not show the minus sign due to the divison by 100 being 0.
-                Text::with_text_style(
-                    &format!("-{}.", number / 100),
-                    Point::new(89, 31),
-                    character_style,
-                    text_style,
-                )
-                .draw(&mut self.display)
-                .expect("draw digits");
-            } else {
-                Text::with_text_style(
-                    &format!("{}.", number / 100),
-                    Point::new(89, 31),
-                    character_style,
-                    text_style,
-                )
-                .draw(&mut self.display)
-                .expect("draw digits");
-            }
+            .expect("draw digits");
         } else {
             Text::with_text_style(
-                &format!("{}", number.abs() % 100 / 10),
-                Point::new(116, 31),
-                character_style,
-                text_style,
-            )
-            .draw(&mut self.display)
-            .expect("draw decimals");
-            Text::with_text_style(
                 &format!("{}.", number / 100),
-                Point::new(110, 31),
+                Point::new(110, 31), // x coordinate if drawing two decimal places: 89
                 character_style,
                 text_style,
             )

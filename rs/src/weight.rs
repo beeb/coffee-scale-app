@@ -5,7 +5,7 @@ use std::{
 
 use anyhow::Result;
 use esp_idf_svc::hal::{
-    delay::Delay,
+    delay::Ets,
     gpio::{self, Input, InputPin, Output, OutputPin, Pin, PinDriver},
     peripheral::Peripheral,
 };
@@ -14,8 +14,8 @@ use loadcell::{
     LoadCell,
 };
 use signalo_filters::{
-    hampel::{self, Hampel},
-    signalo_traits::{Filter, WithConfig},
+    observe::kalman::{Config, Kalman},
+    signalo_traits::{Filter, Reset, WithConfig},
 };
 
 const LOADCELL_READY_DELAY_US: u32 = 1000;
@@ -24,7 +24,7 @@ const LOADCELL_STABLE_READINGS: usize = 10;
 const LOADCELL_TARE_READINGS: usize = 5;
 
 pub type LoadSensor<'a, SckPin, DtPin> =
-    HX711<PinDriver<'a, SckPin, Output>, PinDriver<'a, DtPin, Input>, Delay>;
+    HX711<PinDriver<'a, SckPin, Output>, PinDriver<'a, DtPin, Input>, Ets>;
 
 pub struct Scales<'a, SckPin, DtPin>
 where
@@ -32,8 +32,7 @@ where
     SckPin: Peripheral<P = SckPin> + Pin + OutputPin,
 {
     sensor: LoadSensor<'a, SckPin, DtPin>,
-    filter: Hampel<f32, 11>,
-    delay: Delay,
+    filter: Kalman<f32>,
 }
 
 impl<'a, SckPin, DtPin> Scales<'a, SckPin, DtPin>
@@ -42,28 +41,29 @@ where
     SckPin: Peripheral<P = SckPin> + Pin + OutputPin,
 {
     pub fn new(clock_pin: SckPin, data_pin: DtPin) -> Result<Self> {
-        let delay = Delay::new_default();
-
-        let filter = Hampel::with_config(hampel::Config { threshold: 3.0 });
+        let filter = Kalman::with_config(Config {
+            r: 0.5,
+            q: 0.1,
+            // parameters below are not tunable
+            a: 1.0,
+            b: 0.0,
+            c: 1.0,
+        });
 
         let hx711_sck = gpio::PinDriver::output(clock_pin)?;
         let hx711_dt = gpio::PinDriver::input(data_pin)?;
 
-        let mut sensor = hx711::HX711::new(hx711_sck, hx711_dt, delay);
-        sensor.set_scale(6.48e-4);
+        let mut sensor = hx711::HX711::new(hx711_sck, hx711_dt, Ets);
+        sensor.set_scale(6.49304e-4);
         while !sensor.is_ready() {
-            delay.delay_ms(10);
+            Ets::delay_ms(10);
         }
-        Ok(Scales {
-            sensor,
-            filter,
-            delay,
-        })
+        Ok(Scales { sensor, filter })
     }
 
     pub fn wait_ready(&self) {
         while !self.sensor.is_ready() {
-            self.delay.delay_us(LOADCELL_READY_DELAY_US);
+            Ets::delay_us(LOADCELL_READY_DELAY_US);
         }
     }
 
@@ -83,12 +83,12 @@ where
             {
                 break;
             }
-            self.delay.delay_us(LOADCELL_LOOP_DELAY_US);
+            Ets::delay_us(LOADCELL_LOOP_DELAY_US);
         }
     }
 
     pub fn tare(&mut self, num_samples: Option<usize>) {
-        self.filter = Hampel::with_config(hampel::Config { threshold: 3.0 });
+        self.filter = self.filter.clone().reset();
         self.sensor
             .tare(num_samples.unwrap_or(LOADCELL_TARE_READINGS))
     }
@@ -99,7 +99,7 @@ where
         for n in 1..=count {
             self.wait_ready();
             current = self.sensor.read().expect("read with offset") as f32;
-            self.delay.delay_us(LOADCELL_LOOP_DELAY_US);
+            Ets::delay_us(LOADCELL_LOOP_DELAY_US);
             average += (current - average) / (n as f32);
         }
         average as i32
@@ -111,7 +111,8 @@ where
         log::info!("Raw reading: {reading:.2}");
         let filtered = self.filter.filter(reading);
         log::info!("Filtered reading: {filtered:.2}");
-        let val = (filtered / 0.05).round() * 5.; // rounded to 0.05g
+        // round to 0.10g, multiply by 100 to cast as integer with 2 decimal places
+        let val = (filtered / 0.1).round() * 10.;
         weight.store(val as i32, Ordering::Relaxed);
     }
 }

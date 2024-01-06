@@ -10,7 +10,7 @@ use std::{
 use anyhow::{anyhow, Result};
 use esp_idf_svc::{
     hal::{
-        delay::{Delay, BLOCK},
+        delay::{Ets, BLOCK},
         gpio::{self, InterruptType, Pull},
         i2c,
         peripherals::Peripherals,
@@ -26,6 +26,7 @@ use crate::{screen::Screen, weight::Scales};
 
 mod battery;
 mod ble;
+mod critical_section;
 mod screen;
 mod weight;
 
@@ -85,8 +86,7 @@ fn main() -> Result<()> {
         unsafe {
             timer
                 .subscribe(move || {
-                    let bitset = 0b00000000001;
-                    notifier.notify(NonZeroU32::new(bitset).expect("new bitset"));
+                    notifier.notify(NonZeroU32::new(0b00000000001).expect("new bitset"));
                 })
                 .expect("subscribe to timer");
         }
@@ -95,6 +95,7 @@ fn main() -> Result<()> {
         timer.enable(true).expect("enable timer");
         loop {
             notification.wait(BLOCK);
+            log::info!("Timer fired");
             let weight = shared_weight.load(Ordering::Relaxed);
             ble::WEIGHT
                 .get()
@@ -123,22 +124,20 @@ fn main() -> Result<()> {
         unsafe {
             button_pin
                 .subscribe(move || {
-                    let bitset = 0b00000000001;
-                    notifier.notify(NonZeroU32::new(bitset).expect("new bitset"));
+                    notifier.notify(NonZeroU32::new(0b00000000001).expect("new bitset"));
                 })
                 .expect("subscribe to button press");
         }
         button_pin
             .enable_interrupt()
             .expect("enable button interrupt");
-        let delay = Delay::new_default();
         loop {
             notification.wait(BLOCK);
             log::info!("button pressed, wait for letting go");
             let before = EspSystemTime {}.now();
             let mut calib = false;
             while button_pin.is_low() {
-                delay.delay_ms(10);
+                Ets::delay_ms(10);
                 let after = EspSystemTime {}.now();
                 if (after - before).as_millis() > 2000 {
                     calib = true;
