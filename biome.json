@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.1.2/schema.json",
+	"$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
 	"organizeImports": {
 		"enabled": true
 	},
@@ -18,8 +18,11 @@
 	},
 	"files": {
 		"ignore": [
+			".devenv",
+			".direnv",
 			".vercel/*",
 			".svelte-kit/*",
+			"firmware",
 			"node_modules/*",
 			"build/*",
 			".env",
