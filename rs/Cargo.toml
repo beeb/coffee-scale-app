@@ -1,8 +1,10 @@
 [package]
 name = "firmware-rs"
 version = "0.1.0"
-authors = ["beeb <hi@beeb.li>"]
 edition = "2021"
+authors = ["beeb <hi@beeb.li>"]
+license = "MIT"
+description = "Firmware for a smart coffee scale using an ESP32 and HX711"
 rust-version = "1.71"
 
 [profile.release]

@@ -1,6 +1,7 @@
 {
 	"name": "coffee-scale-app",
 	"version": "2.0.3",
+	"license": "MIT",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
