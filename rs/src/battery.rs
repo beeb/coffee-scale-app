@@ -32,36 +32,40 @@ impl<'a, ADC: Peripheral<P = ADC> + Adc, PIN: Peripheral<P = PIN> + ADCPin<Adc =
         Ok((adc_to_percent(value), value))
     }
 }
-/*
-pub fn read_battery_percent<VPin, Adc>(vsense_pin: VPin, adc: Adc) -> Result<(u8, u16)>
-where
-    VPin: Peripheral<P = VPin> + ADCPin<Adc = Adc>,
-    Adc: Peripheral<P = Adc> + adc::Adc,
-{
-    let mut analog =
-        adc::AdcChannelDriver::<{ adc::attenuation::DB_11 }, _>::new(vsense_pin).expect("adc");
-    let mut powered_adc1 = adc::AdcDriver::new(adc, &adc::config::Config::new().calibration(true))?;
-    let mut value = powered_adc1.read(&mut analog)?;
-    for _ in 0..9 {
-        value += powered_adc1.read(&mut analog)?;
-    }
-    value /= 10;
 
-    Ok((adc_to_percent(value), value))
-} */
-
+/// Convert ADC reading into voltage and then percentage
+///
+/// Calibration values:
+///
+/// 2080: 4.15V
+/// 2055: 4.1V
+/// 2000: 4.0V
+/// 1949: 3.9V
+/// 1897: 3.8V
+/// 1848: 3.7V
+/// 1795: 3.6V
+/// 1746: 3.5V
+/// 1692: 3.4V
+/// 1642: 3.3V
+///
+/// Least-squares fit: V = 0.112202 + 0.00194226 ADC
+///
+/// Conversion to percentage (extracted from a chart a long time ago, can't remember the source):
+///
+/// 4.2V: 100%
+/// 4.1V: 94%
+/// 4.0V: 83%
+/// 3.9V: 72%
+/// 3.8V: 59%
+/// 3.7V: 50%
+/// 3.6V: 33%
+/// 3.5V: 15%
+/// 3.4V: 6%
+/// 3.3V: 0%
+///
+/// Cubic fit: y = -141.608 x^3 + 1574.53 x^2 - 5694.03 x + 6731.1
 fn adc_to_percent(adc: u16) -> u8 {
-    let adc_float = adc as f32;
-    match adc {
-        2400.. => (0.10169492 * adc_float - 149.966).clamp(0., 100.).floor() as u8, // 4.1-4.2V = 94-100%
-        2341.. => (0.18965517 * adc_float - 360.983).floor() as u8, // 4.0-4.1V = 83-94%
-        2282.. => (0.18644068 * adc_float - 353.458).floor() as u8, // 3.9-4.0V = 72-83%
-        2224.. => (0.22413793 * adc_float - 439.483).floor() as u8, // 3.8-3.9V = 59-72%
-        2165.. => (0.15254237 * adc_float - 280.254).floor() as u8, // 3.7-3.8V = 50-59%
-        2107.. => (0.29310345 * adc_float - 584.569).floor() as u8, // 3.6-3.7V = 33-50%
-        2048.. => (0.30508475 * adc_float - 609.814).floor() as u8, // 3.5-3.6V = 15-33%
-        1990.. => (0.15517241 * adc_float - 302.793).floor() as u8, // 3.4-3.5V = 6-15%
-        1931.. => (0.10169492 * adc_float - 196.373).floor() as u8, // 3.3-3.4V = 0-6%
-        _ => 0,
-    }
+    let voltage = 0.112202 + 0.00194226 * (adc as f32);
+    (-141.608 * voltage.powi(3) + 1574.53 * voltage.powi(2) - 5694.03 * voltage + 6731.1)
+        .clamp(0., 100.) as u8
 }
