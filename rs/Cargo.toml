@@ -17,8 +17,8 @@ anyhow = "1"
 critical-section = "1"
 embedded-graphics = "0.8"
 esp-idf-svc = { version = "0.47" }
-esp32-nimble = "0.4"
-loadcell = { git = "https://github.com/beeb/hx711.git", branch = "critical-section" }
+esp32-nimble = "0.5"
+loadcell = "0.2"
 log = { version = "0.4", default-features = false }
 signalo_filters = "0.6.0"
 ssd1306 = "0.8"

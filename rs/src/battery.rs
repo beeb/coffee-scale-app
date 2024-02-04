@@ -1,6 +1,38 @@
 use anyhow::Result;
-use esp_idf_svc::hal::{adc, gpio::ADCPin, peripheral::Peripheral};
+use esp_idf_svc::hal::{
+    adc::{self, Adc},
+    gpio::ADCPin,
+    peripheral::Peripheral,
+};
 
+pub struct BatteryReader<'a, ADC: Adc + 'a, PIN: Peripheral<P = PIN> + ADCPin<Adc = ADC>> {
+    adc: adc::AdcDriver<'a, ADC>,
+    analog: adc::AdcChannelDriver<'a, { adc::attenuation::DB_11 }, PIN>,
+}
+
+impl<'a, ADC: Peripheral<P = ADC> + Adc, PIN: Peripheral<P = PIN> + ADCPin<Adc = ADC>>
+    BatteryReader<'a, ADC, PIN>
+{
+    pub fn new(vsense_pin: PIN, adc: ADC) -> Result<Self> {
+        let analog =
+            adc::AdcChannelDriver::<{ adc::attenuation::DB_11 }, _>::new(vsense_pin).expect("adc");
+        Ok(BatteryReader {
+            adc: adc::AdcDriver::new(adc, &adc::config::Config::new().calibration(true))?,
+            analog,
+        })
+    }
+
+    pub fn read_battery_percent(&mut self) -> Result<(u8, u16)> {
+        let mut value = self.adc.read(&mut self.analog)?;
+        for _ in 0..9 {
+            value += self.adc.read(&mut self.analog)?;
+        }
+        value /= 10;
+
+        Ok((adc_to_percent(value), value))
+    }
+}
+/*
 pub fn read_battery_percent<VPin, Adc>(vsense_pin: VPin, adc: Adc) -> Result<(u8, u16)>
 where
     VPin: Peripheral<P = VPin> + ADCPin<Adc = Adc>,
@@ -16,7 +48,7 @@ where
     value /= 10;
 
     Ok((adc_to_percent(value), value))
-}
+} */
 
 fn adc_to_percent(adc: u16) -> u8 {
     let adc_float = adc as f32;

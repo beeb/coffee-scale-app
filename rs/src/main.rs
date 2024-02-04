@@ -22,7 +22,7 @@ use esp_idf_svc::{
 };
 use ssd1306::I2CDisplayInterface;
 
-use crate::{screen::Screen, weight::Scales};
+use crate::{battery::BatteryReader, screen::Screen, weight::Scales};
 
 mod battery;
 mod ble;
@@ -53,8 +53,8 @@ fn main() -> Result<()> {
     log::info!("BLE initialized");
 
     // read battery level
-    let (battery_percent, adc_value) =
-        battery::read_battery_percent(pins.gpio34, peripherals.adc1)?;
+    let mut battery_reader = BatteryReader::new(pins.gpio34, peripherals.adc1)?;
+    let (battery_percent, _) = battery_reader.read_battery_percent()?;
     log::info!("Battery level: {}%", battery_percent);
     screen.set_battery(battery_percent);
     ble::BATTERY
@@ -169,6 +169,7 @@ fn main() -> Result<()> {
                 scales.read_average(10)
             };
             log::info!("Weight reading: {average}");
+            let (_, adc_value) = battery_reader.read_battery_percent()?;
             screen.print_calibration(average, adc_value);
             continue;
         }
