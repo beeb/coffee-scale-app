@@ -20,6 +20,7 @@ if you target other devices.
 
 Instructions below taken from [ivmarkov's demo repository](https://github.com/ivmarkov/rust-esp32-std-demo).
 
+- Install the [Rust toolchain](https://rustup.rs/)
 - Install the [Rust Espressif compiler toolchain and the Espressif LLVM Clang toolchain](https://github.com/esp-rs/rust-build)
   - This is necessary, because support for the Xtensa architecture (ESP32 / ESP32-S2 / ESP32-S3) is not upstreamed in
     LLVM yet
