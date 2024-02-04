@@ -9,7 +9,7 @@ export default {
 		themes: [
 			{
 				emerald: {
-					...require('daisyui/src/theming/themes')['[data-theme=emerald]'],
+					...require('daisyui/src/theming/themes').emerald,
 					primary: '#42b983',
 					'primary-content': '#ffffff',
 					'--btn-text-case': 'none',
