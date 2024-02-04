@@ -1,3 +1,6 @@
+//! Battery voltage reader
+//!
+//! This module provides a way to read the battery voltage using the ADC peripheral.
 use anyhow::Result;
 use esp_idf_svc::hal::{
     adc::{self, Adc},
@@ -5,6 +8,7 @@ use esp_idf_svc::hal::{
     peripheral::Peripheral,
 };
 
+/// Battery voltage reader
 pub struct BatteryReader<'a, ADC: Adc + 'a, PIN: Peripheral<P = PIN> + ADCPin<Adc = ADC>> {
     adc: adc::AdcDriver<'a, ADC>,
     analog: adc::AdcChannelDriver<'a, { adc::attenuation::DB_11 }, PIN>,
@@ -13,6 +17,7 @@ pub struct BatteryReader<'a, ADC: Adc + 'a, PIN: Peripheral<P = PIN> + ADCPin<Ad
 impl<'a, ADC: Peripheral<P = ADC> + Adc, PIN: Peripheral<P = PIN> + ADCPin<Adc = ADC>>
     BatteryReader<'a, ADC, PIN>
 {
+    /// Create a new battery reader
     pub fn new(vsense_pin: PIN, adc: ADC) -> Result<Self> {
         let analog =
             adc::AdcChannelDriver::<{ adc::attenuation::DB_11 }, _>::new(vsense_pin).expect("adc");
@@ -22,6 +27,9 @@ impl<'a, ADC: Peripheral<P = ADC> + Adc, PIN: Peripheral<P = PIN> + ADCPin<Adc =
         })
     }
 
+    /// Read the battery voltage and return the percentage and the raw ADC value
+    ///
+    /// The ADC value is the average of 10 readings.
     pub fn read_battery_percent(&mut self) -> Result<(u8, u16)> {
         let mut value = self.adc.read(&mut self.analog)?;
         for _ in 0..9 {

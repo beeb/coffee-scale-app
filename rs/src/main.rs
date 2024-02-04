@@ -1,3 +1,17 @@
+//! Firmware for the ESP32 based smart scale.
+//!
+//! The scale uses a HX711 loadcell amplifier to read the weight and a SSD1306 OLED display to show the weight and
+//! battery level.
+//!
+//! The scale is also a Bluetooth Low Energy (BLE) peripheral that exposes a weight characteristic and a battery
+//! characteristic. It also notifies subscribers of the weight characteristic approx. every 200ms.
+//!
+//! The scale can be calibrated by pressing the button for 2 seconds. The calibration mode shows the raw loadcell
+//! readings and the ADC value of the battery voltage. The calibration mode is exited by pressing the button again.
+//! The values can be then used to calculate the scaling factor (`LOADCELL_SCALING`) as well as adjust the battery level
+//! conversion function (`battery::adc_to_percent`).
+//!
+//! At the moment, there is no interactive way to set the scaling factor, so it has to be hardcoded in the source code.
 use std::{
     num::NonZeroU32,
     sync::{
@@ -22,7 +36,7 @@ use esp_idf_svc::{
 };
 use ssd1306::I2CDisplayInterface;
 
-use crate::{battery::BatteryReader, screen::Screen, weight::Scales};
+use crate::{battery::BatteryReader, screen::Screen, weight::Loadcell};
 
 mod battery;
 mod ble;
@@ -30,10 +44,17 @@ mod critical_section;
 mod screen;
 mod weight;
 
+/// Scaling factor for the loadcell.
+///
+/// The hx711 raw value is multiplied by this to get the weight in grams.
+const LOADCELL_SCALING: f32 = 6.49304e-4;
+
 fn main() -> Result<()> {
+    // Initialize the IDF stuff and logger
     esp_idf_svc::sys::link_patches();
     esp_idf_svc::log::EspLogger::initialize_default();
 
+    // Setup screen communication over I2C
     let peripherals = Peripherals::take()?;
     let pins = peripherals.pins;
 
@@ -49,10 +70,11 @@ fn main() -> Result<()> {
 
     let mut screen = Screen::new(interface);
 
+    // Initialize BLE
     ble::init()?;
     log::info!("BLE initialized");
 
-    // read battery level
+    // Read battery level
     let mut battery_reader = BatteryReader::new(pins.gpio34, peripherals.adc1)?;
     let (battery_percent, _) = battery_reader.read_battery_percent()?;
     log::info!("Battery level: {}%", battery_percent);
@@ -63,24 +85,33 @@ fn main() -> Result<()> {
         .lock()
         .set_value(&battery_percent.to_be_bytes());
 
-    let scales = Arc::new(Mutex::new(Scales::new(pins.gpio13, pins.gpio14)?));
-    // tare the scales after it's become stable
+    // Initialize the loadcell
+    let scales = Arc::new(Mutex::new(Loadcell::new(
+        pins.gpio13,
+        pins.gpio14,
+        LOADCELL_SCALING,
+    )?));
+
+    // Tare the scales after it's become stable
     {
         let mut scales = scales.lock().expect("mutex lock");
         scales.wait_stable();
         scales.tare(None);
+        // unlock mutex
     }
 
+    // Weight value to be shared between threads
     let weight: Arc<AtomicI32> = Arc::new(AtomicI32::new(0));
-    let shared_weight = Arc::clone(&weight);
 
     // Bluetooth reporting thread
+    let shared_weight = Arc::clone(&weight); // moved inside thread
     thread::spawn(move || {
+        // Timer to notify subscribers of the weight characteristic value
         let notification = Notification::new();
         let timer_conf = config::Config::new().auto_reload(true);
         let mut timer = TimerDriver::new(peripherals.timer00, &timer_conf).expect("timer");
         timer
-            .set_alarm(timer.tick_hz() / 5)
+            .set_alarm(timer.tick_hz() / 5) // every 200ms = 5 times per second
             .expect("set timer alarm");
         let notifier = notification.notifier();
         unsafe {
@@ -90,6 +121,7 @@ fn main() -> Result<()> {
                 })
                 .expect("subscribe to timer");
         }
+        // Enable timer interrupt
         timer.enable_interrupt().expect("enable timer interrupt");
         timer.enable_alarm(true).expect("enable timer alarm");
         timer.enable(true).expect("enable timer");
@@ -106,10 +138,12 @@ fn main() -> Result<()> {
         }
     });
 
-    // Tare/Calibration button thread
+    // Calibration mode flag to be shared between threads
     let calibration_mode = Arc::new(AtomicBool::new(false));
-    let shared_calibration_mode = Arc::clone(&calibration_mode);
-    let shared_scales = Arc::clone(&scales);
+
+    // Tare/Calibration button thread
+    let shared_calibration_mode = Arc::clone(&calibration_mode); // moved inside thread
+    let shared_scales = Arc::clone(&scales); // moved inside thread
     thread::spawn(move || {
         let mut button_pin = gpio::PinDriver::input(pins.gpio0).expect("button pin");
         button_pin
@@ -163,7 +197,9 @@ fn main() -> Result<()> {
 
     // Main loop
     loop {
+        // Check if we are in calibration mode
         if calibration_mode.load(Ordering::Relaxed) {
+            // Calibration mode, display the raw readings
             let average = {
                 let mut scales = scales.lock().expect("mutex lock");
                 scales.read_average(10)
@@ -173,10 +209,13 @@ fn main() -> Result<()> {
             screen.print_calibration(average, adc_value);
             continue;
         }
-        // Read weight from loadcell
+
+        // Normal operation
+        // Read weight from loadcell and display
         {
             let mut scales = scales.lock().expect("mutex lock");
             scales.read_weight(&weight);
+            // unlock mutex
         }
         let weight = weight.load(Ordering::Relaxed);
         screen.print(weight);

@@ -1,3 +1,9 @@
+//! Critical section implementation for ESP-IDF
+//!
+//! This module provides a critical section implementation that uses `IsrCriticalSection`, which prevents any interrupt
+//! from happening while the critical section is acquired.
+//!
+//! This is necessary, because the hx711 reading must happen with precise timing, and any interrupt could disrupt it.
 use std::sync::Mutex;
 
 use esp_idf_svc::hal::interrupt::{IsrCriticalSection, IsrCriticalSectionGuard};

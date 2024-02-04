@@ -1,3 +1,7 @@
+//! Bluetooth Low Energy (BLE) server implementation
+//!
+//! This module provides the BLE server implementation for the coffee scale. It exposes a weight characteristic and a
+//! battery characteristic.
 use std::sync::{Arc, OnceLock};
 
 use anyhow::{anyhow, Result};
@@ -12,9 +16,13 @@ const WEIGHT_MEASUREMENT_CHARACTERISTIC: BleUuid = BleUuid::from_uuid16(0x2A9D);
 const BATTERY_SERVICE: BleUuid = BleUuid::from_uuid16(0x180F);
 const BATTERY_LEVEL_CHARACTERISTIC: BleUuid = BleUuid::from_uuid16(0x2A19);
 
+/// Make weight characteristic available globally
 pub static WEIGHT: OnceLock<Arc<Mutex<BLECharacteristic>>> = OnceLock::new();
+
+/// Make battery characteristic available globally
 pub static BATTERY: OnceLock<Arc<Mutex<BLECharacteristic>>> = OnceLock::new();
 
+/// Initialize the BLE server
 pub fn init() -> Result<()> {
     let ble_device = BLEDevice::take();
     let server = ble_device.get_server();
