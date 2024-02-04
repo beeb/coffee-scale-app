@@ -3,6 +3,8 @@ import { get } from 'svelte/store'
 import { batteryLevel, btConnected, btEnabled, btServer, currentWeight, recordWeight, wakeLock } from './stores'
 
 let weightCharacteristic: BluetoothRemoteGATTCharacteristic | null = null
+
+// check if the scale is using the new rust firmware which uses a int32 for the weight
 let newFirmware = false
 
 async function onWeightUpdate(event: Event) {
@@ -10,6 +12,7 @@ async function onWeightUpdate(event: Event) {
 		return
 	}
 	const dataView = (event.target as BluetoothRemoteGATTCharacteristic).value
+	// get the value as a int16 or int32 depending on the firmware
 	const value = (newFirmware ? dataView?.getInt32(0, false) : dataView?.getInt16(0, false)) ?? 0
 	currentWeight.set(value / 100.0)
 	await recordWeight()
@@ -37,6 +40,10 @@ export async function connectBt() {
 	if (!browser) {
 		return
 	}
+	// Support both the old python firmware (with device name `mpy-coffe`) and the new rust firmware (with device name
+	// `coffee-scale`.
+	// The new firmware uses a more appropriate service and characteristic UUIDs, so we can use those to identify the
+	// firmware version.
 	const device = await navigator.bluetooth.requestDevice({
 		filters: [
 			{ name: 'mpy-coffee' },
@@ -54,6 +61,7 @@ export async function connectBt() {
 	btConnected.set(true)
 	btServer.set(server ?? null)
 
+	// Detect firmware version
 	try {
 		// python firmware
 		const service = await server?.getPrimaryService(parseInt('0x1815'))
@@ -69,6 +77,7 @@ export async function connectBt() {
 	weightCharacteristic?.addEventListener('characteristicvaluechanged', onWeightUpdate)
 
 	await readBatteryLevel()
+	// Request a wake lock to keep the screen on while the scale is connected
 	if ('wakeLock' in navigator) {
 		try {
 			wakeLock.set(await navigator.wakeLock.request('screen'))
