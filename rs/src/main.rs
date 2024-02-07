@@ -104,37 +104,39 @@ fn main() -> Result<()> {
     let weight: Arc<AtomicI32> = Arc::new(AtomicI32::new(0));
 
     // Bluetooth reporting thread
-    let shared_weight = Arc::clone(&weight); // moved inside thread
-    thread::spawn(move || {
-        // Timer to notify subscribers of the weight characteristic value
-        let notification = Notification::new();
-        let timer_conf = config::Config::new().auto_reload(true);
-        let mut timer = TimerDriver::new(peripherals.timer00, &timer_conf).expect("timer");
-        timer
-            .set_alarm(timer.tick_hz() / 5) // every 200ms = 5 times per second
-            .expect("set timer alarm");
-        let notifier = notification.notifier();
-        unsafe {
+    thread::spawn({
+        let weight = Arc::clone(&weight);
+        move || {
+            // Timer to notify subscribers of the weight characteristic value
+            let notification = Notification::new();
+            let timer_conf = config::Config::new().auto_reload(true);
+            let mut timer = TimerDriver::new(peripherals.timer00, &timer_conf).expect("timer");
             timer
-                .subscribe(move || {
-                    notifier.notify(NonZeroU32::new(0b00000000001).expect("new bitset"));
-                })
-                .expect("subscribe to timer");
-        }
-        // Enable timer interrupt
-        timer.enable_interrupt().expect("enable timer interrupt");
-        timer.enable_alarm(true).expect("enable timer alarm");
-        timer.enable(true).expect("enable timer");
-        loop {
-            notification.wait(BLOCK);
-            log::info!("Timer fired");
-            let weight = shared_weight.load(Ordering::Relaxed);
-            ble::WEIGHT
-                .get()
-                .expect("weight characteristic not initialized")
-                .lock()
-                .set_value(&weight.to_be_bytes())
-                .notify();
+                .set_alarm(timer.tick_hz() / 5) // every 200ms = 5 times per second
+                .expect("set timer alarm");
+            let notifier = notification.notifier();
+            unsafe {
+                timer
+                    .subscribe(move || {
+                        notifier.notify(NonZeroU32::new(0b00000000001).expect("new bitset"));
+                    })
+                    .expect("subscribe to timer");
+            }
+            // Enable timer interrupt
+            timer.enable_interrupt().expect("enable timer interrupt");
+            timer.enable_alarm(true).expect("enable timer alarm");
+            timer.enable(true).expect("enable timer");
+            loop {
+                notification.wait(BLOCK);
+                log::info!("Timer fired");
+                let weight = weight.load(Ordering::Relaxed);
+                ble::WEIGHT
+                    .get()
+                    .expect("weight characteristic not initialized")
+                    .lock()
+                    .set_value(&weight.to_be_bytes())
+                    .notify();
+            }
         }
     });
 
@@ -142,56 +144,58 @@ fn main() -> Result<()> {
     let calibration_mode = Arc::new(AtomicBool::new(false));
 
     // Tare/Calibration button thread
-    let shared_calibration_mode = Arc::clone(&calibration_mode); // moved inside thread
-    let shared_scales = Arc::clone(&scales); // moved inside thread
-    thread::spawn(move || {
-        let mut button_pin = gpio::PinDriver::input(pins.gpio0).expect("button pin");
-        button_pin
-            .set_pull(Pull::Up)
-            .expect("set button pin to pull up");
-        button_pin
-            .set_interrupt_type(InterruptType::NegEdge)
-            .expect("set interrupt type");
-
-        let notification = Notification::new();
-        let notifier = notification.notifier();
-        unsafe {
+    thread::spawn({
+        let calibration_mode = Arc::clone(&calibration_mode); // moved inside thread
+        let scales = Arc::clone(&scales); // moved inside thread
+        move || {
+            let mut button_pin = gpio::PinDriver::input(pins.gpio0).expect("button pin");
             button_pin
-                .subscribe(move || {
-                    notifier.notify(NonZeroU32::new(0b00000000001).expect("new bitset"));
-                })
-                .expect("subscribe to button press");
-        }
-        button_pin
-            .enable_interrupt()
-            .expect("enable button interrupt");
-        loop {
-            notification.wait(BLOCK);
-            log::info!("button pressed, wait for letting go");
-            let before = EspSystemTime {}.now();
-            let mut calib = false;
-            while button_pin.is_low() {
-                Ets::delay_ms(10);
-                let after = EspSystemTime {}.now();
-                if (after - before).as_millis() > 2000 {
-                    calib = true;
-                    break;
-                }
+                .set_pull(Pull::Up)
+                .expect("set button pin to pull up");
+            button_pin
+                .set_interrupt_type(InterruptType::NegEdge)
+                .expect("set interrupt type");
+
+            let notification = Notification::new();
+            let notifier = notification.notifier();
+            unsafe {
+                button_pin
+                    .subscribe(move || {
+                        notifier.notify(NonZeroU32::new(0b00000000001).expect("new bitset"));
+                    })
+                    .expect("subscribe to button press");
             }
-            if calib {
-                log::info!("long press, enter calibration mode");
-                let mut scales = shared_scales.lock().expect("mutex lock");
-                scales.tare(None);
-                shared_calibration_mode.store(true, Ordering::Relaxed);
-                break;
-            }
-            log::info!("button released");
-            log::info!("short press, tare scales");
-            let mut scales = shared_scales.lock().expect("mutex lock");
-            scales.tare(Some(5));
             button_pin
                 .enable_interrupt()
                 .expect("enable button interrupt");
+            loop {
+                notification.wait(BLOCK);
+                log::info!("button pressed, wait for letting go");
+                let before = EspSystemTime {}.now();
+                let mut calib = false;
+                while button_pin.is_low() {
+                    Ets::delay_ms(10);
+                    let after = EspSystemTime {}.now();
+                    if (after - before).as_millis() > 2000 {
+                        calib = true;
+                        break;
+                    }
+                }
+                if calib {
+                    log::info!("long press, enter calibration mode");
+                    let mut scales = scales.lock().expect("mutex lock");
+                    scales.tare(None);
+                    calibration_mode.store(true, Ordering::Relaxed);
+                    break;
+                }
+                log::info!("button released");
+                log::info!("short press, tare scales");
+                let mut scales = scales.lock().expect("mutex lock");
+                scales.tare(Some(5));
+                button_pin
+                    .enable_interrupt()
+                    .expect("enable button interrupt");
+            }
         }
     });
 
