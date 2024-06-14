@@ -1,9 +1,9 @@
 <script>
-  import InputCoffeeWeight from './InputCoffeeWeight.svelte'
-  import InputPreinfusion from './InputPreinfusion.svelte'
-  import InputRatio from './InputRatio.svelte'
-  import InputTotalTime from './InputTotalTime.svelte'
-  import ArrowRight from 'virtual:icons/mingcute/arrow-right-line'
+import InputCoffeeWeight from './InputCoffeeWeight.svelte'
+import InputPreinfusion from './InputPreinfusion.svelte'
+import InputRatio from './InputRatio.svelte'
+import InputTotalTime from './InputTotalTime.svelte'
+import ArrowRight from 'virtual:icons/mingcute/arrow-right-line'
 </script>
 
 <div class="flex flex-col bg-base-100 p-4 h-full">

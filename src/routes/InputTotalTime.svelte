@@ -1,5 +1,5 @@
 <script>
-  import { totalTime } from '$lib/stores'
+import { totalTime } from '$lib/stores'
 </script>
 
 <div class="form-control w-full max-w-[12rem]">

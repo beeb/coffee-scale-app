@@ -1,8 +1,8 @@
 <script>
-  import { btConnected, btEnabled, recording } from '$lib/stores'
-  import Hexagon from 'virtual:icons/mingcute/hexagon-fill'
+import { btConnected, btEnabled, recording } from '$lib/stores'
+import Hexagon from 'virtual:icons/mingcute/hexagon-fill'
 
-  $: hexagonClass = $btEnabled ? ($btConnected ? 'text-primary' : 'text-warning') : 'text-error'
+$: hexagonClass = $btEnabled ? ($btConnected ? 'text-primary' : 'text-warning') : 'text-error'
 </script>
 
 <div class="absolute left-20 top-10">
