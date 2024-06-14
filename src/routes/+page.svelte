@@ -1,38 +1,38 @@
 <script>
-  import '../app.css'
-  import Chart from './Chart.svelte'
-  import SettingsForm from './SettingsForm.svelte'
-  import Title from './Title.svelte'
-  import toast, { Toaster } from 'svelte-french-toast'
-  import Settings from 'virtual:icons/mingcute/settings-1-line'
-  import ConnectStartButton from './ConnectStartButton.svelte'
-  import Gauge from './Gauge.svelte'
-  import { onMount, onDestroy } from 'svelte'
-  import { checkBtStatus } from '$lib/bt'
-  import { batteryLevel, btConnected, currentWeight, targetWeight } from '$lib/stores'
-  import BatteryLevel from './BatteryLevel.svelte'
+import '../app.css'
+import Chart from './Chart.svelte'
+import SettingsForm from './SettingsForm.svelte'
+import Title from './Title.svelte'
+import toast, { Toaster } from 'svelte-french-toast'
+import Settings from 'virtual:icons/mingcute/settings-1-line'
+import ConnectStartButton from './ConnectStartButton.svelte'
+import Gauge from './Gauge.svelte'
+import { onMount, onDestroy } from 'svelte'
+import { checkBtStatus } from '$lib/bt'
+import { batteryLevel, btConnected, currentWeight, targetWeight } from '$lib/stores'
+import BatteryLevel from './BatteryLevel.svelte'
 
-  const btAvailabilityChangeListener = async () => {
-    await checkBtStatus()
-  }
+const btAvailabilityChangeListener = async () => {
+	await checkBtStatus()
+}
 
-  onMount(async () => {
-    try {
-      await checkBtStatus()
-    } catch (e) {
-      console.error(e)
-      toast.error('Bluetooth Error')
-    }
-    if ('onavailabilitychanged' in navigator.bluetooth) {
-      navigator.bluetooth.addEventListener('availabilitychanged', btAvailabilityChangeListener)
-    }
-  })
+onMount(async () => {
+	try {
+		await checkBtStatus()
+	} catch (e) {
+		console.error(e)
+		toast.error('Bluetooth Error')
+	}
+	if ('onavailabilitychanged' in navigator.bluetooth) {
+		navigator.bluetooth.addEventListener('availabilitychanged', btAvailabilityChangeListener)
+	}
+})
 
-  onDestroy(() => {
-    if ('onavailabilitychanged' in navigator.bluetooth) {
-      navigator.bluetooth.removeEventListener('availabilitychanged', btAvailabilityChangeListener)
-    }
-  })
+onDestroy(() => {
+	if ('onavailabilitychanged' in navigator.bluetooth) {
+		navigator.bluetooth.removeEventListener('availabilitychanged', btAvailabilityChangeListener)
+	}
+})
 </script>
 
 <div class="w-full h-full max-w-7xl mx-auto relative drawer drawer-end">

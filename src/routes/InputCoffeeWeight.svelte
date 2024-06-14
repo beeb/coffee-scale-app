@@ -1,5 +1,5 @@
 <script>
-  import { coffeeWeight, currentWeight, btConnected } from '$lib/stores'
+import { coffeeWeight, currentWeight, btConnected } from '$lib/stores'
 </script>
 
 <div class="form-control w-full max-w-[12rem]">

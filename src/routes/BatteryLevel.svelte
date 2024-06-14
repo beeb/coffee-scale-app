@@ -1,13 +1,13 @@
 <script lang="ts">
-  import BatteryFull from 'virtual:icons/mingcute/battery-4-line'
-  import Battery75 from 'virtual:icons/mingcute/battery-3-line'
-  import Battery50 from 'virtual:icons/mingcute/battery-2-line'
-  import Battery25 from 'virtual:icons/mingcute/battery-1-line'
-  import BatteryEmpty from 'virtual:icons/mingcute/battery-line'
+import BatteryFull from 'virtual:icons/mingcute/battery-4-line'
+import Battery75 from 'virtual:icons/mingcute/battery-3-line'
+import Battery50 from 'virtual:icons/mingcute/battery-2-line'
+import Battery25 from 'virtual:icons/mingcute/battery-1-line'
+import BatteryEmpty from 'virtual:icons/mingcute/battery-line'
 
-  export let level: number = 0
+export let level: number = 0
 
-  const classes = 'w-5 h-5'
+const classes = 'w-5 h-5'
 </script>
 
 <div class="flex text-sm items-center gap-2">

@@ -1,23 +1,23 @@
 <script lang="ts">
-  import { btConnected, btEnabled, currentWeight, recording, startRecording, stopRecording } from '$lib/stores'
-  import Record from 'virtual:icons/mingcute/record-mail-line'
-  import Link from 'virtual:icons/mingcute/link-line'
-  import Cross from 'virtual:icons/mingcute/close-circle-line'
-  import Stop from 'virtual:icons/mingcute/stop-circle-fill'
-  import { connectBt } from '$lib/bt'
-  import toast from 'svelte-french-toast'
+import { btConnected, btEnabled, currentWeight, recording, startRecording, stopRecording } from '$lib/stores'
+import Record from 'virtual:icons/mingcute/record-mail-line'
+import Link from 'virtual:icons/mingcute/link-line'
+import Cross from 'virtual:icons/mingcute/close-circle-line'
+import Stop from 'virtual:icons/mingcute/stop-circle-fill'
+import { connectBt } from '$lib/bt'
+import toast from 'svelte-french-toast'
 
-  const connect = async () => {
-    try {
-      await connectBt()
-    } catch (e) {
-      console.error(e)
-      const error = e as Error
-      toast.error(`Bluetooth Error: ${error.message}`)
-    }
-  }
+const connect = async () => {
+	try {
+		await connectBt()
+	} catch (e) {
+		console.error(e)
+		const error = e as Error
+		toast.error(`Bluetooth Error: ${error.message}`)
+	}
+}
 
-  $: canRecord = $currentWeight >= -0.1 && $currentWeight <= 0.1
+$: canRecord = $currentWeight >= -0.1 && $currentWeight <= 0.1
 </script>
 
 {#if $btEnabled && $btConnected}
