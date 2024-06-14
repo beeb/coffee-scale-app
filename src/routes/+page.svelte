@@ -35,14 +35,18 @@ onDestroy(() => {
 })
 </script>
 
-<div class="w-full h-full max-w-7xl mx-auto relative drawer drawer-end">
+<div class="w-screen h-screen max-w-7xl mx-auto relative drawer drawer-end">
   <input id="form-drawer" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content">
     <Chart />
     <div class="absolute max-w-7xl inset-0">
       <Title />
       <div class="absolute right-10 bottom-20">
-        <label for="form-drawer" class="btn btn-neutral drawer-button" aria-label="Open settings drawer">
+        <label
+          for="form-drawer"
+          class="btn btn-neutral drawer-button"
+          aria-label="Open settings drawer"
+        >
           <Settings class="h-6 w-6" /> Settings
         </label>
       </div>
@@ -50,7 +54,10 @@ onDestroy(() => {
         <ConnectStartButton />
       </div>
       {#if $btConnected}
-        <div class="absolute left-20 top-[calc(50%-5rem)]" style="width: min(15rem, 45vh)">
+        <div
+          class="absolute left-20 top-[calc(50%-5rem)]"
+          style="width: min(15rem, 45vh)"
+        >
           <Gauge
             startAngle={-110}
             endAngle={110}
