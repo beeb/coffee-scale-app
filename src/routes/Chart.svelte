@@ -88,6 +88,6 @@ afterUpdate(() => {
 })
 </script>
 
-<div class="p-2 w-full h-full relative">
-  <canvas bind:this={chartRef} />
+<div class="p-2 w-full h-screen relative">
+	<canvas bind:this={chartRef} />
 </div>
