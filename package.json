@@ -14,7 +14,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.8.1",
-		"@iconify-json/mingcute": "^1.1.17",
+		"@iconify-json/mingcute": "^1.1.19",
 		"@macfja/svelte-persistent-store": "^2.4.1",
 		"@sveltejs/adapter-static": "^3.0.2",
 		"@sveltejs/kit": "^2.5.11",
