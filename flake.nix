@@ -4,7 +4,7 @@
     utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, utils, ... } @ inputs:
+  outputs = { nixpkgs, utils, ... }:
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -18,9 +18,6 @@
             nodePackages.pnpm
             typescript
           ];
-          shellHook = ''
-            set -a; source .env; set+a
-          '';
         };
       });
 }

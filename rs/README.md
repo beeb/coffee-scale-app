@@ -37,8 +37,9 @@ Instructions below taken from [ivmarkov's demo repository](https://github.com/iv
 - Clone this repo: `git clone https://github.com/beeb/coffee-scale-app.git`
 - Enter the `rs` directory: `cd coffee-scale-app/rs`
 - Connect the esp32 with USB
-- `cargo espflash flash --release`
+- `cargo espflash flash --release --no-stub`
   - The appropriate device should be found automatically
+  - That last option seems to be required with the latest version of cargo-espflash, see [this issue](https://github.com/esp-rs/esp-flasher-stub/issues/63)
 
 ### Note for Windows
 
