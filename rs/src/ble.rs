@@ -7,7 +7,7 @@ use std::sync::{Arc, OnceLock};
 use anyhow::{anyhow, Result};
 use esp32_nimble::{
     utilities::{mutex::Mutex, BleUuid},
-    BLECharacteristic, BLEDevice, NimbleProperties,
+    BLEAdvertisementData, BLECharacteristic, BLEDevice, NimbleProperties,
 };
 
 const WEIGHT_SCALE_SERVICE: BleUuid = BleUuid::from_uuid16(0x181D);
@@ -25,6 +25,7 @@ pub static BATTERY: OnceLock<Arc<Mutex<BLECharacteristic>>> = OnceLock::new();
 /// Initialize the BLE server
 pub fn init() -> Result<()> {
     let ble_device = BLEDevice::take();
+    let ble_advertising = ble_device.get_advertising();
     let server = ble_device.get_server();
     server.on_connect(|server, desc| {
         log::info!("Client connected");
@@ -34,15 +35,15 @@ pub fn init() -> Result<()> {
             .expect("ble update conn params");
 
         log::info!("Multi-connect support: start advertising");
-        ble_device
-            .get_advertising()
+        ble_advertising
+            .lock()
             .start()
             .expect("ble start advertising");
     });
     server.on_disconnect(|_desc, reason| {
-        log::info!("Client disconnected ({:X})", reason);
-        ble_device
-            .get_advertising()
+        log::info!("Client disconnected ({:?})", reason);
+        ble_advertising
+            .lock()
             .start()
             .expect("ble start advertising after disconnect");
     });
@@ -66,13 +67,18 @@ pub fn init() -> Result<()> {
         .set(weight_characteristic)
         .map_err(|_| anyhow!("Weight characteristic already initialized"))?;
 
-    let ble_advertising = ble_device.get_advertising();
     ble_advertising
-        .name("coffee-scale")
-        .add_service_uuid(WEIGHT_SCALE_SERVICE)
-        .add_service_uuid(BATTERY_SERVICE);
+        .lock()
+        .set_data(
+            BLEAdvertisementData::new()
+                .name("coffee-scale")
+                .add_service_uuid(WEIGHT_SCALE_SERVICE)
+                .add_service_uuid(BATTERY_SERVICE),
+        )
+        .map_err(|_| anyhow!("Set advertisement data error"))?;
 
     ble_advertising
+        .lock()
         .start()
         .map_err(|_| anyhow!("Advertising start error"))?;
     Ok(())

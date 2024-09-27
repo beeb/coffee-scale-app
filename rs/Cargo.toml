@@ -18,8 +18,8 @@ opt-level = "z"
 anyhow = "1"
 critical-section = "1"
 embedded-graphics = "0.8"
-esp-idf-svc = { version = "0.47" }
-esp32-nimble = "0.5"
+esp-idf-svc = { version = "0.48" }
+esp32-nimble = "0.6"
 loadcell = "0.2"
 log = { version = "0.4", default-features = false }
 signalo_filters = "0.6.0"
