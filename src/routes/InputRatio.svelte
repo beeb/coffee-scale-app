@@ -1,5 +1,5 @@
 <script>
-import { targetRatio, coffeeWeight, targetWeight } from '$lib/stores'
+  import { targetRatio, targetWeight } from '$lib/stores'
 </script>
 
 <div class="form-control w-full max-w-[12rem]">

@@ -1,130 +1,156 @@
 <script lang="ts">
-import { tweened } from 'svelte/motion'
-import { cubicOut } from 'svelte/easing'
+  import { tweened } from 'svelte/motion'
+  import { cubicOut } from 'svelte/easing'
 
-/*
+  /*
   This gauge is based on the amazing work of [vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge/).
   */
 
-type ColorStop = { offset: number; color: `#${string}` }
+  type ColorStop = { offset: number; color: `#${string}` }
 
-const radius = 100
-const xCenter = 100
-const yCenter = 100
+  const radius = 100
+  const xCenter = 100
+  const yCenter = 100
 
-export let value = 70
-export let min = 0
-export let max = 100
-export let startAngle = -90
-export let endAngle = 90
-export let innerRadius = 60
-export let separatorStep = 10
-export let separatorThickness = 4
-export let gaugeColor: string | ColorStop[] = [
-	{ offset: 0, color: '#42b983' },
-	{ offset: 100, color: '#f87272' },
-]
-export let baseColor: `#${string}` = '#dddddd'
-export let scaleInterval = 5
+  interface Props {
+    value?: number
+    min?: number
+    max?: number
+    startAngle?: number
+    endAngle?: number
+    innerRadius?: number
+    separatorStep?: number
+    separatorThickness?: number
+    gaugeColor?: string | ColorStop[]
+    baseColor?: `#${string}`
+    scaleInterval?: number
+    children?: import('svelte').Snippet
+  }
 
-const tweenedAngle = tweened(value, {
-	duration: 200,
-	easing: cubicOut,
-})
+  const {
+    value = 70,
+    min = 0,
+    max = 100,
+    startAngle = -90,
+    endAngle = 90,
+    innerRadius = 60,
+    separatorStep = 10,
+    separatorThickness = 4,
+    gaugeColor = [
+      { offset: 0, color: '#42b983' },
+      { offset: 100, color: '#f87272' }
+    ],
+    baseColor = '#dddddd',
+    scaleInterval = 5,
+    children
+  }: Props = $props()
 
-$: {
-	tweenedAngle.set(value)
-}
+  const tweenedAngle = tweened(value, {
+    duration: 200,
+    easing: cubicOut
+  })
 
-$: height =
-	Math.abs(endAngle) <= 180 && Math.abs(startAngle) <= 180
-		? Math.max(yCenter, polarToCartesian(radius, startAngle).y, polarToCartesian(radius, endAngle).y)
-		: radius * 2
+  $effect(() => {
+    tweenedAngle.set(value)
+  })
 
-$: totalAngle = Math.abs(endAngle - startAngle)
+  const polarToCartesian = (radius: number, angle: number) => {
+    const angleInRadians = ((angle - 90) * Math.PI) / 180
 
-$: separatorPathsValue = separatorPaths(separatorStep, min, max, separatorThickness)
+    return {
+      x: xCenter + radius * Math.cos(angleInRadians),
+      y: yCenter + radius * Math.sin(angleInRadians)
+    }
+  }
 
-$: isCircle = Math.abs(totalAngle) === 360
+  const getAngle = (value: number) => {
+    const clampedAngle = Math.min(Math.max(value, min), max)
+    const totalValue = max - min || 1
 
-$: basePath = describePath(radius, startAngle, endAngle)
+    return (clampedAngle * totalAngle) / totalValue + startAngle
+  }
 
-$: gaugePath = describePath(radius, getAngle($tweenedAngle), endAngle)
+  const describePath = (radius: number, startAngle: number, endAngle: number) => {
+    const start = polarToCartesian(radius, endAngle)
+    const end = polarToCartesian(radius, startAngle)
 
-$: scaleLinesValue = scaleLines(scaleInterval, isCircle, min, max, innerRadius)
+    const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1'
 
-const separatorPaths = (separatorStep: number, min: number, max: number, separatorThickness: number) => {
-	if (separatorStep > 0) {
-		const paths = []
-		// If the gauge is a circle, this will add a separator at the start
-		let i = isCircle ? min : min + separatorStep
+    const d = [
+      'M',
+      start.x,
+      start.y,
+      'A',
+      radius,
+      radius,
+      0,
+      largeArcFlag,
+      0,
+      end.x,
+      end.y,
+      'L',
+      xCenter,
+      yCenter
+    ].join(' ')
 
-		for (i; i < max; i += separatorStep) {
-			const angle = getAngle(i)
-			const halfAngle = separatorThickness / 2
+    return d
+  }
 
-			paths.push(describePath(radius + 2, angle - halfAngle, angle + halfAngle))
-		}
+  const separatorPaths = (separatorStep: number, min: number, max: number, separatorThickness: number) => {
+    if (separatorStep > 0) {
+      const paths = []
+      // If the gauge is a circle, this will add a separator at the start
+      let i = isCircle ? min : min + separatorStep
 
-		return paths
-	}
+      for (i; i < max; i += separatorStep) {
+        const angle = getAngle(i)
+        const halfAngle = separatorThickness / 2
 
-	return null
-}
+        paths.push(describePath(radius + 2, angle - halfAngle, angle + halfAngle))
+      }
 
-const scaleLines = (scaleInterval: number, isCircle: boolean, min: number, max: number, innerRadius: number) => {
-	if (scaleInterval > 0) {
-		const lines = []
-		// if gauge is a circle, remove the first scale
-		let i = isCircle ? min + scaleInterval : min
+      return paths
+    }
 
-		for (i; i < max + scaleInterval; i += scaleInterval) {
-			const angle = getAngle(i)
-			const startCoordinate = polarToCartesian(innerRadius - 4, angle)
-			const endCoordinate = polarToCartesian(innerRadius - 8, angle)
+    return null
+  }
 
-			lines.push({
-				xS: startCoordinate.x,
-				yS: startCoordinate.y,
-				xE: endCoordinate.x,
-				yE: endCoordinate.y,
-			})
-		}
+  const scaleLines = (scaleInterval: number, isCircle: boolean, min: number, max: number, innerRadius: number) => {
+    if (scaleInterval > 0) {
+      const lines = []
+      // if gauge is a circle, remove the first scale
+      let i = isCircle ? min + scaleInterval : min
 
-		return lines
-	}
+      for (i; i < max + scaleInterval; i += scaleInterval) {
+        const angle = getAngle(i)
+        const startCoordinate = polarToCartesian(innerRadius - 4, angle)
+        const endCoordinate = polarToCartesian(innerRadius - 8, angle)
 
-	return null
-}
+        lines.push({
+          xS: startCoordinate.x,
+          yS: startCoordinate.y,
+          xE: endCoordinate.x,
+          yE: endCoordinate.y
+        })
+      }
 
-const polarToCartesian = (radius: number, angle: number) => {
-	const angleInRadians = ((angle - 90) * Math.PI) / 180
+      return lines
+    }
 
-	return {
-		x: xCenter + radius * Math.cos(angleInRadians),
-		y: yCenter + radius * Math.sin(angleInRadians),
-	}
-}
+    return null
+  }
 
-const getAngle = (value: number) => {
-	const clampedAngle = Math.min(Math.max(value, min), max)
-	const totalValue = max - min || 1
-
-	return (clampedAngle * totalAngle) / totalValue + startAngle
-}
-
-const describePath = (radius: number, startAngle: number, endAngle: number) => {
-	const start = polarToCartesian(radius, endAngle)
-	const end = polarToCartesian(radius, startAngle)
-
-	const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1'
-
-	const d = ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y, 'L', xCenter, yCenter].join(
-		' ',
-	)
-
-	return d
-}
+  const height = $derived(
+    Math.abs(endAngle) <= 180 && Math.abs(startAngle) <= 180
+      ? Math.max(yCenter, polarToCartesian(radius, startAngle).y, polarToCartesian(radius, endAngle).y)
+      : radius * 2
+  )
+  const totalAngle = $derived(Math.abs(endAngle - startAngle))
+  const separatorPathsValue = $derived(separatorPaths(separatorStep, min, max, separatorThickness))
+  const isCircle = $derived(Math.abs(totalAngle) === 360)
+  const basePath = $derived(describePath(radius, startAngle, endAngle))
+  const gaugePath = $derived(describePath(radius, getAngle($tweenedAngle), endAngle))
+  const scaleLinesValue = $derived(scaleLines(scaleInterval, isCircle, min, max, innerRadius))
 </script>
 
 <div>
@@ -179,7 +205,7 @@ const describePath = (radius: number, startAngle: number, endAngle: number) => {
       {/each}
     {/if}
     <foreignObject x="0" y="0" width="100%" {height}>
-      <slot />
+      {@render children?.()}
     </foreignObject>
   </svg>
 </div>
