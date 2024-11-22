@@ -22,25 +22,30 @@ export async function checkBtStatus() {
 	if (!browser) {
 		return false
 	}
-	const available = await navigator.bluetooth.getAvailability()
-	btEnabled.set(available)
-	if (get(btConnected) && !available) {
-		weightCharacteristic?.removeEventListener('characteristicvaluechanged', onWeightUpdate)
-		btConnected.set(false)
-		const wake = get(wakeLock)
-		if (wake !== null) {
-			await wake.release()
-			wakeLock.set(null)
+	try {
+		const available = await navigator.bluetooth.getAvailability()
+		btEnabled.set(available)
+		if (get(btConnected) && !available) {
+			weightCharacteristic?.removeEventListener('characteristicvaluechanged', onWeightUpdate)
+			btConnected.set(false)
+			const wake = get(wakeLock)
+			if (wake !== null) {
+				await wake.release()
+				wakeLock.set(null)
+			}
 		}
+		return available
+	} catch (err) {
+		btEnabled.set(false)
+		return false
 	}
-	return available
 }
 
 export async function connectBt() {
 	if (!browser) {
 		return
 	}
-	// Support both the old python firmware (with device name `mpy-coffe`) and the new rust firmware (with device name
+	// Support both the old python firmware (with device name `mpy-coffee`) and the new rust firmware (with device name
 	// `coffee-scale`.
 	// The new firmware uses a more appropriate service and characteristic UUIDs, so we can use those to identify the
 	// firmware version.
@@ -48,8 +53,8 @@ export async function connectBt() {
 		filters: [
 			{ name: 'mpy-coffee' },
 			{ name: 'coffee-scale' },
-			{ services: [parseInt('0x180F'), parseInt('0x1815')] }, // python firmware
-			{ services: [parseInt('0x180F'), parseInt('0x181D')] }, // rust firmware
+			{ services: [Number.parseInt('0x180F'), Number.parseInt('0x1815')] }, // python firmware
+			{ services: [Number.parseInt('0x180F'), Number.parseInt('0x181D')] }, // rust firmware
 		],
 	})
 	device.addEventListener('gattserverdisconnected', () => {
@@ -64,13 +69,13 @@ export async function connectBt() {
 	// Detect firmware version
 	try {
 		// python firmware
-		const service = await server?.getPrimaryService(parseInt('0x1815'))
-		weightCharacteristic = (await service?.getCharacteristic(parseInt('0x2A59'))) ?? null
+		const service = await server?.getPrimaryService(Number.parseInt('0x1815'))
+		weightCharacteristic = (await service?.getCharacteristic(Number.parseInt('0x2A59'))) ?? null
 		newFirmware = false
 	} catch {
 		// rust firmware
-		const service = await server?.getPrimaryService(parseInt('0x181D'))
-		weightCharacteristic = (await service?.getCharacteristic(parseInt('0x2A9D'))) ?? null
+		const service = await server?.getPrimaryService(Number.parseInt('0x181D'))
+		weightCharacteristic = (await service?.getCharacteristic(Number.parseInt('0x2A9D'))) ?? null
 		newFirmware = true
 	}
 	await weightCharacteristic?.startNotifications()
@@ -92,8 +97,8 @@ export async function readBatteryLevel() {
 	if (server === null) {
 		return
 	}
-	const service = await server.getPrimaryService(parseInt('0x180F'))
-	const batteryLevelCharacteristic = await service.getCharacteristic(parseInt('0x2A19'))
+	const service = await server.getPrimaryService(Number.parseInt('0x180F'))
+	const batteryLevelCharacteristic = await service.getCharacteristic(Number.parseInt('0x2A19'))
 	const value = (await batteryLevelCharacteristic.readValue()).getUint8(0)
 	batteryLevel.set(value)
 }

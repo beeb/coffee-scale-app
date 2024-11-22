@@ -1,5 +1,5 @@
 <script>
-import { preInfusion } from '$lib/stores'
+  import { preInfusion } from '$lib/stores'
 </script>
 
 <div class="form-control w-full max-w-[12rem]">

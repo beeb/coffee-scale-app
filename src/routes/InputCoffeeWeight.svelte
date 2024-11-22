@@ -1,5 +1,5 @@
 <script>
-import { coffeeWeight, currentWeight, btConnected } from '$lib/stores'
+  import { coffeeWeight, currentWeight, btConnected } from '$lib/stores'
 </script>
 
 <div class="form-control w-full max-w-[12rem]">
@@ -11,7 +11,7 @@ import { coffeeWeight, currentWeight, btConnected } from '$lib/stores'
       type="button"
       class="btn btn-primary join-item btn-sm"
       disabled={!$btConnected}
-      on:click={() => {
+      onclick={() => {
         $coffeeWeight = $currentWeight
       }}
     >

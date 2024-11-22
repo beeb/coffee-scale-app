@@ -1,38 +1,38 @@
 <script>
-import '../app.css'
-import Chart from './Chart.svelte'
-import SettingsForm from './SettingsForm.svelte'
-import Title from './Title.svelte'
-import toast, { Toaster } from 'svelte-french-toast'
-import Settings from 'virtual:icons/mingcute/settings-1-line'
-import ConnectStartButton from './ConnectStartButton.svelte'
-import Gauge from './Gauge.svelte'
-import { onMount, onDestroy } from 'svelte'
-import { checkBtStatus } from '$lib/bt'
-import { batteryLevel, btConnected, currentWeight, targetWeight } from '$lib/stores'
-import BatteryLevel from './BatteryLevel.svelte'
+  import '../app.css'
+  import Chart from './Chart.svelte'
+  import SettingsForm from './SettingsForm.svelte'
+  import Title from './Title.svelte'
+  import toast, { Toaster } from 'svelte-french-toast'
+  import Settings from 'virtual:icons/mingcute/settings-1-line'
+  import ConnectStartButton from './ConnectStartButton.svelte'
+  import Gauge from './Gauge.svelte'
+  import { checkBtStatus } from '$lib/bt'
+  import { batteryLevel, btConnected, currentWeight, targetWeight } from '$lib/stores'
+  import BatteryLevel from './BatteryLevel.svelte'
 
-const btAvailabilityChangeListener = async () => {
-	await checkBtStatus()
-}
+  const btAvailabilityChangeListener = async () => {
+    await checkBtStatus()
+  }
 
-onMount(async () => {
-	try {
-		await checkBtStatus()
-	} catch (e) {
-		console.error(e)
-		toast.error('Bluetooth Error')
-	}
-	if ('onavailabilitychanged' in navigator.bluetooth) {
-		navigator.bluetooth.addEventListener('availabilitychanged', btAvailabilityChangeListener)
-	}
-})
-
-onDestroy(() => {
-	if ('onavailabilitychanged' in navigator.bluetooth) {
-		navigator.bluetooth.removeEventListener('availabilitychanged', btAvailabilityChangeListener)
-	}
-})
+  $effect(() => {
+    ;(async () => {
+      try {
+        await checkBtStatus()
+      } catch (e) {
+        console.error(e)
+        toast.error('Bluetooth Error')
+      }
+      if (navigator.bluetooth && 'onavailabilitychanged' in navigator.bluetooth) {
+        navigator.bluetooth.addEventListener('availabilitychanged', btAvailabilityChangeListener)
+      }
+    })()
+    return () => {
+      if (navigator.bluetooth && 'onavailabilitychanged' in navigator.bluetooth) {
+        navigator.bluetooth.removeEventListener('availabilitychanged', btAvailabilityChangeListener)
+      }
+    }
+  })
 </script>
 
 <div class="w-screen h-screen max-w-7xl mx-auto relative drawer drawer-end">
@@ -42,11 +42,7 @@ onDestroy(() => {
     <div class="absolute max-w-7xl inset-0">
       <Title />
       <div class="absolute right-10 bottom-20">
-        <label
-          for="form-drawer"
-          class="btn btn-neutral drawer-button"
-          aria-label="Open settings drawer"
-        >
+        <label for="form-drawer" class="btn btn-neutral drawer-button" aria-label="Open settings drawer">
           <Settings class="h-6 w-6" /> Settings
         </label>
       </div>
@@ -54,10 +50,7 @@ onDestroy(() => {
         <ConnectStartButton />
       </div>
       {#if $btConnected}
-        <div
-          class="absolute left-20 top-[calc(50%-5rem)]"
-          style="width: min(15rem, 45vh)"
-        >
+        <div class="absolute left-20 top-[calc(50%-5rem)]" style="width: min(15rem, 45vh)">
           <Gauge
             startAngle={-110}
             endAngle={110}
@@ -81,7 +74,7 @@ onDestroy(() => {
     </div>
   </div>
   <div class="drawer-side">
-    <label for="form-drawer" class="drawer-overlay" />
+    <label for="form-drawer" class="drawer-overlay"></label>
     <SettingsForm />
   </div>
 </div>
