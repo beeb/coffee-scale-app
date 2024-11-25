@@ -17,7 +17,7 @@
 		"@iconify-json/mingcute": "^1.2.1",
 		"@macfja/svelte-persistent-store": "^2.4.2",
 		"@sveltejs/adapter-static": "^3.0.6",
-		"@sveltejs/kit": "^2.8.1",
+		"@sveltejs/kit": "^2.8.3",
 		"@sveltejs/vite-plugin-svelte": "^4.0.1",
 		"@types/web-bluetooth": "^0.0.20",
 		"autoprefixer": "^10.4.20",
