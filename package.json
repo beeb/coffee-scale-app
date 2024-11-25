@@ -18,7 +18,7 @@
 		"@macfja/svelte-persistent-store": "^2.4.2",
 		"@sveltejs/adapter-static": "^3.0.6",
 		"@sveltejs/kit": "^2.8.1",
-		"@sveltejs/vite-plugin-svelte": "^4.0.1",
+		"@sveltejs/vite-plugin-svelte": "^4.0.2",
 		"@types/web-bluetooth": "^0.0.20",
 		"autoprefixer": "^10.4.20",
 		"chart.js": "^4.4.6",
