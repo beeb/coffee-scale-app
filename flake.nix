@@ -14,8 +14,8 @@
       {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            nodejs-slim
-            nodePackages.pnpm
+            nodejs-slim_22
+            corepack_22
             typescript
           ];
         };
