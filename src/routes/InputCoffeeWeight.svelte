@@ -1,5 +1,7 @@
 <script>
-  import { coffeeWeight, currentWeight, btConnected } from '$lib/stores'
+  import { Scale } from '$lib/scale.svelte'
+
+  const scale = Scale.getInstance()
 </script>
 
 <div class="form-control w-full max-w-[12rem]">
@@ -10,9 +12,9 @@
     <button
       type="button"
       class="btn btn-primary join-item btn-sm"
-      disabled={!$btConnected}
+      disabled={!scale.bt().connected}
       onclick={() => {
-        $coffeeWeight = $currentWeight
+        scale.coffeeWeight.value = scale.bt().currentWeight
       }}
     >
       Read
@@ -20,7 +22,7 @@
     <input
       id="coffee-weight"
       type="number"
-      bind:value={$coffeeWeight}
+      bind:value={scale.coffeeWeight.value}
       min="0"
       step="0.5"
       class="input input-bordered input-sm w-full max-w-xs join-item"

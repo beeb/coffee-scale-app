@@ -1,5 +1,7 @@
 <script>
-  import { totalTime } from '$lib/stores'
+  import { Scale } from '$lib/scale.svelte'
+
+  const scale = Scale.getInstance()
 </script>
 
 <div class="form-control w-full max-w-[12rem]">
@@ -10,7 +12,7 @@
     <input
       id="coffee-weight"
       type="number"
-      bind:value={$totalTime}
+      bind:value={scale.totalTime.value}
       min="0"
       step="1"
       class="input input-bordered input-sm w-full max-w-xs join-item"

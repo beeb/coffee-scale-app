@@ -3,36 +3,14 @@
   import Chart from './Chart.svelte'
   import SettingsForm from './SettingsForm.svelte'
   import Title from './Title.svelte'
-  import toast, { Toaster } from 'svelte-french-toast'
+  import { Toaster } from 'svelte-french-toast'
   import Settings from 'virtual:icons/mingcute/settings-1-line'
   import ConnectStartButton from './ConnectStartButton.svelte'
   import Gauge from './Gauge.svelte'
-  import { checkBtStatus } from '$lib/bt'
-  import { batteryLevel, btConnected, currentWeight, targetWeight } from '$lib/stores'
+  import { Scale } from '$lib/scale.svelte'
   import BatteryLevel from './BatteryLevel.svelte'
 
-  const btAvailabilityChangeListener = async () => {
-    await checkBtStatus()
-  }
-
-  $effect(() => {
-    ;(async () => {
-      try {
-        await checkBtStatus()
-      } catch (e) {
-        console.error(e)
-        toast.error('Bluetooth Error')
-      }
-      if (navigator.bluetooth && 'onavailabilitychanged' in navigator.bluetooth) {
-        navigator.bluetooth.addEventListener('availabilitychanged', btAvailabilityChangeListener)
-      }
-    })()
-    return () => {
-      if (navigator.bluetooth && 'onavailabilitychanged' in navigator.bluetooth) {
-        navigator.bluetooth.removeEventListener('availabilitychanged', btAvailabilityChangeListener)
-      }
-    }
-  })
+  const scale = Scale.getInstance()
 </script>
 
 <div class="w-screen h-screen max-w-7xl mx-auto relative drawer drawer-end">
@@ -49,26 +27,26 @@
       <div class="absolute left-20 bottom-20">
         <ConnectStartButton />
       </div>
-      {#if $btConnected}
+      {#if scale.bt().connected}
         <div class="absolute left-20 top-[calc(50%-5rem)]" style="width: min(15rem, 45vh)">
           <Gauge
             startAngle={-110}
             endAngle={110}
-            value={$currentWeight}
-            max={$targetWeight}
-            separatorStep={$targetWeight / 4}
+            value={scale.bt().currentWeight}
+            max={scale.targetWeight}
+            separatorStep={scale.targetWeight / 4}
             innerRadius={70}
             scaleInterval={0}
           >
             <div class="w-full h-full text-3xl font-bold text-center mt-16">
-              {$currentWeight.toFixed(2)}g
+              {scale.bt().currentWeight.toFixed(2)}g
             </div>
           </Gauge>
         </div>
       {/if}
-      {#if $batteryLevel}
+      {#if scale.bt().batteryLevel}
         <div class="absolute right-4 bottom-2">
-          <BatteryLevel level={$batteryLevel} />
+          <BatteryLevel level={scale.bt().batteryLevel} />
         </div>
       {/if}
     </div>

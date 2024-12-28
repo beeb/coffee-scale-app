@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { btConnected, btEnabled, currentWeight, recording, startRecording, stopRecording } from '$lib/stores'
+  import { Scale } from '$lib/scale.svelte'
   import Record from 'virtual:icons/mingcute/record-mail-line'
   import Link from 'virtual:icons/mingcute/link-line'
   import Cross from 'virtual:icons/mingcute/close-circle-line'
   import Stop from 'virtual:icons/mingcute/stop-circle-fill'
-  import { connectBt } from '$lib/bt'
   import toast from 'svelte-french-toast'
+
+  const scale = Scale.getInstance()
 
   const connect = async () => {
     try {
-      await connectBt()
+      await scale.bt().connect()
     } catch (e) {
       console.error(e)
       const error = e as Error
@@ -17,22 +18,27 @@
     }
   }
 
-  const canRecord = $derived($currentWeight >= -0.1 && $currentWeight <= 0.1)
+  const canRecord = $derived(scale.bt().currentWeight >= -0.1 && scale.bt().currentWeight <= 0.1)
 </script>
 
-{#if $btEnabled && $btConnected}
-  {#if $recording}
-    <button type="button" class="btn btn-primary btn-outline btn-sm sm:btn-md" onclick={stopRecording}>
+{#if scale.bt().enabled && scale.bt().connected}
+  {#if scale.recording}
+    <button type="button" class="btn btn-primary btn-outline btn-sm sm:btn-md" onclick={scale.stopRecording}>
       <Stop class="h-6 w-6" /> Stop Recording
     </button>
   {:else}
     <div class:tooltip={!canRecord} class="tooltip-right" data-tip="The scale needs to be tared to start the recording">
-      <button type="button" class="btn btn-primary btn-sm sm:btn-md" disabled={!canRecord} onclick={startRecording}>
+      <button
+        type="button"
+        class="btn btn-primary btn-sm sm:btn-md"
+        disabled={!canRecord}
+        onclick={scale.startRecording}
+      >
         <Record class="h-6 w-6" /> Start Recording
       </button>
     </div>
   {/if}
-{:else if $btEnabled}
+{:else if scale.bt().enabled}
   <button type="button" class="btn btn-warning btn-sm sm:btn-md" onclick={connect}>
     <Link class="h-6 w-6" /> Connect to Scale
   </button>
