@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tweened } from 'svelte/motion'
+  import { Tween } from 'svelte/motion'
   import { cubicOut } from 'svelte/easing'
 
   /*
@@ -45,7 +45,7 @@
     children
   }: Props = $props()
 
-  const tweenedAngle = tweened(value, {
+  const tweenedAngle = new Tween(value, {
     duration: 200,
     easing: cubicOut
   })
@@ -149,7 +149,7 @@
   const separatorPathsValue = $derived(separatorPaths(separatorStep, min, max, separatorThickness))
   const isCircle = $derived(Math.abs(totalAngle) === 360)
   const basePath = $derived(describePath(radius, startAngle, endAngle))
-  const gaugePath = $derived(describePath(radius, getAngle($tweenedAngle), endAngle))
+  const gaugePath = $derived(describePath(radius, getAngle(tweenedAngle.current), endAngle))
   const scaleLinesValue = $derived(scaleLines(scaleInterval, isCircle, min, max, innerRadius))
 </script>
 
