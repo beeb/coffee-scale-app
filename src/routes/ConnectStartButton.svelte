@@ -10,7 +10,7 @@
 
   const connect = async () => {
     try {
-      await scale.bt().connect()
+      await scale.bt.connect()
     } catch (e) {
       console.error(e)
       const error = e as Error
@@ -18,10 +18,10 @@
     }
   }
 
-  const canRecord = $derived(scale.bt().currentWeight >= -0.1 && scale.bt().currentWeight <= 0.1)
+  const canRecord = $derived(scale.bt.currentWeight >= -0.1 && scale.bt.currentWeight <= 0.1)
 </script>
 
-{#if scale.bt().enabled && scale.bt().connected}
+{#if scale.bt.enabled && scale.bt.connected}
   {#if scale.recording}
     <button type="button" class="btn btn-primary btn-outline btn-sm sm:btn-md" onclick={scale.stopRecording}>
       <Stop class="h-6 w-6" /> Stop Recording
@@ -38,7 +38,7 @@
       </button>
     </div>
   {/if}
-{:else if scale.bt().enabled}
+{:else if scale.bt.enabled}
   <button type="button" class="btn btn-warning btn-sm sm:btn-md" onclick={connect}>
     <Link class="h-6 w-6" /> Connect to Scale
   </button>

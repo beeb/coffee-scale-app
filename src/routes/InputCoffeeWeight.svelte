@@ -12,9 +12,9 @@
     <button
       type="button"
       class="btn btn-primary join-item btn-sm"
-      disabled={!scale.bt().connected}
+      disabled={!scale.bt.connected}
       onclick={() => {
-        scale.coffeeWeight.value = scale.bt().currentWeight
+        scale.coffeeWeight.value = scale.bt.currentWeight
       }}
     >
       Read

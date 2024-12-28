@@ -5,7 +5,7 @@
   const scale = Scale.getInstance()
 
   const hexagonClass = $derived(
-    scale.bt().enabled ? (scale.bt().connected ? 'text-primary' : 'text-warning') : 'text-error'
+    scale.bt.enabled ? (scale.bt.connected ? 'text-primary' : 'text-warning') : 'text-error'
   )
 </script>
 
