@@ -50,11 +50,15 @@ export class Scale {
 		})
 
 		$effect(() => {
-			if (Scale.bluetooth.connected) {
-				this.acquireWakeLock()
-			} else {
-				this.releaseWakeLock()
-			}
+			const connected = Scale.bluetooth.connected
+
+			untrack(() => {
+				if (connected) {
+					this.acquireWakeLock()
+				} else {
+					this.releaseWakeLock()
+				}
+			})
 		})
 	}
 
