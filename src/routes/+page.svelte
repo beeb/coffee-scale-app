@@ -27,26 +27,26 @@
       <div class="absolute left-20 bottom-20">
         <ConnectStartButton />
       </div>
-      {#if scale.bt().connected}
+      {#if scale.bt.connected}
         <div class="absolute left-20 top-[calc(50%-5rem)]" style="width: min(15rem, 45vh)">
           <Gauge
             startAngle={-110}
             endAngle={110}
-            value={scale.bt().currentWeight}
+            value={scale.bt.currentWeight}
             max={scale.targetWeight}
             separatorStep={scale.targetWeight / 4}
             innerRadius={70}
             scaleInterval={0}
           >
             <div class="w-full h-full text-3xl font-bold text-center mt-16">
-              {scale.bt().currentWeight.toFixed(2)}g
+              {scale.bt.currentWeight.toFixed(2)}g
             </div>
           </Gauge>
         </div>
       {/if}
-      {#if scale.bt().batteryLevel}
+      {#if scale.bt.batteryLevel}
         <div class="absolute right-4 bottom-2">
-          <BatteryLevel level={scale.bt().batteryLevel} />
+          <BatteryLevel level={scale.bt.batteryLevel} />
         </div>
       {/if}
     </div>

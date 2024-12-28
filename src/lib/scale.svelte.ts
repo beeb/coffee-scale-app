@@ -76,7 +76,9 @@ export class Scale {
 		return Scale.instance
 	}
 
-	bt = () => Scale.bluetooth
+	get bt() {
+		return Scale.bluetooth
+	}
 
 	private acquireWakeLock = async () => {
 		if (!browser) {
