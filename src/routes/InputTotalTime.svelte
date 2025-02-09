@@ -12,7 +12,7 @@
     <input
       id="coffee-weight"
       type="number"
-      bind:value={scale.totalTime.value}
+      bind:value={scale.totalTime.current}
       min="0"
       step="1"
       class="input input-bordered input-sm w-full max-w-xs join-item"

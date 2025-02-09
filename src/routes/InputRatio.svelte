@@ -12,7 +12,7 @@
     <input
       id="coffee-weight"
       type="number"
-      bind:value={scale.targetRatio.value}
+      bind:value={scale.targetRatio.current}
       min="0"
       step="0.05"
       class="input input-bordered input-sm w-full max-w-xs join-item"

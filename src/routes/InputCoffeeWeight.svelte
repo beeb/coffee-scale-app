@@ -14,7 +14,7 @@
       class="btn btn-primary join-item btn-sm"
       disabled={!scale.bt.connected}
       onclick={() => {
-        scale.coffeeWeight.value = scale.bt.currentWeight
+        scale.coffeeWeight.current = scale.bt.currentWeight
       }}
     >
       Read
@@ -22,7 +22,7 @@
     <input
       id="coffee-weight"
       type="number"
-      bind:value={scale.coffeeWeight.value}
+      bind:value={scale.coffeeWeight.current}
       min="0"
       step="0.5"
       class="input input-bordered input-sm w-full max-w-xs join-item"

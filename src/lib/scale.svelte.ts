@@ -19,7 +19,7 @@ export class Scale {
 	wakeLock = $state<WakeLockSentinel>()
 	chartData = $state<Point[]>([])
 
-	targetWeight = $derived(this.coffeeWeight.value * this.targetRatio.value)
+	targetWeight = $derived(this.coffeeWeight.current * this.targetRatio.current)
 
 	private constructor(bt: Bluetooth) {
 		Scale.bluetooth = bt
@@ -36,7 +36,7 @@ export class Scale {
 				const now = new Date().getTime()
 				if (this.startTimeMs === 0 && weight > 0.5) {
 					// We reached the threshold weight to exit the pre-infusion stage
-					this.startTimeMs = now - this.preInfusion.value * 1000
+					this.startTimeMs = now - this.preInfusion.current * 1000
 				} else if (this.startTimeMs > 0 && weight < -0.1) {
 					// End of the shot, we removed the cup from the scale
 					// The recording is stopped

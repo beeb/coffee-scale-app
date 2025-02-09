@@ -18,30 +18,30 @@
     pointBorderWidth: undefined,
     data: [
       { x: 0, y: 0 },
-      { x: scale.preInfusion.value, y: 0 },
+      { x: scale.preInfusion.current, y: 0 },
       {
         x: Math.max(
-          scale.preInfusion.value + 0.125 * (scale.totalTime.value - scale.preInfusion.value),
-          scale.preInfusion.value
+          scale.preInfusion.current + 0.125 * (scale.totalTime.current - scale.preInfusion.current),
+          scale.preInfusion.current
         ),
         y: 0.05 * scale.targetWeight
       },
       {
         x: Math.max(
-          scale.preInfusion.value + 0.25 * (scale.totalTime.value - scale.preInfusion.value),
-          scale.preInfusion.value
+          scale.preInfusion.current + 0.25 * (scale.totalTime.current - scale.preInfusion.current),
+          scale.preInfusion.current
         ),
         y: 0.15 * scale.targetWeight
       },
       {
         x: Math.max(
-          scale.preInfusion.value + 0.97 * (scale.totalTime.value - scale.preInfusion.value),
-          scale.preInfusion.value
+          scale.preInfusion.current + 0.97 * (scale.totalTime.current - scale.preInfusion.current),
+          scale.preInfusion.current
         ),
         y: 0.98 * scale.targetWeight
       },
-      { x: Math.max(scale.totalTime.value, scale.preInfusion.value), y: scale.targetWeight },
-      { x: scale.totalTime.value + 10, y: scale.targetWeight }
+      { x: Math.max(scale.totalTime.current, scale.preInfusion.current), y: scale.targetWeight },
+      { x: scale.totalTime.current + 10, y: scale.targetWeight }
     ]
   })
 
