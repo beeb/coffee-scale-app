@@ -24,8 +24,8 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3(svelte@5.23.0)(vite@6.2.2(jiti@1.21.7)(yaml@2.7.0))
       '@types/web-bluetooth':
-        specifier: ^0.0.20
-        version: 0.0.20
+        specifier: ^0.0.21
+        version: 0.0.21
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.3)
@@ -45,8 +45,8 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5(svelte@5.23.0)(typescript@5.8.2)
       svelte-french-toast:
-        specifier: ^1.2.0
-        version: 1.2.0(svelte@5.23.0)
+        specifier: 2.0.0-alpha.0
+        version: 2.0.0-alpha.0(svelte@5.23.0)
       svelte-persisted-state:
         specifier: ^1.0.0
         version: 1.0.0(svelte@5.23.0)
@@ -473,8 +473,8 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
-  '@types/web-bluetooth@0.0.20':
-    resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
+  '@types/web-bluetooth@0.0.21':
+    resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
 
   acorn@8.14.1:
     resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
@@ -1014,10 +1014,10 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
-  svelte-french-toast@1.2.0:
-    resolution: {integrity: sha512-5PW+6RFX3xQPbR44CngYAP1Sd9oCq9P2FOox4FZffzJuZI2mHOB7q5gJBVnOiLF5y3moVGZ7u2bYt7+yPAgcEQ==}
+  svelte-french-toast@2.0.0-alpha.0:
+    resolution: {integrity: sha512-81wcVaY9UZ/0JuzLEizMSoIXqNbX7yhfTZavBuw94T3cnT2HmJ9O+qXY/c91h9FkeMwboo0KHZVmzOEQVTXDFg==}
     peerDependencies:
-      svelte: ^3.57.0 || ^4.0.0
+      svelte: ^5.0.0
 
   svelte-persisted-state@1.0.0:
     resolution: {integrity: sha512-+yVknmQULtlJ1Q0UOmtICPnUpyoIvtON9q+WGMkbXBcFT/2QeMdynsmgZL/T+C40IegmTMZyr+oGZhyaiL+jgQ==}
@@ -1476,7 +1476,7 @@ snapshots:
 
   '@types/estree@1.0.6': {}
 
-  '@types/web-bluetooth@0.0.20': {}
+  '@types/web-bluetooth@0.0.21': {}
 
   acorn@8.14.1: {}
 
@@ -2000,7 +2000,7 @@ snapshots:
     transitivePeerDependencies:
       - picomatch
 
-  svelte-french-toast@1.2.0(svelte@5.23.0):
+  svelte-french-toast@2.0.0-alpha.0(svelte@5.23.0):
     dependencies:
       svelte: 5.23.0
       svelte-writable-derived: 3.1.1(svelte@5.23.0)
