@@ -1,6 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin "daisyui" {
+  themes: emerald --default;
+}
+
+@plugin "daisyui/theme" {
+  name: 'emerald';
+  default: true;
+  --color-primary: #42b983;
+  --color-primary-content: #ffffff;
+}
 
 body,
 html {

@@ -159,7 +159,7 @@
       <filter id="innershadow">
         <feFlood flood-color="#c7c6c6" />
         <feComposite in2="SourceAlpha" operator="out" />
-        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feGaussianBlur stdDeviation="2" result="blur-sm" />
         <feComposite operator="atop" in2="SourceGraphic" />
       </filter>
       {#if Array.isArray(gaugeColor)}

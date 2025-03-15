@@ -4,10 +4,8 @@
   const scale = Scale.getInstance()
 </script>
 
-<div class="form-control w-full max-w-[12rem]">
-  <label class="label" for="coffee-weight">
-    <span class="label-text text-sm">Pre-infusion time</span>
-  </label>
+<fieldset class="fieldset max-w-[13rem]">
+  <legend class="fieldset-legend">Pre-infusion time</legend>
   <div class="join">
     <input
       id="coffee-weight"
@@ -15,8 +13,8 @@
       bind:value={scale.preInfusion.current}
       min="0"
       step="1"
-      class="input input-bordered input-sm w-full max-w-xs join-item"
+      class="input join-item"
     />
-    <div class="join-item bg-base-200 px-3 text-sm inline-flex items-center">s</div>
+    <div class="join-item bg-base-200 px-3 inline-flex items-center">s</div>
   </div>
-</div>
+</fieldset>
