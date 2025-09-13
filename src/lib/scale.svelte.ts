@@ -30,23 +30,18 @@ export class Scale {
 			const weight = Scale.bluetooth.currentWeight
 
 			untrack(() => {
-				if (!this.recording) {
-					return
-				}
-				const now = new Date().getTime()
-				if (this.startTimeMs === 0 && weight > 0.5) {
-					// We reached the threshold weight to exit the pre-infusion stage
-					this.startTimeMs = now - this.preInfusion.current * 1000
-				} else if (this.startTimeMs > 0 && weight < -0.1) {
-					// End of the shot, we removed the cup from the scale
-					// The recording is stopped
-					this.stopRecording()
-				} else if (this.startTimeMs > 0) {
-					// Recording the shot...
-					const elapsed = (now - this.startTimeMs) / 1000
-					this.chartData.push({ x: elapsed, y: weight })
-				}
+				this.updateChartData(weight)
 			})
+		})
+
+		$effect(() => {
+			// periodically update the chart even if the weight has not changed
+			const interval = setInterval(() => {
+				this.updateChartData(Scale.bluetooth.currentWeight)
+			}, 250)
+			return () => {
+				clearInterval(interval)
+			}
 		})
 
 		$effect(() => {
@@ -96,6 +91,25 @@ export class Scale {
 	private releaseWakeLock = async () => {
 		await this.wakeLock?.release()
 		this.wakeLock = undefined
+	}
+
+	private updateChartData = (weight: number) => {
+		if (!this.recording) {
+			return
+		}
+		const now = Date.now()
+		if (this.startTimeMs === 0 && weight > 0.5) {
+			// We reached the threshold weight to exit the pre-infusion stage
+			this.startTimeMs = now - this.preInfusion.current * 1000
+		} else if (this.startTimeMs > 0 && weight < -0.1) {
+			// End of the shot, we removed the cup from the scale
+			// The recording is stopped
+			this.stopRecording()
+		} else if (this.startTimeMs > 0) {
+			// Recording the shot...
+			const elapsed = (now - this.startTimeMs) / 1000
+			this.chartData.push({ x: elapsed, y: weight })
+		}
 	}
 
 	startRecording = () => {
