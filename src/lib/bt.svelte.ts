@@ -24,8 +24,8 @@ export class Bluetooth {
 		if (!this.server) {
 			return
 		}
-		const service = await this.server.getPrimaryService(0x180F)
-		const batteryLevelCharacteristic = await service.getCharacteristic(0x2A19)
+		const service = await this.server.getPrimaryService(0x180f)
+		const batteryLevelCharacteristic = await service.getCharacteristic(0x2a19)
 		this.batteryLevel = (await batteryLevelCharacteristic.readValue()).getUint8(0)
 	}
 
@@ -75,8 +75,8 @@ export class Bluetooth {
 			filters: [
 				{ name: 'mpy-coffee' },
 				{ name: 'coffee-scale' },
-				{ services: [0x180F, 0x1815] }, // python firmware
-				{ services: [0x180F, 0x181D] }, // rust firmware
+				{ services: [0x180f, 0x1815] }, // python firmware
+				{ services: [0x180f, 0x181d] }, // rust firmware
 			],
 		})
 		device.addEventListener('gattserverdisconnected', () => {
@@ -91,12 +91,12 @@ export class Bluetooth {
 		try {
 			// python firmware
 			const service = await this.server?.getPrimaryService(0x1815)
-			this.weightCharacteristic = await service?.getCharacteristic(0x2A59)
+			this.weightCharacteristic = await service?.getCharacteristic(0x2a59)
 			this.newFirmware = false
 		} catch {
 			// rust firmware
-			const service = await this.server?.getPrimaryService(0x181D)
-			this.weightCharacteristic = await service?.getCharacteristic(0x2A9D)
+			const service = await this.server?.getPrimaryService(0x181d)
+			this.weightCharacteristic = await service?.getCharacteristic(0x2a9d)
 			this.newFirmware = true
 		}
 		await this.weightCharacteristic?.startNotifications()
