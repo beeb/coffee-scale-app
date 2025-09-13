@@ -1,7 +1,7 @@
 <script>
-  import { Scale } from '$lib/scale.svelte'
+import { Scale } from '$lib/scale.svelte'
 
-  const scale = Scale.getInstance()
+const scale = Scale.getInstance()
 </script>
 
 <fieldset class="fieldset max-w-[13rem]">

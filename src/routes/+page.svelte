@@ -1,16 +1,16 @@
 <script>
-  import '../app.css'
-  import Chart from './Chart.svelte'
-  import SettingsForm from './SettingsForm.svelte'
-  import Title from './Title.svelte'
-  import { Toaster } from 'svelte-french-toast'
-  import Settings from 'virtual:icons/mingcute/settings-1-line'
-  import ConnectStartButton from './ConnectStartButton.svelte'
-  import Gauge from './Gauge.svelte'
-  import { Scale } from '$lib/scale.svelte'
-  import BatteryLevel from './BatteryLevel.svelte'
+import '../app.css'
+import Chart from './Chart.svelte'
+import SettingsForm from './SettingsForm.svelte'
+import Title from './Title.svelte'
+import { Toaster } from 'svelte-french-toast'
+import Settings from 'virtual:icons/mingcute/settings-1-line'
+import ConnectStartButton from './ConnectStartButton.svelte'
+import Gauge from './Gauge.svelte'
+import { Scale } from '$lib/scale.svelte'
+import BatteryLevel from './BatteryLevel.svelte'
 
-  const scale = Scale.getInstance()
+const scale = Scale.getInstance()
 </script>
 
 <div class="w-screen h-screen max-w-7xl mx-auto relative drawer drawer-end">
