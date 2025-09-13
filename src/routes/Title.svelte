@@ -1,12 +1,10 @@
 <script>
-  import { Scale } from '$lib/scale.svelte'
-  import Hexagon from 'virtual:icons/mingcute/hexagon-fill'
+import { Scale } from '$lib/scale.svelte'
+import Hexagon from 'virtual:icons/mingcute/hexagon-fill'
 
-  const scale = Scale.getInstance()
+const scale = Scale.getInstance()
 
-  const hexagonClass = $derived(
-    scale.bt.enabled ? (scale.bt.connected ? 'text-primary' : 'text-warning') : 'text-error'
-  )
+const hexagonClass = $derived(scale.bt.enabled ? (scale.bt.connected ? 'text-primary' : 'text-warning') : 'text-error')
 </script>
 
 <div class="absolute left-20 top-10">

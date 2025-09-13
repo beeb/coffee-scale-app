@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { Scale } from '$lib/scale.svelte'
-  import Record from 'virtual:icons/mingcute/record-mail-line'
-  import Link from 'virtual:icons/mingcute/link-line'
-  import Cross from 'virtual:icons/mingcute/close-circle-line'
-  import Stop from 'virtual:icons/mingcute/stop-circle-fill'
-  import toast from 'svelte-french-toast'
+import { Scale } from '$lib/scale.svelte'
+import Record from 'virtual:icons/mingcute/record-mail-line'
+import Link from 'virtual:icons/mingcute/link-line'
+import Cross from 'virtual:icons/mingcute/close-circle-line'
+import Stop from 'virtual:icons/mingcute/stop-circle-fill'
+import toast from 'svelte-french-toast'
 
-  const scale = Scale.getInstance()
+const scale = Scale.getInstance()
 
-  const connect = async () => {
-    try {
-      await scale.bt.connect()
-    } catch (e) {
-      console.error(e)
-      const error = e as Error
-      toast.error(`Bluetooth Error: ${error.message}`)
-    }
-  }
+const connect = async () => {
+	try {
+		await scale.bt.connect()
+	} catch (e) {
+		console.error(e)
+		const error = e as Error
+		toast.error(`Bluetooth Error: ${error.message}`)
+	}
+}
 
-  const canRecord = $derived(scale.bt.currentWeight >= -0.1 && scale.bt.currentWeight <= 0.1)
+const canRecord = $derived(scale.bt.currentWeight >= -0.1 && scale.bt.currentWeight <= 0.1)
 </script>
 
 {#if scale.bt.enabled && scale.bt.connected}
