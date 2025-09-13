@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
 	"assist": { "actions": { "source": { "organizeImports": "on" } } },
 	"formatter": {
 		"enabled": true,
@@ -29,19 +29,6 @@
 		}
 	},
 	"files": {
-		"includes": [
-			"**",
-			"!**/.devenv",
-			"!**/.direnv",
-			"!**/.vercel/**/*",
-			"!**/.svelte-kit/**/*",
-			"!**/firmware",
-			"!**/node_modules/**/*",
-			"!**/build/**/*",
-			"!**/.env",
-			"!**/.env.*",
-			"!**/pnpm-lock.yaml",
-			"!**/src/app.d.ts"
-		]
+		"includes": ["src/**/*"]
 	}
 }
