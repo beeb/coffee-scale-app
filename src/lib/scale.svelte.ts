@@ -38,7 +38,7 @@ export class Scale {
 			// periodically update the chart even if the weight has not changed
 			const interval = setInterval(() => {
 				this.updateChartData(Scale.bluetooth.currentWeight)
-			}, 500)
+			}, 250)
 			return () => {
 				clearInterval(interval)
 			}
