@@ -35,7 +35,7 @@ export class Scale {
 				this.updateChartData(weight)
 				this.interval = setInterval(() => {
 					this.updateChartData(Scale.bluetooth.currentWeight)
-				}, 250)
+				}, 350)
 			})
 
 			// this is run before every run of the effect
