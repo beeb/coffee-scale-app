@@ -21,6 +21,8 @@ export class Scale {
 
 	targetWeight = $derived(this.coffeeWeight.current * this.targetRatio.current)
 
+	interval: number | undefined
+
 	private constructor(bt: Bluetooth) {
 		Scale.bluetooth = bt
 
@@ -31,16 +33,16 @@ export class Scale {
 
 			untrack(() => {
 				this.updateChartData(weight)
+				this.interval = setInterval(() => {
+					this.updateChartData(Scale.bluetooth.currentWeight)
+				}, 250)
 			})
-		})
 
-		$effect(() => {
-			// periodically update the chart even if the weight has not changed
-			const interval = setInterval(() => {
-				this.updateChartData(Scale.bluetooth.currentWeight)
-			}, 250)
+			// this is run before every run of the effect
 			return () => {
-				clearInterval(interval)
+				if (this.interval !== undefined) {
+					clearInterval(this.interval)
+				}
 			}
 		})
 
