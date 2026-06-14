@@ -63,6 +63,6 @@ self.addEventListener('fetch', (event) => {
 			return cache.match(event.request)
 		}
 	}
-	// @ts-ignore
+	// @ts-expect-error
 	event.respondWith(respond())
 })

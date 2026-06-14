@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Scale } from '$lib/scale.svelte'
 import { Chart, type ChartDataset, registerables } from 'chart.js'
+import { Scale } from '$lib/scale.svelte'
 
 const scale = Scale.getInstance()
 

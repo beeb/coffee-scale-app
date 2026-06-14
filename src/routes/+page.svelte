@@ -1,14 +1,14 @@
 <script>
 import '../app.css'
-import Chart from './Chart.svelte'
-import SettingsForm from './SettingsForm.svelte'
-import Title from './Title.svelte'
-import { Toaster } from 'svelte-french-toast'
 import Settings from 'virtual:icons/mingcute/settings-1-line'
-import ConnectStartButton from './ConnectStartButton.svelte'
-import Gauge from './Gauge.svelte'
+import { Toaster } from 'svelte-french-toast'
 import { Scale } from '$lib/scale.svelte'
 import BatteryLevel from './BatteryLevel.svelte'
+import Chart from './Chart.svelte'
+import ConnectStartButton from './ConnectStartButton.svelte'
+import Gauge from './Gauge.svelte'
+import SettingsForm from './SettingsForm.svelte'
+import Title from './Title.svelte'
 
 const scale = Scale.getInstance()
 </script>

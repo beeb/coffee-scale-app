@@ -1,10 +1,10 @@
 <script lang="ts">
-import { Scale } from '$lib/scale.svelte'
-import Record from 'virtual:icons/mingcute/record-mail-line'
-import Link from 'virtual:icons/mingcute/link-line'
 import Cross from 'virtual:icons/mingcute/close-circle-line'
+import Link from 'virtual:icons/mingcute/link-line'
+import Record from 'virtual:icons/mingcute/record-mail-line'
 import Stop from 'virtual:icons/mingcute/stop-circle-fill'
 import toast from 'svelte-french-toast'
+import { Scale } from '$lib/scale.svelte'
 
 const scale = Scale.getInstance()
 

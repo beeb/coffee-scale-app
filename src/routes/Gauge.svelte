@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Tween } from 'svelte/motion'
 import { cubicOut } from 'svelte/easing'
+import { Tween } from 'svelte/motion'
 
 /*
   This gauge is based on the amazing work of [vue-svg-gauge](https://github.com/hellocomet/vue-svg-gauge/).
