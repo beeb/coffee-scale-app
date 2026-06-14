@@ -1,7 +1,7 @@
-import { browser } from '$app/environment'
 import type { Point } from 'chart.js'
 import { untrack } from 'svelte'
 import { persistedState } from 'svelte-persisted-state'
+import { browser } from '$app/environment'
 import type { Bluetooth } from './bt.svelte'
 
 export class Scale {

@@ -1,6 +1,6 @@
 <script>
-import { Scale } from '$lib/scale.svelte'
 import Hexagon from 'virtual:icons/mingcute/hexagon-fill'
+import { Scale } from '$lib/scale.svelte'
 
 const scale = Scale.getInstance()
 

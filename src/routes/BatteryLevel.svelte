@@ -1,8 +1,8 @@
 <script lang="ts">
-import BatteryFull from 'virtual:icons/mingcute/battery-4-line'
-import Battery75 from 'virtual:icons/mingcute/battery-3-line'
-import Battery50 from 'virtual:icons/mingcute/battery-2-line'
 import Battery25 from 'virtual:icons/mingcute/battery-1-line'
+import Battery50 from 'virtual:icons/mingcute/battery-2-line'
+import Battery75 from 'virtual:icons/mingcute/battery-3-line'
+import BatteryFull from 'virtual:icons/mingcute/battery-4-line'
 import BatteryEmpty from 'virtual:icons/mingcute/battery-line'
 
 interface Props {
