@@ -3,37 +3,44 @@
 //! This module provides a way to read the battery voltage using the ADC peripheral.
 use anyhow::Result;
 use esp_idf_svc::hal::{
-    adc::{self, Adc},
+    adc::{
+        Adc, AdcChannel,
+        attenuation::DB_12,
+        oneshot::{
+            AdcChannelDriver, AdcDriver,
+            config::{AdcChannelConfig, Calibration},
+        },
+    },
     gpio::ADCPin,
-    peripheral::Peripheral,
 };
 
 /// Battery voltage reader
-pub struct BatteryReader<'a, ADC: Adc + 'a, PIN: Peripheral<P = PIN> + ADCPin<Adc = ADC>> {
-    adc: adc::AdcDriver<'a, ADC>,
-    analog: adc::AdcChannelDriver<'a, { adc::attenuation::DB_11 }, PIN>,
+pub struct BatteryReader<'d, C: AdcChannel> {
+    channel: AdcChannelDriver<'d, C, AdcDriver<'d, C::AdcUnit>>,
 }
 
-impl<'a, ADC: Peripheral<P = ADC> + Adc, PIN: Peripheral<P = PIN> + ADCPin<Adc = ADC>>
-    BatteryReader<'a, ADC, PIN>
-{
+impl<'d, C: AdcChannel> BatteryReader<'d, C> {
     /// Create a new battery reader
-    pub fn new(vsense_pin: PIN, adc: ADC) -> Result<Self> {
-        let analog =
-            adc::AdcChannelDriver::<{ adc::attenuation::DB_11 }, _>::new(vsense_pin).expect("adc");
-        Ok(BatteryReader {
-            adc: adc::AdcDriver::new(adc, &adc::config::Config::new().calibration(true))?,
-            analog,
-        })
+    pub fn new(
+        vsense_pin: impl ADCPin<AdcChannel = C> + 'd,
+        adc: impl Adc<AdcUnit = C::AdcUnit> + 'd,
+    ) -> Result<Self> {
+        let config = AdcChannelConfig {
+            attenuation: DB_12,
+            calibration: Calibration::Line,
+            ..Default::default()
+        };
+        let channel = AdcChannelDriver::new(AdcDriver::new(adc)?, vsense_pin, &config)?;
+        Ok(BatteryReader { channel })
     }
 
     /// Read the battery voltage and return the percentage and the raw ADC value
     ///
-    /// The ADC value is the average of 10 readings.
+    /// The ADC value is the average of 10 readings, in mV.
     pub fn read_battery_percent(&mut self) -> Result<(u8, u16)> {
-        let mut value = self.adc.read(&mut self.analog)?;
+        let mut value = self.channel.read()?;
         for _ in 0..9 {
-            value += self.adc.read(&mut self.analog)?;
+            value += self.channel.read()?;
         }
         value /= 10;
 
@@ -73,7 +80,11 @@ impl<'a, ADC: Peripheral<P = ADC> + Adc, PIN: Peripheral<P = PIN> + ADCPin<Adc =
 ///
 /// Cubic fit: y = -141.608 x^3 + 1574.53 x^2 - 5694.03 x + 6731.1
 fn adc_to_percent(adc: u16) -> u8 {
-    let voltage = 0.112202 + 0.00194226 * (adc as f32);
-    (-141.608 * voltage.powi(3) + 1574.53 * voltage.powi(2) - 5694.03 * voltage + 6731.1)
+    let voltage = 0.001_942_26f32.mul_add(f32::from(adc), 0.112_202);
+    // Horner's method for readability
+    (-141.608f32)
+        .mul_add(voltage, 1574.53)
+        .mul_add(voltage, -5694.03)
+        .mul_add(voltage, 6731.1)
         .clamp(0., 100.) as u8
 }

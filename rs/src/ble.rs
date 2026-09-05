@@ -4,10 +4,10 @@
 //! battery characteristic.
 use std::sync::{Arc, OnceLock};
 
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use esp32_nimble::{
-    utilities::{mutex::Mutex, BleUuid},
     BLEAdvertisementData, BLECharacteristic, BLEDevice, NimbleProperties,
+    utilities::{BleUuid, mutex::Mutex},
 };
 
 const WEIGHT_SCALE_SERVICE: BleUuid = BleUuid::from_uuid16(0x181D);
@@ -41,7 +41,7 @@ pub fn init() -> Result<()> {
             .expect("ble start advertising");
     });
     server.on_disconnect(|_desc, reason| {
-        log::info!("Client disconnected ({:?})", reason);
+        log::info!("Client disconnected ({reason:?})");
         ble_advertising
             .lock()
             .start()

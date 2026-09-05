@@ -8,22 +8,22 @@
 //!
 //! The display is a 128x32 monochrome OLED display, which is connected to the ESP32 over I2C.
 use embedded_graphics::{
+    Drawable,
     geometry::{Point, Size},
     image::{Image, ImageRaw},
     mono_font::{
-        ascii::FONT_7X13, mapping::StrGlyphMapping, DecorationDimensions, MonoFont, MonoTextStyle,
+        DecorationDimensions, MonoFont, MonoTextStyle, ascii::FONT_7X13, mapping::StrGlyphMapping,
     },
     pixelcolor::BinaryColor,
     text::{Alignment, Baseline, Text, TextStyleBuilder},
-    Drawable,
 };
 use esp_idf_svc::hal::i2c::I2cDriver;
 use ssd1306::{
+    Ssd1306,
     mode::{BufferedGraphicsMode, DisplayConfig},
     prelude::I2CInterface,
     rotation::DisplayRotation,
     size::DisplaySize128x32,
-    Ssd1306,
 };
 
 type Display<'a> = Ssd1306<
@@ -66,7 +66,7 @@ impl<'a> Screen<'a> {
     }
 
     /// Set the battery level (displays a battery icon if the battery level is below 20%)
-    pub fn set_battery(&mut self, battery: u8) {
+    pub const fn set_battery(&mut self, battery: u8) {
         self.battery = battery;
     }
 
