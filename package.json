@@ -1,6 +1,6 @@
 {
 	"name": "coffee-scale-app",
-	"version": "2.3.6",
+	"version": "2.3.7",
 	"license": "MIT",
 	"private": true,
 	"scripts": {
@@ -13,25 +13,25 @@
 		"format": "biome format --write ./src"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.5.0",
-		"@iconify-json/mingcute": "^1.2.7",
+		"@biomejs/biome": "^2.5.12",
+		"@iconify-json/mingcute": "^1.2.8",
 		"@sveltejs/adapter-static": "^3.0.10",
-		"@sveltejs/kit": "^2.65.1",
-		"@sveltejs/vite-plugin-svelte": "^7.1.2",
-		"@tailwindcss/vite": "^4.3.1",
+		"@sveltejs/kit": "^2.70.3",
+		"@sveltejs/vite-plugin-svelte": "^7.3.0",
+		"@tailwindcss/vite": "^4.3.3",
 		"@types/web-bluetooth": "^0.0.21",
 		"chart.js": "^4.5.1",
-		"daisyui": "^5.5.23",
-		"postcss": "^8.5.15",
-		"svelte": "^5.56.3",
-		"svelte-check": "^4.6.0",
+		"daisyui": "^5.7.28",
+		"postcss": "^8.5.28",
+		"svelte": "^5.57.0",
+		"svelte-check": "^4.7.6",
 		"svelte-french-toast": "2.0.0-alpha.0",
 		"svelte-persisted-state": "^1.4.1",
-		"tailwindcss": "^4.3.1",
+		"tailwindcss": "^4.3.3",
 		"tslib": "^2.8.1",
 		"typescript": "^6.0.3",
 		"unplugin-icons": "^23.0.1",
-		"vite": "^8.0.16"
+		"vite": "^8.2.2"
 	},
 	"type": "module",
 	"engines": {
