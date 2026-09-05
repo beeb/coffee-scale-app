@@ -13,24 +13,22 @@
 //!
 //! At the moment, there is no interactive way to set the scaling factor, so it has to be hardcoded in the source code.
 use std::{
-    num::NonZeroU32,
     sync::{
-        atomic::{AtomicBool, AtomicI32, Ordering},
         Arc, Mutex,
+        atomic::{AtomicBool, AtomicI32, Ordering},
     },
     thread,
+    time::Duration,
 };
 
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use esp_idf_svc::{
     hal::{
-        delay::{Ets, BLOCK},
-        gpio::{self, InterruptType, Pull},
+        delay::FreeRtos,
+        gpio::{self, Pull},
         i2c,
         peripherals::Peripherals,
-        prelude::*,
-        task::notification::Notification,
-        timer::{config, TimerDriver},
+        units::FromValueType,
     },
     systime::EspSystemTime,
 };
@@ -48,6 +46,12 @@ mod weight;
 ///
 /// The hx711 raw value is multiplied by this to get the weight in grams.
 const LOADCELL_SCALING: f32 = 6.49304e-4;
+
+/// How long to wait between polls of the button state.
+const BUTTON_POLL_DELAY_MS: u32 = 10;
+
+/// How often to notify subscribers of the weight characteristic.
+const WEIGHT_NOTIFY_PERIOD: Duration = Duration::from_millis(200);
 
 fn main() -> Result<()> {
     // Initialize the IDF stuff and logger
@@ -77,7 +81,7 @@ fn main() -> Result<()> {
     // Read battery level
     let mut battery_reader = BatteryReader::new(pins.gpio34, peripherals.adc1)?;
     let (battery_percent, _) = battery_reader.read_battery_percent()?;
-    log::info!("Battery level: {}%", battery_percent);
+    log::info!("Battery level: {battery_percent}%");
     screen.set_battery(battery_percent);
     ble::BATTERY
         .get()
@@ -107,28 +111,8 @@ fn main() -> Result<()> {
     thread::spawn({
         let weight = Arc::clone(&weight);
         move || {
-            // Timer to notify subscribers of the weight characteristic value
-            let notification = Notification::new();
-            let timer_conf = config::Config::new().auto_reload(true);
-            let mut timer = TimerDriver::new(peripherals.timer00, &timer_conf).expect("timer");
-            timer
-                .set_alarm(timer.tick_hz() / 5) // every 200ms = 5 times per second
-                .expect("set timer alarm");
-            let notifier = notification.notifier();
-            unsafe {
-                timer
-                    .subscribe(move || {
-                        notifier.notify(NonZeroU32::new(0b00000000001).expect("new bitset"));
-                    })
-                    .expect("subscribe to timer");
-            }
-            // Enable timer interrupt
-            timer.enable_interrupt().expect("enable timer interrupt");
-            timer.enable_alarm(true).expect("enable timer alarm");
-            timer.enable(true).expect("enable timer");
             loop {
-                notification.wait(BLOCK);
-                log::info!("Timer fired");
+                thread::sleep(WEIGHT_NOTIFY_PERIOD);
                 let weight = weight.load(Ordering::Relaxed);
                 ble::WEIGHT
                     .get()
@@ -148,53 +132,32 @@ fn main() -> Result<()> {
         let calibration_mode = Arc::clone(&calibration_mode); // moved inside thread
         let scales = Arc::clone(&scales); // moved inside thread
         move || {
-            let mut button_pin = gpio::PinDriver::input(pins.gpio0).expect("button pin");
-            button_pin
-                .set_pull(Pull::Up)
-                .expect("set button pin to pull up");
-            button_pin
-                .set_interrupt_type(InterruptType::NegEdge)
-                .expect("set interrupt type");
-
-            let notification = Notification::new();
-            let notifier = notification.notifier();
-            unsafe {
-                button_pin
-                    .subscribe(move || {
-                        notifier.notify(NonZeroU32::new(0b00000000001).expect("new bitset"));
-                    })
-                    .expect("subscribe to button press");
-            }
-            button_pin
-                .enable_interrupt()
-                .expect("enable button interrupt");
+            let button_pin = gpio::PinDriver::input(pins.gpio0, Pull::Up).expect("button pin");
             loop {
-                notification.wait(BLOCK);
+                // The button is active low
+                while button_pin.is_high() {
+                    FreeRtos::delay_ms(BUTTON_POLL_DELAY_MS);
+                }
                 log::info!("button pressed, wait for letting go");
                 let before = EspSystemTime {}.now();
                 let mut calib = false;
                 while button_pin.is_low() {
-                    Ets::delay_ms(10);
+                    FreeRtos::delay_ms(BUTTON_POLL_DELAY_MS);
                     let after = EspSystemTime {}.now();
-                    if (after - before).as_millis() > 2000 {
+                    if after.saturating_sub(before).as_millis() > 2000 {
                         calib = true;
                         break;
                     }
                 }
                 if calib {
                     log::info!("long press, enter calibration mode");
-                    let mut scales = scales.lock().expect("mutex lock");
-                    scales.tare(None);
+                    scales.lock().expect("mutex lock").tare(None);
                     calibration_mode.store(true, Ordering::Relaxed);
                     break;
                 }
                 log::info!("button released");
                 log::info!("short press, tare scales");
-                let mut scales = scales.lock().expect("mutex lock");
-                scales.tare(Some(5));
-                button_pin
-                    .enable_interrupt()
-                    .expect("enable button interrupt");
+                scales.lock().expect("mutex lock").tare(Some(5));
             }
         }
     });
